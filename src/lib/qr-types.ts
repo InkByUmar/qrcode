@@ -11,23 +11,26 @@ export interface QRHistoryItem {
 export interface QRState {
   data: string;
   logo: string | null;
+  logoSize: number;
   fgColor: string;
   bgColor: string;
   size: number;
   errorLevel: QRErrorCorrectionLevel;
   type: 'URL' | 'Text' | 'Phone' | 'Email' | 'WiFi' | 'vCard';
+  dotStyle: 'rounded' | 'dots' | 'classy' | 'square' | 'extra-rounded';
+  cornerStyle: 'square' | 'dot' | 'rounded';
   // Complex type fields
-  wifi?: {
+  wifi: {
     ssid: string;
     password: string;
     encryption: 'WPA' | 'WEP' | 'nopass';
   };
-  email?: {
+  email: {
     address: string;
     subject: string;
     body: string;
   };
-  vCard?: {
+  vCard: {
     firstName: string;
     lastName: string;
     mobile: string;

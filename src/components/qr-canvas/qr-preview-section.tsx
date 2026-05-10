@@ -9,19 +9,19 @@ import {
   Loader2, 
   History, 
   MessageCircle, 
-  Clock, 
   Download, 
-  Shield, 
   Wifi, 
   Contact, 
-  Link2 
+  Link2,
+  Copy,
+  CheckCircle2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface QrPreviewSectionProps {
   state: QRState;
   history: QRHistoryItem[];
-  onSave: () => void;
+  onDownload: () => void;
 }
 
 declare global {
@@ -30,10 +30,11 @@ declare global {
   }
 }
 
-export function QrPreviewSection({ state, history, onSave }: QrPreviewSectionProps) {
+export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectionProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCodeInstance = useRef<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -46,10 +47,25 @@ export function QrPreviewSection({ state, history, onSave }: QrPreviewSectionPro
         type: 'svg' as const,
         data: state.data || ' ',
         image: state.logo || '',
-        dotsOptions: { color: state.fgColor, type: 'rounded' },
+        dotsOptions: { 
+          color: state.fgColor, 
+          type: state.dotStyle 
+        },
+        cornersSquareOptions: {
+          type: state.cornerStyle,
+          color: state.fgColor
+        },
         backgroundOptions: { color: state.bgColor },
-        imageOptions: { crossOrigin: 'anonymous', margin: 8, imageSize: 0.4 },
-        qrOptions: { typeNumber: 0, mode: 'Byte', errorCorrectionLevel: state.errorLevel }
+        imageOptions: { 
+          crossOrigin: 'anonymous', 
+          margin: 8, 
+          imageSize: state.logoSize 
+        },
+        qrOptions: { 
+          typeNumber: 0, 
+          mode: 'Byte', 
+          errorCorrectionLevel: state.errorLevel 
+        }
       };
 
       if (!qrCodeInstance.current) {
@@ -64,62 +80,70 @@ export function QrPreviewSection({ state, history, onSave }: QrPreviewSectionPro
     }
   }, [state]);
 
-  const handleDownload = async (ext: 'png' | 'svg' | 'jpeg') => {
+  const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
     if (qrCodeInstance.current) {
       setIsGenerating(true);
       try {
         await qrCodeInstance.current.download({ 
-          name: `qr-canvas-${Date.now()}`, 
+          name: `qr-canvas-${state.type.toLowerCase()}-${Date.now()}`, 
           extension: ext,
-          width: state.size,
-          height: state.size
+          width: resolution,
+          height: resolution
         });
-        onSave(); // Save to history on download success
-        toast({ title: "Success!", description: "QR code downloaded successfully." });
+        onDownload();
+        toast({ title: "Successfully Exported!", description: "High resolution QR code ready." });
       } finally {
         setIsGenerating(false);
       }
     }
   };
 
+  const handleCopyLink = () => {
+    if (!state.data) return;
+    navigator.clipboard.writeText(state.data);
+    setCopied(true);
+    toast({ title: "Copied!", description: "QR data copied to clipboard." });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const handleWhatsAppShare = () => {
-    const text = `Check out this QR code I generated: ${state.data}`;
+    const text = `Check out this QR code I generated for ${state.type}: ${state.data}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white/[0.03] backdrop-blur-2xl border-primary/20 shadow-2xl shadow-primary/10 overflow-hidden relative">
+      <Card className="bg-white/[0.03] backdrop-blur-2xl border-primary/20 shadow-2xl overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
         <CardHeader className="text-center pb-2">
-          <CardTitle className="text-xs font-black text-primary uppercase tracking-[0.3em]">Live Canvas Preview</CardTitle>
+          <CardTitle className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Professional Preview</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6">
-          <div className="relative group p-6 bg-white/[0.03] rounded-[2.5rem] border border-white/10 qr-preview-container transition-all hover:border-primary/40 min-h-[368px] flex items-center justify-center shadow-2xl">
+          <div className="relative group p-6 bg-white rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 transition-all hover:scale-[1.01] min-h-[368px] flex items-center justify-center">
             {isGenerating && (
-              <div className="absolute inset-0 z-10 bg-black/40 backdrop-blur-[4px] rounded-[2.5rem] flex items-center justify-center">
+              <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] rounded-[2.5rem] flex items-center justify-center">
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
               </div>
             )}
-            <div ref={qrRef} className="w-[320px] h-[320px] shadow-2xl rounded-xl overflow-hidden" />
+            <div ref={qrRef} className="w-[320px] h-[320px] overflow-hidden" />
           </div>
 
           <div className="w-full space-y-4">
             <div className="grid grid-cols-1 gap-3">
               <Button 
-                onClick={() => handleDownload('png')} 
+                onClick={() => handleDownload('png', 1024)} 
                 disabled={isGenerating}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-14 rounded-2xl flex items-center justify-center gap-3 text-lg shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95"
               >
                 <Download className="w-6 h-6" />
-                Export PNG ({state.size}px)
+                Export 1024px PNG
               </Button>
               
               <div className="grid grid-cols-2 gap-3">
                 <Button 
                   variant="outline" 
                   disabled={isGenerating}
-                  onClick={() => handleDownload('svg')} 
+                  onClick={() => handleDownload('svg', 1024)} 
                   className="bg-white/5 border-white/10 hover:bg-white/10 hover:text-white h-12 rounded-xl transition-all"
                 >
                   <FileCode className="w-4 h-4 mr-2 text-primary" />
@@ -127,59 +151,45 @@ export function QrPreviewSection({ state, history, onSave }: QrPreviewSectionPro
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={handleWhatsAppShare}
-                  className="bg-green-500/10 border-green-500/20 hover:bg-green-500/20 text-green-400 h-12 rounded-xl"
+                  onClick={handleCopyLink}
+                  className="bg-white/5 border-white/10 hover:bg-white/10 h-12 rounded-xl transition-all"
                 >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  WhatsApp
+                  {copied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
+                  {copied ? 'Copied' : 'Copy Data'}
                 </Button>
               </div>
-            </div>
-
-            {/* Post-Download Ad Space */}
-            <div className="w-full h-20 bg-white/5 rounded-xl border border-dashed border-white/10 flex items-center justify-center overflow-hidden relative group">
-               <span className="text-[9px] text-muted-foreground/30 uppercase tracking-[0.4em] font-medium">Sponsor Ad (Download)</span>
-               <div className="absolute inset-0 bg-primary/2 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-
-            <div className="flex items-center justify-center gap-8 pt-4 border-t border-white/5">
-              <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-help">
-                <Shield className="w-4 h-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-tighter">Verified</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-help">
-                <Clock className="w-4 h-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-tighter">Fast Render</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 opacity-60 hover:opacity-100 transition-opacity cursor-help">
-                <Download className="w-4 h-4 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-tighter">Free</span>
-              </div>
+              
+              <Button 
+                variant="outline" 
+                onClick={handleWhatsAppShare}
+                className="w-full bg-green-500/10 border-green-500/20 hover:bg-green-500/20 text-green-400 h-12 rounded-xl"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Share to WhatsApp
+              </Button>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      {/* History Card */}
       {history.length > 0 && (
-        <Card className="bg-white/[0.02] border-white/10 overflow-hidden">
+        <Card className="bg-white/[0.02] border-white/10 overflow-hidden animate-in fade-in slide-in-from-right-4 duration-500">
           <CardHeader className="py-3 px-4 bg-white/5 flex flex-row items-center justify-between">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-              <History className="w-4 h-4 text-primary" /> Recent History
+            <CardTitle className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+              <History className="w-4 h-4 text-primary" /> Recent Exports
             </CardTitle>
-            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold">LATEST 5</span>
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-white/5">
               {history.map((item) => (
-                <div key={item.id} className="p-4 hover:bg-white/5 transition-colors group cursor-pointer flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                <div key={item.id} className="p-4 hover:bg-white/5 transition-colors group flex items-center justify-between">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
                        {item.type === 'WiFi' ? <Wifi className="w-4 h-4" /> : item.type === 'vCard' ? <Contact className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
                     </div>
-                    <div>
-                      <p className="text-xs font-bold text-white/90 truncate max-w-[140px]">{item.data}</p>
-                      <p className="text-[10px] text-muted-foreground">{new Date(item.timestamp).toLocaleTimeString()}</p>
+                    <div className="overflow-hidden">
+                      <p className="text-[11px] font-bold text-white/90 truncate">{item.data}</p>
+                      <p className="text-[9px] text-muted-foreground uppercase">{new Date(item.timestamp).toLocaleTimeString()}</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground group-hover:text-primary">
@@ -192,11 +202,10 @@ export function QrPreviewSection({ state, history, onSave }: QrPreviewSectionPro
         </Card>
       )}
 
-      {/* Dynamic Sidebar Ad */}
-      <div className="w-full h-64 bg-[#1B2B1F]/30 border border-white/5 rounded-2xl flex flex-col items-center justify-center p-6 text-center space-y-3 group overflow-hidden relative">
-        <span className="text-[10px] text-muted-foreground/30 uppercase tracking-widest font-black">Advertisement</span>
+      <div className="w-full h-40 bg-[#1B2B1F]/30 border border-white/5 rounded-2xl flex flex-col items-center justify-center p-6 text-center space-y-3 group overflow-hidden relative">
+        <span className="text-[9px] text-muted-foreground/30 uppercase tracking-widest font-black">Advertisement Space</span>
         <div className="w-full h-px bg-white/10" />
-        <p className="text-xs text-muted-foreground/50 leading-relaxed max-w-[180px]">Your brand could be here. Targeted reach for tech-savvy creators.</p>
+        <p className="text-[10px] text-muted-foreground/40 leading-relaxed italic">Monetize your tool with high-quality targeted ads.</p>
         <div className="absolute inset-0 bg-primary/2 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
     </div>
