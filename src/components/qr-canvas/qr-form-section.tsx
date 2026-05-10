@@ -9,7 +9,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Link2, Type, Phone, Mail, Wifi, Sparkles, Upload, X, Contact, Palette, Smartphone, Shield } from 'lucide-react';
+import { 
+  Link2, 
+  Type, 
+  Phone, 
+  Mail, 
+  Wifi, 
+  Sparkles, 
+  Upload, 
+  X, 
+  Contact, 
+  Palette, 
+  Smartphone, 
+  Shield 
+} from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
 
