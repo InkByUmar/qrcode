@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -23,6 +24,7 @@ export function QrGeneratorContainer() {
     cornerStyle: 'rounded',
     wifi: { ssid: '', password: '', encryption: 'WPA' },
     email: { address: '', subject: '', body: '' },
+    whatsapp: { phone: '', message: '' },
     vCard: {
       firstName: '',
       lastName: '',
@@ -38,7 +40,6 @@ export function QrGeneratorContainer() {
   const [history, setHistory] = useState<QRHistoryItem[]>([]);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load history from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -50,7 +51,6 @@ export function QrGeneratorContainer() {
     }
   }, []);
 
-  // Debounce preview updates
   useEffect(() => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     debounceTimerRef.current = setTimeout(() => {
@@ -63,20 +63,19 @@ export function QrGeneratorContainer() {
     setState(prev => {
       const newState = { ...prev, ...updates };
       
-      // Auto-formatting logic for data string
       if (newState.type === 'WiFi') {
         newState.data = `WIFI:T:${newState.wifi.encryption};S:${newState.wifi.ssid};P:${newState.wifi.password};;`;
       } else if (newState.type === 'Email') {
         newState.data = `mailto:${newState.email.address}?subject=${encodeURIComponent(newState.email.subject)}&body=${encodeURIComponent(newState.email.body)}`;
+      } else if (newState.type === 'WhatsApp') {
+        const cleanPhone = newState.whatsapp.phone.replace(/[^0-9]/g, '');
+        newState.data = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(newState.whatsapp.message)}`;
       } else if (newState.type === 'Phone') {
-        // Simple tel: string, avoid double tel:tel:
-        const raw = newState.data.startsWith('tel:') ? newState.data : `tel:${newState.data}`;
-        newState.data = raw;
+        newState.data = newState.data.startsWith('tel:') ? newState.data : `tel:${newState.data}`;
       } else if (newState.type === 'vCard') {
         newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
       }
 
-      // Reliability logic: If logo or background is added, force Level H Error Correction
       if ((newState.logo || newState.backgroundImage) && newState.errorLevel !== 'H') {
         newState.errorLevel = 'H';
       }
@@ -102,7 +101,6 @@ export function QrGeneratorContainer() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <div className="lg:col-span-7 xl:col-span-8 space-y-8">
         <QrFormSection state={state} updateState={updateState} />
-        
         <div className="hidden xl:block w-full h-[150px] bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center group overflow-hidden">
           <span className="text-[10px] text-muted-foreground/30 uppercase tracking-[0.5em]">Premium Advertisement Banner</span>
         </div>

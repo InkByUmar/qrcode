@@ -1,9 +1,16 @@
+
+"use client"
+
+import React from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { Toaster } from '@/components/ui/toaster';
-import { QrCode, Shield, Zap, Palette, Layers, Smartphone, Sparkles, Globe, ArrowRight, CheckCircle2, Star } from 'lucide-react';
+import { QrCode, Shield, Zap, Palette, Layers, Smartphone, Sparkles, Globe, ArrowRight, CheckCircle2, Star, Scan } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
+import { QrScannerModal } from '@/components/qr-canvas/qr-scanner-modal';
 
 export default function Home() {
+  const [isScannerOpen, setIsScannerOpen] = React.useState(false);
+
   return (
     <main className="min-h-screen premium-gradient selection:bg-primary/30 selection:text-white">
       {/* GLOBAL TOP AD BANNER */}
@@ -40,7 +47,13 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-4">
-             <button className="hidden sm:block text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-2xl hover:bg-white/[0.05] transition-all text-white/80">Log In</button>
+             <button 
+               onClick={() => setIsScannerOpen(true)}
+               className="hidden sm:flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-white/80"
+             >
+               <Scan className="w-4 h-4 text-primary" />
+               Scan QR
+             </button>
              <button className="text-[10px] font-black uppercase tracking-widest px-8 py-4 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
               Join Pro
              </button>
@@ -56,14 +69,14 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center mb-24 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 animate-in fade-in zoom-in duration-1000 border-primary/20">
             <Sparkles className="w-3.5 h-3.5 fill-primary/20" />
-            <span>THE NEXT GENERATION OF QR BRANDING</span>
+            <span>AI-POWERED BRANDING ENGINE</span>
           </div>
           <h1 className="text-6xl md:text-[92px] font-headline font-black mb-10 leading-[1] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/30">
             Design Codes That <br />
             <span className="text-primary italic underline decoration-white/10 underline-offset-8">Demand Attention</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            The world's most advanced <span className="text-white font-medium">Free QR Code Generator</span> with Logo and Background support. Elevate your brand with pixel-perfect, high-resolution vector outputs.
+            The world's most advanced <span className="text-white font-medium">Free QR Code Generator</span> with Logo and Background support. Now with live scanning and smart templates.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-10">
@@ -71,7 +84,7 @@ export default function Home() {
               <CheckCircle2 className="w-4 h-4 text-primary" /> No Account Needed
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-white/40 uppercase tracking-widest">
-              <CheckCircle2 className="w-4 h-4 text-primary" /> SVG/PNG Exports
+              <CheckCircle2 className="w-4 h-4 text-primary" /> WhatsApp Support
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-white/40 uppercase tracking-widest">
               <CheckCircle2 className="w-4 h-4 text-primary" /> Lifetime Free
@@ -118,8 +131,8 @@ export default function Home() {
           />
           <FeatureCard 
             icon={<Globe className="w-6 h-6 text-primary" />}
-            title="Unlimited Everything"
-            description="Generate unlimited URL, WiFi, and vCard codes without ever creating an account or paying a dime."
+            title="WhatsApp Ready"
+            description="Generate dedicated wa.me links with custom messages. Perfect for business automation."
           />
           <FeatureCard 
             icon={<Layers className="w-6 h-6 text-primary" />}
@@ -177,6 +190,7 @@ export default function Home() {
         </div>
       </footer>
       <Toaster />
+      <QrScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
     </main>
   );
 }

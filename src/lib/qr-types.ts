@@ -1,3 +1,4 @@
+
 export type QRErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
 
 export interface QRHistoryItem {
@@ -18,7 +19,7 @@ export interface QRState {
   bgColor: string;
   size: number;
   errorLevel: QRErrorCorrectionLevel;
-  type: 'URL' | 'Text' | 'Phone' | 'Email' | 'WiFi' | 'vCard';
+  type: 'URL' | 'Text' | 'Phone' | 'Email' | 'WiFi' | 'vCard' | 'WhatsApp';
   dotStyle: 'rounded' | 'dots' | 'classy' | 'square' | 'extra-rounded';
   cornerStyle: 'square' | 'dot' | 'rounded';
   // Complex type fields
@@ -31,6 +32,10 @@ export interface QRState {
     address: string;
     subject: string;
     body: string;
+  };
+  whatsapp: {
+    phone: string;
+    message: string;
   };
   vCard: {
     firstName: string;

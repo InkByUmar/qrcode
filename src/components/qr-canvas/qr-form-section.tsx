@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -24,10 +25,12 @@ import {
   Shield,
   LayoutGrid,
   Image as ImageIcon,
-  Zap,
+  MessageSquare,
   MousePointer2,
   Info,
-  AlertTriangle
+  AlertTriangle,
+  Layers,
+  Star
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -37,6 +40,15 @@ interface QrFormSectionProps {
   state: QRState;
   updateState: (updates: Partial<QRState>) => void;
 }
+
+const TEMPLATES = [
+  { id: 'restaurant', label: 'Restaurant Menu', type: 'URL', data: 'https://menu.yourbrand.com', color: '#FF5733' },
+  { id: 'wifi', label: 'Guest WiFi', type: 'WiFi', wifi: { ssid: 'Guest_WiFi', password: 'password123', encryption: 'WPA' }, color: '#33FF57' },
+  { id: 'business', label: 'Business Card', type: 'vCard', vCard: { firstName: 'John', lastName: 'Doe', mobile: '+1 234 567 890', email: 'john@company.com', organization: 'Tech Inc', jobTitle: 'CEO', website: 'https://company.com' }, color: '#3357FF' },
+  { id: 'instagram', label: 'Instagram Profile', type: 'URL', data: 'https://instagram.com/yourbrand', color: '#E1306C' },
+  { id: 'youtube', label: 'YouTube Channel', type: 'URL', data: 'https://youtube.com/@channel', color: '#FF0000' },
+  { id: 'review', label: 'Google Review', type: 'URL', data: 'https://g.page/r/your-review-link', color: '#4285F4' },
+];
 
 export function QrFormSection({ state, updateState }: QrFormSectionProps) {
   const { toast } = useToast();
@@ -72,8 +84,44 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
     }
   };
 
+  const applyTemplate = (template: any) => {
+    updateState({
+      type: template.type,
+      data: template.data || '',
+      fgColor: template.color || state.fgColor,
+      ...(template.wifi && { wifi: template.wifi }),
+      ...(template.vCard && { vCard: template.vCard }),
+    });
+    toast({ title: "Template Applied", description: `Loading ${template.label} preset.` });
+  };
+
   return (
     <div className="space-y-10">
+      {/* TEMPLATE SECTION */}
+      <Card className="glass-card border-white/10 overflow-hidden">
+        <CardHeader className="py-6 border-b border-white/[0.05]">
+          <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
+            <Star className="w-5 h-5 text-primary" /> Premium Ready Templates
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {TEMPLATES.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => applyTemplate(t)}
+                className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform" style={{ color: t.color }}>
+                  {t.type === 'URL' ? <Link2 className="w-5 h-5" /> : t.type === 'WiFi' ? <Wifi className="w-5 h-5" /> : <Contact className="w-5 h-5" />}
+                </div>
+                <span className="text-[10px] font-bold text-center leading-tight text-white/60 group-hover:text-white">{t.label}</span>
+              </button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* SECTION 1: CORE DATA */}
       <Card className="glass-card border-white/10 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
         <CardHeader className="pb-8 border-b border-white/[0.05] bg-white/[0.01]">
@@ -92,10 +140,11 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
         </CardHeader>
         <CardContent className="pt-10">
           <Tabs value={state.type} onValueChange={(val) => updateState({ type: val as any })} className="w-full">
-            <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-3 bg-transparent p-0 mb-10 h-auto">
+            <TabsList className="grid grid-cols-3 sm:grid-cols-7 gap-3 bg-transparent p-0 mb-10 h-auto">
               {[
                 { id: 'URL', icon: Link2, label: 'URL' },
                 { id: 'Text', icon: Type, label: 'Text' },
+                { id: 'WhatsApp', icon: MessageSquare, label: 'WhatsApp' },
                 { id: 'Phone', icon: Phone, label: 'Phone' },
                 { id: 'Email', icon: Mail, label: 'Email' },
                 { id: 'WiFi', icon: Wifi, label: 'WiFi' },
@@ -113,7 +162,24 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
             </TabsList>
 
             <div className="min-h-[220px]">
-              {state.type === 'WiFi' ? (
+              {state.type === 'WhatsApp' ? (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div className="space-y-3.5">
+                      <Label className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em]">Phone Number</Label>
+                      <Input className="h-14 bg-white/[0.02] border-white/10 rounded-2xl text-lg" placeholder="+1234567890" value={state.whatsapp.phone} onChange={e => updateState({ whatsapp: { ...state.whatsapp, phone: e.target.value } })} />
+                    </div>
+                    <div className="space-y-3.5">
+                      <Label className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em]">Default Message (Optional)</Label>
+                      <Input className="h-14 bg-white/[0.02] border-white/10 rounded-2xl text-lg" placeholder="Hi! I'm interested in..." value={state.whatsapp.message} onChange={e => updateState({ whatsapp: { ...state.whatsapp, message: e.target.value } })} />
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-primary/5 border border-primary/20">
+                    <p className="text-[10px] text-primary font-bold uppercase tracking-widest mb-1">Generated Link</p>
+                    <p className="text-xs font-mono text-primary/60 truncate">https://wa.me/{state.whatsapp.phone.replace(/[^0-9]/g, '')}</p>
+                  </div>
+                </div>
+              ) : state.type === 'WiFi' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
                   <div className="space-y-3.5">
                     <Label className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em]">Network SSID (Name)</Label>
@@ -194,7 +260,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                         size="sm" 
                         className="h-8 text-[10px] uppercase font-black tracking-[0.2em] text-primary hover:bg-primary/10 transition-all border border-primary/20 rounded-xl"
                         onClick={handleAIRefine}
-                        disabled={isRefining || !state.data || ['WiFi', 'vCard', 'Email'].includes(state.type)}
+                        disabled={isRefining || !state.data || ['WiFi', 'vCard', 'Email', 'WhatsApp'].includes(state.type)}
                       >
                         <Sparkles className={`w-3.5 h-3.5 mr-2 ${isRefining ? 'animate-spin' : ''}`} />
                         {isRefining ? 'Analyzing...' : 'Optimize Content'}
