@@ -1,15 +1,13 @@
+
 "use client"
 
 import React from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { Toaster } from '@/components/ui/toaster';
-import { QrCode, Shield, Zap, Palette, Layers, Smartphone, Sparkles, Globe, ArrowRight, CheckCircle2, Star, Scan } from 'lucide-react';
+import { QrCode, Shield, Zap, Palette, Layers, Smartphone, Sparkles, Globe, ArrowRight, CheckCircle2, Star } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
-import { QrScannerModal } from '@/components/qr-canvas/qr-scanner-modal';
 
 export default function Home() {
-  const [isScannerOpen, setIsScannerOpen] = React.useState(false);
-
   return (
     <main className="min-h-screen premium-gradient selection:bg-primary/30 selection:text-white">
       {/* GLOBAL TOP AD BANNER */}
@@ -46,13 +44,6 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-4">
-             <button 
-               onClick={() => setIsScannerOpen(true)}
-               className="hidden sm:flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-white/80"
-             >
-               <Scan className="w-4 h-4 text-primary" />
-               Scan QR
-             </button>
              <button className="text-[10px] font-black uppercase tracking-widest px-8 py-4 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
               Join Pro
              </button>
@@ -75,7 +66,7 @@ export default function Home() {
             <span className="text-primary italic underline decoration-white/10 underline-offset-8">Demand Attention</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            The world's most advanced <span className="text-white font-medium">Free QR Code Generator</span> with Logo and Background support. Now with live scanning and smart templates.
+            The world's most advanced <span className="text-white font-medium">Free QR Code Generator</span> with Logo and Background support. Now with smart templates and AI-powered data optimization.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-10">
@@ -189,7 +180,6 @@ export default function Home() {
         </div>
       </footer>
       <Toaster />
-      <QrScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
     </main>
   );
 }
