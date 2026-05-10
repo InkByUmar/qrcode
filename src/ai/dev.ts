@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/qr-content-refiner-flow.ts';
+import '@/ai/flows/qr-content-type-suggester-flow.ts';
