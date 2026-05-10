@@ -1,7 +1,7 @@
 
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { Toaster } from '@/components/ui/toaster';
 import { 
@@ -35,6 +35,16 @@ import {
 } from "@/components/ui/accordion";
 
 export default function Home() {
+  const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
+
+  const scrollToGenerator = (mode: 'single' | 'bulk') => {
+    setGeneratorMode(mode);
+    const el = document.getElementById('generator');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <main className="min-h-screen premium-gradient selection:bg-primary/30 selection:text-white">
       {/* GLOBAL TOP AD BANNER */}
@@ -49,7 +59,7 @@ export default function Home() {
       {/* NAVIGATION */}
       <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/60 backdrop-blur-xl">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
             <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
               <QrCode className="text-primary-foreground w-7 h-7" />
             </div>
@@ -63,7 +73,20 @@ export default function Home() {
           
           <nav className="hidden lg:flex items-center gap-12">
             {['Generator', 'Bulk Mode', 'Guide', 'Features', 'FAQ'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-300 relative group">
+              <a 
+                key={item} 
+                href={`#${item.toLowerCase().replace(' ', '-')}`} 
+                onClick={(e) => {
+                  if (item === 'Generator') {
+                    e.preventDefault();
+                    scrollToGenerator('single');
+                  } else if (item === 'Bulk Mode') {
+                    e.preventDefault();
+                    scrollToGenerator('bulk');
+                  }
+                }}
+                className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-300 relative group"
+              >
                 {item}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </a>
@@ -109,7 +132,7 @@ export default function Home() {
         </div>
 
         <div id="generator" className="relative z-10 scroll-mt-24">
-          <QrGeneratorContainer />
+          <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
         </div>
       </section>
 
@@ -198,7 +221,7 @@ export default function Home() {
       </section>
 
       {/* BULK QR EXPLANATION - SEO H2 */}
-      <section id="bulk-mode" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative overflow-hidden">
+      <section id="bulk-mode-info" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="space-y-8">
             <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20">
@@ -225,7 +248,10 @@ export default function Home() {
                 </li>
               ))}
             </ul>
-            <button className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+            <button 
+              onClick={() => scrollToGenerator('bulk')}
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+            >
               Try Bulk Mode Now <ArrowRight className="w-4 h-4" />
             </button>
           </div>

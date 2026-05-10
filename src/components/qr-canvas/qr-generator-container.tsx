@@ -11,8 +11,20 @@ import { QrCode, Layers } from 'lucide-react';
 
 const STORAGE_KEY = 'qr_canvas_history_v3';
 
-export function QrGeneratorContainer() {
-  const [activeMode, setActiveMode] = useState<'single' | 'bulk'>('single');
+interface QrGeneratorContainerProps {
+  activeMode?: 'single' | 'bulk';
+  onModeChange?: (mode: 'single' | 'bulk') => void;
+}
+
+export function QrGeneratorContainer({ 
+  activeMode: controlledMode, 
+  onModeChange 
+}: QrGeneratorContainerProps) {
+  const [uncontrolledMode, setUncontrolledMode] = useState<'single' | 'bulk'>('single');
+  
+  const activeMode = controlledMode ?? uncontrolledMode;
+  const setActiveMode = onModeChange ?? setUncontrolledMode;
+
   const [state, setState] = useState<QRState>({
     data: 'https://google.com',
     logo: null,
