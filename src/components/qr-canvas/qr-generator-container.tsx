@@ -5,10 +5,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { QRState, QRHistoryItem } from '@/lib/qr-types';
 import { QrFormSection } from './qr-form-section';
 import { QrPreviewSection } from './qr-preview-section';
+import { QrBulkSection } from './qr-bulk-section';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { QrCode, Layers } from 'lucide-react';
 
 const STORAGE_KEY = 'qr_canvas_history_v3';
 
 export function QrGeneratorContainer() {
+  const [activeMode, setActiveMode] = useState<'single' | 'bulk'>('single');
   const [state, setState] = useState<QRState>({
     data: 'https://google.com',
     logo: null,
@@ -98,19 +102,40 @@ export function QrGeneratorContainer() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-      <div className="lg:col-span-7 xl:col-span-8 space-y-8">
-        <QrFormSection state={state} updateState={updateState} />
-        <div className="hidden xl:block w-full h-[150px] bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center group overflow-hidden">
-          <span className="text-[10px] text-muted-foreground/30 uppercase tracking-[0.5em]">Premium Advertisement Banner</span>
-        </div>
+    <div className="space-y-8">
+      <div className="flex justify-center mb-8">
+        <Tabs value={activeMode} onValueChange={(val) => setActiveMode(val as any)} className="w-full max-w-md">
+          <TabsList className="grid grid-cols-2 bg-white/5 border border-white/10 p-1 h-14 rounded-2xl">
+            <TabsTrigger value="single" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black uppercase tracking-widest text-[10px] gap-2">
+              <QrCode className="w-4 h-4" /> Single QR
+            </TabsTrigger>
+            <TabsTrigger value="bulk" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black uppercase tracking-widest text-[10px] gap-2">
+              <Layers className="w-4 h-4" /> Bulk Mode
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
-      <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6">
-        <QrPreviewSection 
-          state={debouncedState} 
-          history={history} 
-          onDownload={() => addToHistory(state.data, state.type)} 
-        />
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-8">
+          {activeMode === 'single' ? (
+            <QrFormSection state={state} updateState={updateState} />
+          ) : (
+            <QrBulkSection state={state} updateState={updateState} />
+          )}
+          
+          <div className="hidden xl:block w-full h-[150px] bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center group overflow-hidden">
+            <span className="text-[10px] text-muted-foreground/30 uppercase tracking-[0.5em]">Premium Advertisement Banner</span>
+          </div>
+        </div>
+
+        <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6">
+          <QrPreviewSection 
+            state={debouncedState} 
+            history={history} 
+            onDownload={() => addToHistory(state.data, state.type)} 
+          />
+        </div>
       </div>
     </div>
   );
