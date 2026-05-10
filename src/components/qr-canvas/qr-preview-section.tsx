@@ -38,45 +38,49 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
+  // Create the config object once to use in update and download
+  const getQrConfig = (size: number = 320) => ({
+    width: size,
+    height: size,
+    type: 'canvas' as const, // Canvas is more reliable for PNG/Logo exports
+    data: state.data || ' ',
+    image: state.logo || '',
+    dotsOptions: { 
+      color: state.fgColor, 
+      type: state.dotStyle 
+    },
+    cornersSquareOptions: {
+      type: state.cornerStyle,
+      color: state.fgColor
+    },
+    backgroundOptions: { 
+      color: state.backgroundImage ? 'transparent' : state.bgColor,
+      image: state.backgroundImage || '',
+      imageOptions: {
+        crossOrigin: 'anonymous',
+        margin: 0,
+        imageSize: 1,
+        opacity: state.backgroundOpacity
+      }
+    },
+    imageOptions: { 
+      crossOrigin: 'anonymous', 
+      margin: 8, 
+      imageSize: state.logoSize,
+      hideBackgroundDots: true // Ensures dots don't bleed through logo
+    },
+    qrOptions: { 
+      typeNumber: 0, 
+      mode: 'Byte', 
+      errorCorrectionLevel: (state.logo || state.backgroundImage) ? 'H' : state.errorLevel 
+    }
+  });
+
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
       
-      const config = {
-        width: 320,
-        height: 320,
-        type: 'svg' as const,
-        data: state.data || ' ',
-        image: state.logo || '',
-        dotsOptions: { 
-          color: state.fgColor, 
-          type: state.dotStyle 
-        },
-        cornersSquareOptions: {
-          type: state.cornerStyle,
-          color: state.fgColor
-        },
-        backgroundOptions: { 
-          color: state.backgroundImage ? 'transparent' : state.bgColor,
-          image: state.backgroundImage || '',
-          imageOptions: {
-            crossOrigin: 'anonymous',
-            margin: 0,
-            imageSize: 1,
-            opacity: state.backgroundOpacity
-          }
-        },
-        imageOptions: { 
-          crossOrigin: 'anonymous', 
-          margin: 8, 
-          imageSize: state.logoSize 
-        },
-        qrOptions: { 
-          typeNumber: 0, 
-          mode: 'Byte', 
-          errorCorrectionLevel: (state.logo || state.backgroundImage) ? 'H' : state.errorLevel 
-        }
-      };
+      const config = getQrConfig(320);
 
       if (!qrCodeInstance.current) {
         qrCodeInstance.current = new window.QRCodeStyling(config);
@@ -91,20 +95,28 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
   }, [state]);
 
   const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
-    if (qrCodeInstance.current) {
-      setIsGenerating(true);
-      try {
-        await qrCodeInstance.current.download({ 
-          name: `qr-canvas-${state.type.toLowerCase()}-${Date.now()}`, 
-          extension: ext,
-          width: resolution,
-          height: resolution
-        });
-        onDownload();
-        toast({ title: "Successfully Exported!", description: "High resolution QR code ready." });
-      } finally {
-        setIsGenerating(false);
-      }
+    if (!qrCodeInstance.current) return;
+    
+    setIsGenerating(true);
+    
+    try {
+      // Small delay to ensure all assets (logo/bg) are fully loaded in the library's internal state
+      await new Promise(resolve => setTimeout(resolve, 150));
+
+      await qrCodeInstance.current.download({ 
+        name: `qr-canvas-${state.type.toLowerCase()}-${Date.now()}`, 
+        extension: ext,
+        width: resolution,
+        height: resolution
+      });
+      
+      onDownload();
+      toast({ title: "Successfully Exported!", description: "High resolution QR code ready." });
+    } catch (err) {
+      console.error("Export failed:", err);
+      toast({ variant: "destructive", title: "Export Failed", description: "Could not generate file. Try again." });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -135,7 +147,7 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
               </div>
             )}
-            <div ref={qrRef} className="w-[320px] h-[320px] overflow-hidden" />
+            <div ref={qrRef} className="w-[320px] h-[320px] overflow-hidden flex items-center justify-center" />
           </div>
 
           <div className="w-full space-y-4">
