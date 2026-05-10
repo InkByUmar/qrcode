@@ -74,7 +74,7 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
         qrOptions: { 
           typeNumber: 0, 
           mode: 'Byte', 
-          errorCorrectionLevel: state.errorLevel 
+          errorCorrectionLevel: (state.logo || state.backgroundImage) ? 'H' : state.errorLevel 
         }
       };
 

@@ -3,123 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Canvas Pro - Artistic QR Generator</title>
+    <title>QR Canvas Pro - Premium QR Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Awesome-qr.js for superior background blending -->
-    <script src="https://cdn.jsdelivr.net/npm/awesome-qr@latest/dist/awesome-qr.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #050805; color: #f8fafc; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .neon-accent { color: #22c55e; text-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
-        .neon-bg { background: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-        .input-dark { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 0.75rem; width: 100%; transition: all 0.2s; }
-        .input-dark:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2); }
-        .tab-btn { padding: 0.6rem 1.2rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; transition: all 0.3s; }
-        .tab-btn.active { background: #22c55e; color: #050805; }
-        .tab-btn:not(.active) { background: rgba(255, 255, 255, 0.05); color: #94a3b8; }
-        .tab-btn:not(.active):hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-        #qr-canvas-container canvas { max-width: 100%; height: auto !important; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .neon-border { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.3); }
+        .qr-canvas-container canvas { border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); width: 100% !important; height: auto !important; }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body class="bg-[#0A0F0B] text-white min-h-screen">
 
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl mx-auto px-4 py-12">
         <!-- Header -->
-        <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 neon-bg rounded-xl flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black tracking-tighter uppercase">QR Canvas <span class="neon-accent">Pro</span></h1>
-                    <p class="text-xs text-slate-500 font-bold tracking-widest uppercase">Professional Edition</p>
-                </div>
-            </div>
-            <div class="flex gap-4">
-                <div class="hidden lg:block w-[300px] h-[50px] glass-card rounded-lg flex items-center justify-center italic text-[10px] text-slate-600 border-dashed border-slate-800">Advertisement Placeholder</div>
-            </div>
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter mb-4">
+                QR <span class="text-green-500 italic">Canvas</span> Pro
+            </h1>
+            <p class="text-gray-400 max-w-xl mx-auto">Create artistic, high-scannability QR codes with custom branding and background images.</p>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Left: Forms -->
+            <!-- Left: Settings -->
             <div class="lg:col-span-7 space-y-6">
                 
-                <!-- Type Selection -->
-                <div class="glass-card p-2 rounded-2xl flex flex-wrap gap-2">
-                    <button onclick="switchTab('URL')" class="tab-btn active" id="tab-URL">URL</button>
-                    <button onclick="switchTab('Text')" class="tab-btn" id="tab-Text">Text</button>
-                    <button onclick="switchTab('Phone')" class="tab-btn" id="tab-Phone">Phone</button>
-                    <button onclick="switchTab('Email')" class="tab-btn" id="tab-Email">Email</button>
-                    <button onclick="switchTab('WiFi')" class="tab-btn" id="tab-WiFi">WiFi</button>
-                    <button onclick="switchTab('vCard')" class="tab-btn" id="tab-vCard">vCard</button>
-                </div>
-
-                <!-- Content Area -->
-                <div class="glass-card p-6 rounded-3xl space-y-4">
-                    <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span class="w-1.5 h-1.5 rounded-full neon-bg"></span> 1. Enter Content
-                    </h2>
-                    
-                    <div id="form-container" class="space-y-4">
-                        <!-- Dynamic fields injected here -->
+                <!-- Content Section -->
+                <div class="glass p-6 rounded-3xl space-y-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-2 h-6 bg-green-500 rounded-full"></div>
+                        <h2 class="text-lg font-bold uppercase tracking-widest text-green-500/80">1. Content</h2>
                     </div>
+                    <textarea id="qr-data" class="w-full bg-black/40 border border-white/10 rounded-2xl p-4 text-lg focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all min-h-[120px]" placeholder="Enter URL or Text here...">https://google.com</textarea>
                 </div>
 
-                <!-- Style & Branding -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Colors & Dots -->
-                    <div class="glass-card p-6 rounded-3xl space-y-4">
-                        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full neon-bg"></span> 2. Appearance
-                        </h2>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <label class="text-[10px] uppercase font-bold text-slate-500">QR Color</label>
-                                <input type="color" id="fgColor" value="#22c55e" oninput="updateQR()" class="w-full h-10 rounded-lg cursor-pointer bg-transparent border-0">
+                <!-- Branding Section -->
+                <div class="glass p-6 rounded-3xl space-y-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-2 h-6 bg-green-500 rounded-full"></div>
+                        <h2 class="text-lg font-bold uppercase tracking-widest text-green-500/80">2. Premium Branding</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Logo Upload -->
+                        <div class="space-y-3">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest">Center Logo</label>
+                            <div class="relative group">
+                                <input type="file" id="logo-upload" accept="image/*" class="hidden">
+                                <label for="logo-upload" class="flex items-center justify-center gap-3 w-full bg-white/5 border border-dashed border-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/10 hover:border-green-500/50 transition-all">
+                                    <span class="text-sm font-medium" id="logo-name">Upload Logo</span>
+                                </label>
+                                <button id="clear-logo" class="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full text-xs hidden">✕</button>
                             </div>
                             <div class="space-y-2">
-                                <label class="text-[10px] uppercase font-bold text-slate-500">Dot Scaling</label>
-                                <input type="range" id="dotScale" min="0.1" max="1" step="0.1" value="0.4" oninput="updateQR()" class="w-full">
+                                <div class="flex justify-between text-[10px] font-bold text-gray-500">
+                                    <span>LOGO SIZE</span>
+                                    <span id="logo-size-val">30%</span>
+                                </div>
+                                <input type="range" id="logo-size" min="0.15" max="0.45" step="0.01" value="0.30" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-green-500">
+                            </div>
+                        </div>
+
+                        <!-- Background Upload -->
+                        <div class="space-y-3">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest">Background Image</label>
+                            <div class="relative group">
+                                <input type="file" id="bg-upload" accept="image/*" class="hidden">
+                                <label for="bg-upload" class="flex items-center justify-center gap-3 w-full bg-white/5 border border-dashed border-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/10 hover:border-green-500/50 transition-all">
+                                    <span class="text-sm font-medium" id="bg-name">Upload Background</span>
+                                </label>
+                                <button id="clear-bg" class="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full text-xs hidden">✕</button>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-[10px] font-bold text-gray-500">
+                                    <span>BG OPACITY</span>
+                                    <span id="bg-opacity-val">80%</span>
+                                </div>
+                                <input type="range" id="bg-opacity" min="0.3" max="1.0" step="0.05" value="0.8" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-green-500">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Branding -->
-                    <div class="glass-card p-6 rounded-3xl space-y-4">
-                        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full neon-bg"></span> 3. Branding
-                        </h2>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5 cursor-pointer hover:border-green-500/30 transition-colors relative">
-                                <input type="file" id="logoUpload" accept="image/*" onchange="handleFile(event, 'logo')" class="absolute inset-0 opacity-0 cursor-pointer">
-                                <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-slate-500" id="logo-preview-box">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <div>
-                                    <p class="text-[11px] font-bold text-slate-200">Center Logo</p>
-                                    <p class="text-[9px] text-slate-500 uppercase">PNG/JPG under 2MB</p>
-                                </div>
+                <!-- Styling Section -->
+                <div class="glass p-6 rounded-3xl space-y-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-2 h-6 bg-green-500 rounded-full"></div>
+                        <h2 class="text-lg font-bold uppercase tracking-widest text-green-500/80">3. Matrix Styling</h2>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Dot Style</label>
+                            <select id="dot-style" class="w-full bg-black/40 border border-white/10 rounded-xl p-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-500">
+                                <option value="extra-rounded">Extra Rounded</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="classy">Classy</option>
+                                <option value="square">Square</option>
+                                <option value="dots">Dots</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Corners</label>
+                            <select id="corner-style" class="w-full bg-black/40 border border-white/10 rounded-xl p-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-500">
+                                <option value="extra-rounded">Extra Rounded</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="dot">Dot</option>
+                                <option value="square">Square</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Dot Color</label>
+                            <div class="flex gap-2">
+                                <input type="color" id="dot-color" value="#22c55e" class="w-10 h-10 bg-transparent cursor-pointer">
+                                <input type="text" id="dot-color-hex" value="#22C55E" class="bg-black/40 border border-white/10 rounded-xl px-2 text-xs w-full uppercase font-mono">
                             </div>
-
-                            <div class="flex items-center gap-3 p-3 bg-black/40 rounded-xl border border-white/5 cursor-pointer hover:border-green-500/30 transition-colors relative">
-                                <input type="file" id="bgUpload" accept="image/*" onchange="handleFile(event, 'bg')" class="absolute inset-0 opacity-0 cursor-pointer">
-                                <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-slate-500" id="bg-preview-box">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <div>
-                                    <p class="text-[11px] font-bold text-slate-200">Artistic Background</p>
-                                    <p class="text-[9px] text-slate-500 uppercase">QR blends over this</p>
-                                </div>
-                            </div>
-
-                            <div id="bg-opacity-control" class="hidden space-y-2 pt-2">
-                                <div class="flex justify-between">
-                                    <label class="text-[10px] uppercase font-bold text-slate-500">Bg Dimming</label>
-                                    <span class="text-[10px] text-green-500 font-mono" id="opacity-val">100%</span>
-                                </div>
-                                <input type="range" id="bgOpacity" min="0.3" max="1.0" step="0.05" value="1.0" oninput="updateQR()" class="w-full">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase">Background</label>
+                            <div class="flex gap-2">
+                                <input type="color" id="bg-color" value="#ffffff" class="w-10 h-10 bg-transparent cursor-pointer">
+                                <input type="text" id="bg-color-hex" value="#FFFFFF" class="bg-black/40 border border-white/10 rounded-xl px-2 text-xs w-full uppercase font-mono">
                             </div>
                         </div>
                     </div>
@@ -127,281 +135,190 @@
             </div>
 
             <!-- Right: Preview -->
-            <div class="lg:col-span-5 lg:sticky lg:top-8 space-y-6">
-                <div class="glass-card p-8 rounded-[3rem] text-center relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent"></div>
-                    <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-8">Professional Preview</p>
+            <div class="lg:col-span-5 lg:sticky lg:top-12 space-y-6">
+                <div class="glass p-8 rounded-[40px] flex flex-col items-center gap-8 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500/50 to-transparent"></div>
                     
-                    <div id="qr-canvas-container" class="flex justify-center bg-white p-4 rounded-[2.5rem] shadow-2xl relative">
-                        <!-- Awesome-qr.js will render here -->
+                    <div id="canvas-wrapper" class="qr-canvas-container w-full max-w-[320px] aspect-square bg-white rounded-[32px] p-4 flex items-center justify-center overflow-hidden">
+                        <!-- QR Code will be appended here -->
                     </div>
 
-                    <div class="mt-8 space-y-3">
-                        <button onclick="downloadQR('png')" class="w-full neon-bg text-black font-black py-4 rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all text-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-                            Export PNG (HD)
+                    <div class="w-full space-y-4">
+                        <button id="download-png" class="w-full bg-green-500 hover:bg-green-400 text-black font-black py-5 rounded-2xl flex items-center justify-center gap-3 text-lg transition-all shadow-xl shadow-green-500/20 active:scale-95">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Export 1024px PNG
                         </button>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="shareWhatsApp()" class="glass-card py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-green-500/10 hover:text-green-400 transition-colors">
-                                WhatsApp
-                            </button>
-                            <button onclick="copyData()" id="copy-btn" class="glass-card py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-white/10 transition-colors">
-                                Copy Data
-                            </button>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <button id="download-svg" class="bg-white/5 border border-white/10 hover:bg-white/10 py-3 rounded-xl text-sm font-bold transition-all">Vector SVG</button>
+                            <button id="share-wa" class="bg-green-600/10 border border-green-600/20 hover:bg-green-600/20 text-green-500 py-3 rounded-xl text-sm font-bold transition-all">WhatsApp</button>
                         </div>
                     </div>
-                </div>
 
-                <!-- History -->
-                <div class="glass-card p-6 rounded-3xl">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">Recent Exports</h3>
-                    <div id="history-list" class="space-y-3">
-                        <p class="text-xs text-slate-600 italic">No recent history yet...</p>
+                    <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-2xl w-full">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black uppercase text-blue-400 tracking-wider">Smart Scannability</p>
+                                <p class="text-[9px] text-blue-400/70" id="ec-status">Normal optimization active.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="mt-20 pt-12 border-t border-white/5 text-center">
-            <p class="text-slate-600 text-xs font-bold uppercase tracking-widest">
-                Made with ❤️ in <span class="text-green-600">Pakistan</span>
-            </p>
-            <div class="mt-6 flex justify-center gap-6 opacity-30">
-                <div class="w-10 h-10 glass-card rounded-full"></div>
-                <div class="w-10 h-10 glass-card rounded-full"></div>
-                <div class="w-10 h-10 glass-card rounded-full"></div>
-            </div>
+        <footer class="mt-20 pt-8 border-t border-white/5 text-center text-gray-500 text-xs">
+            <p>Made with ❤️ in Pakistan &bull; © 2025 QR Canvas Pro</p>
         </footer>
     </div>
 
     <script>
-        let currentType = 'URL';
+        let qrCode;
         let logoData = null;
         let bgData = null;
-        let history = JSON.parse(localStorage.getItem('qr_history_v4') || '[]');
 
-        const types = {
-            URL: {
-                fields: [{ label: 'Website URL', id: 'url', type: 'text', placeholder: 'https://example.com' }],
-                format: (d) => d.url
-            },
-            Text: {
-                fields: [{ label: 'Plain Text', id: 'text', type: 'textarea', placeholder: 'Enter your message...' }],
-                format: (d) => d.text
-            },
-            Phone: {
-                fields: [{ label: 'Phone Number', id: 'phone', type: 'text', placeholder: '+92 300 1234567' }],
-                format: (d) => `tel:${d.phone}`
-            },
-            Email: {
-                fields: [
-                    { label: 'Recipient Email', id: 'email', type: 'text', placeholder: 'hello@domain.com' },
-                    { label: 'Subject', id: 'subject', type: 'text', placeholder: 'Hello!' },
-                    { label: 'Message', id: 'body', type: 'textarea', placeholder: 'Optional body text...' }
-                ],
-                format: (d) => `mailto:${d.email}?subject=${encodeURIComponent(d.subject || '')}&body=${encodeURIComponent(d.body || '')}`
-            },
-            WiFi: {
-                fields: [
-                    { label: 'Network Name (SSID)', id: 'ssid', type: 'text', placeholder: 'Home WiFi' },
-                    { label: 'Password', id: 'pass', type: 'password', placeholder: '••••••••' },
-                    { label: 'Encryption', id: 'enc', type: 'select', options: ['WPA', 'WEP', 'nopass'] }
-                ],
-                format: (d) => `WIFI:T:${d.enc};S:${d.ssid};P:${d.pass};;`
-            },
-            vCard: {
-                fields: [
-                    { label: 'First Name', id: 'fn', type: 'text', placeholder: 'John' },
-                    { label: 'Last Name', id: 'ln', type: 'text', placeholder: 'Doe' },
-                    { label: 'Organization', id: 'org', type: 'text', placeholder: 'Tech Inc' },
-                    { label: 'Phone', id: 'tel', type: 'text', placeholder: '+123456789' },
-                    { label: 'Email', id: 'mail', type: 'text', placeholder: 'john@doe.com' }
-                ],
-                format: (d) => `BEGIN:VCARD\nVERSION:3.0\nN:${d.ln};${d.fn}\nFN:${d.fn} ${d.ln}\nORG:${d.org}\nTEL:${d.tel}\nEMAIL:${d.mail}\nEND:VCARD`
-            }
+        const config = {
+            width: 1000,
+            height: 1000,
+            data: "https://google.com",
+            image: "",
+            dotsOptions: { color: "#22c55e", type: "extra-rounded" },
+            backgroundOptions: { color: "#ffffff", image: "", imageOptions: { opacity: 1, imageSize: 1, crossOrigin: 'anonymous' } },
+            imageOptions: { crossOrigin: 'anonymous', margin: 10, imageSize: 0.3 },
+            qrOptions: { errorCorrectionLevel: 'Q' }
         };
 
-        function switchTab(type) {
-            currentType = type;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`tab-${type}`).classList.add('active');
-            renderForm();
-            updateQR();
-        }
-
-        function renderForm() {
-            const container = document.getElementById('form-container');
-            container.innerHTML = '';
-            types[currentType].fields.forEach(f => {
-                const group = document.createElement('div');
-                group.className = 'space-y-2';
-                group.innerHTML = `<label class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">${f.label}</label>`;
-                
-                let input;
-                if (f.type === 'textarea') {
-                    input = document.createElement('textarea');
-                    input.className = 'input-dark min-h-[100px] resize-none';
-                } else if (f.type === 'select') {
-                    input = document.createElement('select');
-                    input.className = 'input-dark';
-                    f.options.forEach(opt => {
-                        const o = document.createElement('option');
-                        o.value = opt;
-                        o.innerText = opt;
-                        input.appendChild(o);
-                    });
-                } else {
-                    input = document.createElement('input');
-                    input.type = f.type;
-                    input.className = 'input-dark';
-                }
-                
-                input.id = `input-${f.id}`;
-                input.placeholder = f.placeholder || '';
-                input.oninput = updateQR;
-                if (f.id === 'url') input.value = 'https://google.com';
-                
-                group.appendChild(input);
-                container.appendChild(group);
+        function initQR() {
+            console.log("Initializing QR Engine...");
+            qrCode = new QRCodeStyling({
+                ...config,
+                width: 320,
+                height: 320
             });
+            const wrapper = document.getElementById("canvas-wrapper");
+            wrapper.innerHTML = "";
+            qrCode.append(wrapper);
         }
 
-        async function handleFile(e, type) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (type === 'logo') {
-                    logoData = event.target.result;
-                    document.getElementById('logo-preview-box').innerHTML = `<img src="${logoData}" class="w-full h-full object-contain p-1 rounded-lg">`;
-                } else {
-                    bgData = event.target.result;
-                    document.getElementById('bg-preview-box').innerHTML = `<img src="${bgData}" class="w-full h-full object-cover rounded-lg">`;
-                    document.getElementById('bg-opacity-control').classList.remove('hidden');
-                }
-                updateQR();
+        function updateQR() {
+            const data = document.getElementById("qr-data").value;
+            const dotColor = document.getElementById("dot-color").value;
+            const bgColor = document.getElementById("bg-color").value;
+            const dotStyle = document.getElementById("dot-style").value;
+            const cornerStyle = document.getElementById("corner-style").value;
+            const logoSize = parseFloat(document.getElementById("logo-size").value);
+            const bgOpacity = parseFloat(document.getElementById("bg-opacity").value);
+
+            // Sync Hex Inputs
+            document.getElementById("dot-color-hex").value = dotColor;
+            document.getElementById("bg-color-hex").value = bgColor;
+            document.getElementById("logo-size-val").innerText = Math.round(logoSize * 100) + "%";
+            document.getElementById("bg-opacity-val").innerText = Math.round(bgOpacity * 100) + "%";
+
+            // Forced Scannability Logic
+            let ecLevel = 'Q';
+            if (logoData || bgData) {
+                ecLevel = 'H';
+                document.getElementById("ec-status").innerText = "Highest Error Correction (Level H) enabled for branding.";
+            } else {
+                document.getElementById("ec-status").innerText = "Normal optimization active.";
+            }
+
+            const newOptions = {
+                data: data || " ",
+                image: logoData || "",
+                dotsOptions: { color: dotColor, type: dotStyle },
+                cornersSquareOptions: { color: dotColor, type: cornerStyle },
+                backgroundOptions: { 
+                    color: bgData ? "transparent" : bgColor,
+                    image: bgData || "",
+                    imageOptions: {
+                        opacity: bgOpacity,
+                        imageSize: 1,
+                        crossOrigin: 'anonymous'
+                    }
+                },
+                imageOptions: { 
+                    imageSize: logoSize,
+                    margin: 8,
+                    crossOrigin: 'anonymous'
+                },
+                qrOptions: { errorCorrectionLevel: ecLevel }
             };
-            reader.readAsDataURL(file);
+
+            qrCode.update(newOptions);
+            console.log("QR Updated with Data:", data);
         }
 
-        function getFormData() {
-            const data = {};
-            types[currentType].fields.forEach(f => {
-                data[f.id] = document.getElementById(`input-${f.id}`).value;
-            });
-            return types[currentType].format(data);
-        }
-
-        async function updateQR() {
-            const text = getFormData() || ' ';
-            const fgColor = document.getElementById('fgColor').value;
-            const bgOpacity = parseFloat(document.getElementById('bgOpacity').value);
-            const dotScale = parseFloat(document.getElementById('dotScale').value);
-            
-            document.getElementById('opacity-val').innerText = `${Math.round(bgOpacity * 100)}%`;
-            
-            const container = document.getElementById('qr-canvas-container');
-            container.innerHTML = '<div class="animate-pulse text-slate-400 text-xs font-bold py-12 uppercase tracking-widest">Rendering...</div>';
-
-            try {
-                const config = {
-                    text: text,
-                    size: 800,
-                    margin: 20,
-                    colorDark: fgColor,
-                    colorLight: "#ffffff",
-                    backgroundImage: bgData || undefined,
-                    backgroundImageAlpha: bgOpacity,
-                    autoColor: false,
-                    dotScale: dotScale,
-                    whiteMargin: true,
-                    logoImage: logoData || undefined,
-                    logoScale: 0.3,
-                    logoMargin: 6,
-                    logoCornerRadius: 12,
-                    correctLevel: (logoData || bgData) ? 2 : 1 // 2 = Q (25%), 3 = H (30%)
-                };
-
-                const dataUrl = await new AwesomeQR(config).create();
-                container.innerHTML = `<img src="${dataUrl}" class="rounded-[2.5rem] shadow-2xl" id="final-qr-img">`;
-            } catch (err) {
-                console.error("QR Generation failed", err);
-                container.innerHTML = '<div class="text-red-500 text-xs py-12">Failed to generate. Check data format.</div>';
-            }
-        }
-
-        function downloadQR(format) {
-            const img = document.getElementById('final-qr-img');
-            if (!img) return;
-            
-            const link = document.createElement('a');
-            link.href = img.src;
-            link.download = `qr-canvas-${Date.now()}.${format}`;
-            link.click();
-            
-            saveToHistory();
-        }
-
-        function saveToHistory() {
-            const text = getFormData();
-            const newItem = { id: Date.now(), text, type: currentType, time: new Date().toLocaleTimeString() };
-            history = [newItem, ...history.filter(h => h.text !== text)].slice(0, 6);
-            localStorage.setItem('qr_history_v4', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
-            if (history.length === 0) {
-                list.innerHTML = '<p class="text-xs text-slate-600 italic">No recent history yet...</p>';
-                return;
-            }
-            history.forEach(h => {
-                const item = document.createElement('div');
-                item.className = 'p-3 bg-white/5 rounded-xl flex justify-between items-center group cursor-pointer hover:bg-white/10 transition-all';
-                item.innerHTML = `
-                    <div class="overflow-hidden">
-                        <p class="text-[10px] font-bold text-slate-300 truncate">${h.text}</p>
-                        <p class="text-[8px] text-slate-500 uppercase">${h.type} • ${h.time}</p>
-                    </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-600 group-hover:text-green-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                `;
-                item.onclick = () => {
-                    switchTab(h.type);
-                    // This is a simple implementation; ideally we'd restore all fields
-                    const primaryField = types[h.type].fields[0].id;
-                    document.getElementById(`input-${primaryField}`).value = h.text.replace('tel:', '').replace('mailto:', '');
+        // File Handlers
+        document.getElementById("logo-upload").addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    logoData = event.target.result;
+                    document.getElementById("logo-name").innerText = file.name;
+                    document.getElementById("clear-logo").classList.remove("hidden");
                     updateQR();
                 };
-                list.appendChild(item);
-            });
-        }
+                reader.readAsDataURL(file);
+            }
+        });
 
-        function shareWhatsApp() {
-            const text = getFormData();
-            window.open(`https://wa.me/?text=${encodeURIComponent('Check out this QR Code: ' + text)}`, '_blank');
-        }
+        document.getElementById("bg-upload").addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    bgData = event.target.result;
+                    document.getElementById("bg-name").innerText = file.name;
+                    document.getElementById("clear-bg").classList.remove("hidden");
+                    updateQR();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
-        function copyData() {
-            const text = getFormData();
-            navigator.clipboard.writeText(text);
-            const btn = document.getElementById('copy-btn');
-            const original = btn.innerText;
-            btn.innerText = 'Copied!';
-            btn.classList.add('text-green-500');
-            setTimeout(() => {
-                btn.innerText = original;
-                btn.classList.remove('text-green-500');
-            }, 2000);
-        }
+        document.getElementById("clear-logo").addEventListener("click", () => {
+            logoData = null;
+            document.getElementById("logo-upload").value = "";
+            document.getElementById("logo-name").innerText = "Upload Logo";
+            document.getElementById("clear-logo").classList.add("hidden");
+            updateQR();
+        });
 
-        // Initialize
-        switchTab('URL');
-        renderHistory();
-        console.log("QR Canvas Pro Initialized with Awesome-qr.js");
+        document.getElementById("clear-bg").addEventListener("click", () => {
+            bgData = null;
+            document.getElementById("bg-upload").value = "";
+            document.getElementById("bg-name").innerText = "Upload Background";
+            document.getElementById("clear-bg").classList.add("hidden");
+            updateQR();
+        });
+
+        // Event Listeners for Live Preview
+        ["qr-data", "dot-color", "bg-color", "dot-style", "corner-style", "logo-size", "bg-opacity"].forEach(id => {
+            document.getElementById(id).addEventListener("input", updateQR);
+        });
+
+        // Download Functions
+        document.getElementById("download-png").addEventListener("click", () => {
+            qrCode.download({ name: "qr-pro-" + Date.now(), extension: "png", width: 1024, height: 1024 });
+        });
+
+        document.getElementById("download-svg").addEventListener("click", () => {
+            qrCode.download({ name: "qr-pro-" + Date.now(), extension: "svg" });
+        });
+
+        document.getElementById("share-wa").addEventListener("click", () => {
+            const data = document.getElementById("qr-data").value;
+            window.open(`https://wa.me/?text=${encodeURIComponent("Check out my QR: " + data)}`, "_blank");
+        });
+
+        // Init on load
+        window.onload = initQR;
     </script>
 </body>
 </html>
