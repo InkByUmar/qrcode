@@ -12,6 +12,8 @@ export interface QRState {
   data: string;
   logo: string | null;
   logoSize: number;
+  backgroundImage: string | null;
+  backgroundOpacity: number;
   fgColor: string;
   bgColor: string;
   size: number;

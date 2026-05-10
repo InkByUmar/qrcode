@@ -14,7 +14,8 @@ import {
   Contact, 
   Link2,
   Copy,
-  CheckCircle2
+  CheckCircle2,
+  Phone
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -55,7 +56,16 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
           type: state.cornerStyle,
           color: state.fgColor
         },
-        backgroundOptions: { color: state.bgColor },
+        backgroundOptions: { 
+          color: state.backgroundImage ? 'transparent' : state.bgColor,
+          image: state.backgroundImage || '',
+          imageOptions: {
+            crossOrigin: 'anonymous',
+            margin: 0,
+            imageSize: 1,
+            opacity: state.backgroundOpacity
+          }
+        },
         imageOptions: { 
           crossOrigin: 'anonymous', 
           margin: 8, 
@@ -119,7 +129,7 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
           <CardTitle className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Professional Preview</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6">
-          <div className="relative group p-6 bg-white rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 transition-all hover:scale-[1.01] min-h-[368px] flex items-center justify-center">
+          <div className="relative group p-6 bg-white rounded-[2.5rem] shadow-2xl ring-1 ring-white/10 transition-all hover:scale-[1.01] min-h-[368px] flex items-center justify-center overflow-hidden">
             {isGenerating && (
               <div className="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] rounded-[2.5rem] flex items-center justify-center">
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
@@ -185,7 +195,7 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
                 <div key={item.id} className="p-4 hover:bg-white/5 transition-colors group flex items-center justify-between">
                   <div className="flex items-center gap-3 overflow-hidden">
                     <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                       {item.type === 'WiFi' ? <Wifi className="w-4 h-4" /> : item.type === 'vCard' ? <Contact className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
+                       {item.type === 'WiFi' ? <Wifi className="w-4 h-4" /> : item.type === 'vCard' ? <Contact className="w-4 h-4" /> : item.type === 'Phone' ? <Phone className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
                     </div>
                     <div className="overflow-hidden">
                       <p className="text-[11px] font-bold text-white/90 truncate">{item.data}</p>

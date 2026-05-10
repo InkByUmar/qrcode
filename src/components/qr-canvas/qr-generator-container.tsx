@@ -5,13 +5,15 @@ import { QRState, QRHistoryItem } from '@/lib/qr-types';
 import { QrFormSection } from './qr-form-section';
 import { QrPreviewSection } from './qr-preview-section';
 
-const STORAGE_KEY = 'qr_canvas_history_v2';
+const STORAGE_KEY = 'qr_canvas_history_v3';
 
 export function QrGeneratorContainer() {
   const [state, setState] = useState<QRState>({
     data: 'https://google.com',
     logo: null,
     logoSize: 0.3,
+    backgroundImage: null,
+    backgroundOpacity: 1.0,
     fgColor: '#26EA56',
     bgColor: '#ffffff',
     size: 1024,
@@ -67,14 +69,15 @@ export function QrGeneratorContainer() {
       } else if (newState.type === 'Email') {
         newState.data = `mailto:${newState.email.address}?subject=${encodeURIComponent(newState.email.subject)}&body=${encodeURIComponent(newState.email.body)}`;
       } else if (newState.type === 'Phone') {
-        const cleanPhone = newState.data.replace('tel:', '').trim();
-        newState.data = cleanPhone ? `tel:${cleanPhone}` : '';
+        // Simple tel: string, avoid double tel:tel:
+        const raw = newState.data.startsWith('tel:') ? newState.data : `tel:${newState.data}`;
+        newState.data = raw;
       } else if (newState.type === 'vCard') {
         newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
       }
 
-      // Logic: If logo is added, force Level H Error Correction
-      if (updates.logo && newState.errorLevel !== 'H') {
+      // Reliability logic: If logo or background is added, force Level H Error Correction
+      if ((newState.logo || newState.backgroundImage) && newState.errorLevel !== 'H') {
         newState.errorLevel = 'H';
       }
       
@@ -88,7 +91,7 @@ export function QrGeneratorContainer() {
       data,
       type,
       timestamp: Date.now(),
-      preview: '' // Preview handled by history UI if needed
+      preview: '' 
     };
     const updatedHistory = [newItem, ...history.filter(h => h.data !== data)].slice(0, 6);
     setHistory(updatedHistory);

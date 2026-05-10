@@ -1,8 +1,8 @@
 "use client"
 
 import React from 'react';
-import { QRState, QRErrorCorrectionLevel } from '@/lib/qr-types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { QRState } from '@/lib/qr-types';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,7 +23,8 @@ import {
   Palette, 
   Smartphone, 
   Shield,
-  LayoutGrid
+  LayoutGrid,
+  Image as ImageIcon
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -37,15 +38,15 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
   const { toast } = useToast();
   const [isRefining, setIsRefining] = React.useState(false);
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'backgroundImage') => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        toast({ variant: "destructive", title: "File too large", description: "Logo must be under 2MB" });
+        toast({ variant: "destructive", title: "File too large", description: "Image must be under 2MB" });
         return;
       }
       const reader = new FileReader();
-      reader.onloadend = () => updateState({ logo: reader.result as string });
+      reader.onloadend = () => updateState({ [field]: reader.result as string });
       reader.readAsDataURL(file);
     }
   };
@@ -66,17 +67,17 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white/[0.02] backdrop-blur-md border-white/10 shadow-2xl">
+      <Card className="bg-white/[0.02] backdrop-blur-md border-white/10 shadow-2xl overflow-hidden">
         <CardHeader className="pb-4">
           <CardTitle className="text-xl font-bold flex items-center gap-3">
             <span className="p-2.5 bg-primary/15 rounded-xl text-primary ring-1 ring-primary/20">
               <LayoutGrid className="w-5 h-5" />
             </span>
-            Step 1: Select Type & Enter Data
+            Step 1: Select Type & Content
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs value={state.type} onValueChange={(val) => updateState({ type: val as any, data: '' })} className="w-full">
+          <Tabs value={state.type} onValueChange={(val) => updateState({ type: val as any })} className="w-full">
             <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent p-0 mb-8">
               {[
                 { id: 'URL', icon: Link2, label: 'URL' },
@@ -97,7 +98,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
               ))}
             </TabsList>
 
-            <div className="space-y-6 min-h-[200px]">
+            <div className="space-y-6 min-h-[180px]">
               {state.type === 'WiFi' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                   <div className="space-y-2">
@@ -111,7 +112,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                   <div className="space-y-2 sm:col-span-2">
                     <Label>Encryption Type</Label>
                     <Select value={state.wifi.encryption} onValueChange={val => updateState({ wifi: { ...state.wifi, encryption: val as any } })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="bg-white/5"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="WPA">WPA/WPA2 (Recommended)</SelectItem>
                         <SelectItem value="WEP">WEP</SelectItem>
@@ -187,7 +188,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                   <Sparkles className={`w-4 h-4 mr-2 ${isRefining ? 'animate-spin' : 'group-hover:rotate-12'}`} />
                   {isRefining ? 'AI Optimizing...' : 'Optimize Content with AI'}
                 </Button>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Auto-Saving...</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Real-time sync</p>
               </div>
             </div>
           </Tabs>
@@ -239,7 +240,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                     onChange={(e) => updateState({ fgColor: e.target.value })}
                     className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer rounded-lg overflow-hidden"
                   />
-                  <Input value={state.fgColor} onChange={(e) => updateState({ fgColor: e.target.value })} className="flex-1 font-mono text-xs h-9 uppercase" />
+                  <Input value={state.fgColor} onChange={(e) => updateState({ fgColor: e.target.value })} className="flex-1 font-mono text-xs h-9 uppercase bg-white/5" />
                 </div>
               </div>
               <div className="space-y-3">
@@ -251,7 +252,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                     onChange={(e) => updateState({ bgColor: e.target.value })}
                     className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer rounded-lg overflow-hidden"
                   />
-                  <Input value={state.bgColor} onChange={(e) => updateState({ bgColor: e.target.value })} className="flex-1 font-mono text-xs h-9 uppercase" />
+                  <Input value={state.bgColor} onChange={(e) => updateState({ bgColor: e.target.value })} className="flex-1 font-mono text-xs h-9 uppercase bg-white/5" />
                 </div>
               </div>
             </div>
@@ -261,11 +262,12 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
         <Card className="bg-white/[0.02] border-white/10 shadow-xl">
           <CardHeader className="py-4 border-b border-white/5">
              <CardTitle className="text-sm font-black tracking-widest uppercase flex items-center gap-2">
-              <Smartphone className="w-4 h-4 text-primary" /> Logo & Reliability
+              <Shield className="w-4 h-4 text-primary" /> Premium Branding
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
             <div className="space-y-4">
+              {/* Brand Logo Upload */}
               <div className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-dashed border-white/10 group hover:border-primary/30 transition-colors">
                 <div className="relative">
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden bg-black/40 ring-1 ring-white/10">
@@ -286,12 +288,54 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 </div>
                 <div className="flex-1">
                   <Label htmlFor="logo-upload" className="cursor-pointer block text-xs font-bold text-white/90 hover:text-primary transition-colors">
-                    {state.logo ? 'Change Brand Logo' : 'Upload Center Logo'}
+                    {state.logo ? 'Change Center Logo' : 'Upload Center Logo'}
                   </Label>
                   <p className="text-[9px] text-muted-foreground mt-1 uppercase">PNG/JPG under 2MB</p>
-                  <input id="logo-upload" type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                  <input id="logo-upload" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'logo')} className="hidden" />
                 </div>
               </div>
+
+              {/* Background Image Upload */}
+              <div className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-dashed border-white/10 group hover:border-primary/30 transition-colors">
+                <div className="relative">
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden bg-black/40 ring-1 ring-white/10">
+                    {state.backgroundImage ? (
+                      <img src={state.backgroundImage} alt="BG" className="w-full h-full object-cover" />
+                    ) : (
+                      <ImageIcon className="w-6 h-6 text-muted-foreground/50 group-hover:text-primary transition-colors" />
+                    )}
+                  </div>
+                  {state.backgroundImage && (
+                    <button 
+                      onClick={() => updateState({ backgroundImage: null })}
+                      className="absolute -top-2 -right-2 p-1.5 bg-destructive text-destructive-foreground rounded-full shadow-xl hover:scale-110 transition-transform"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="bg-upload" className="cursor-pointer block text-xs font-bold text-white/90 hover:text-primary transition-colors">
+                    {state.backgroundImage ? 'Change Background' : 'Upload Background Image'}
+                  </Label>
+                  <p className="text-[9px] text-muted-foreground mt-1 uppercase">Full QR Area Cover</p>
+                  <input id="bg-upload" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'backgroundImage')} className="hidden" />
+                </div>
+              </div>
+
+              {state.backgroundImage && (
+                <div className="space-y-3 animate-in fade-in duration-300">
+                  <div className="flex justify-between items-center">
+                    <Label className="text-[10px] uppercase font-bold">BG Opacity</Label>
+                    <span className="text-[10px] font-mono text-primary">{(state.backgroundOpacity * 100).toFixed(0)}%</span>
+                  </div>
+                  <Slider 
+                    value={[state.backgroundOpacity * 100]} 
+                    min={30} max={100} step={1} 
+                    onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} 
+                  />
+                </div>
+              )}
 
               {state.logo && (
                 <div className="space-y-3 animate-in fade-in duration-300">
@@ -313,7 +357,9 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 <Shield className="w-4 h-4 text-primary" />
                 <div>
                    <p className="text-[10px] text-primary font-black uppercase tracking-tighter">Enterprise Scannability</p>
-                   <p className="text-[9px] text-primary/70">Level {state.errorLevel} Error Correction Active</p>
+                   <p className="text-[9px] text-primary/70">
+                    {(state.logo || state.backgroundImage) ? 'Level H Error Correction Active' : `Level ${state.errorLevel} Optimization`}
+                   </p>
                 </div>
               </div>
             </div>
