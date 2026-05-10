@@ -1,6 +1,8 @@
+
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { Toaster } from '@/components/ui/toaster';
 import { QrCode, Shield, Zap, Palette, Layers, Smartphone } from 'lucide-react';
+import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 
 export default function Home() {
   return (
@@ -108,7 +110,7 @@ export default function Home() {
             </div>
 
             <p className="text-sm text-muted-foreground/60">
-              &copy; {new Date().getFullYear()} QR Canvas.
+              &copy; <CopyrightYear /> QR Canvas.
             </p>
           </div>
           
