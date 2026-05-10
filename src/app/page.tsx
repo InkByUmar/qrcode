@@ -1,11 +1,32 @@
-
 "use client"
 
 import React from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { Toaster } from '@/components/ui/toaster';
-import { QrCode, Shield, Zap, Palette, Layers, Smartphone, Sparkles, Globe, ArrowRight, CheckCircle2, Star } from 'lucide-react';
+import { 
+  QrCode, 
+  Shield, 
+  Zap, 
+  Palette, 
+  Layers, 
+  Smartphone, 
+  Sparkles, 
+  Globe, 
+  ArrowRight, 
+  CheckCircle2, 
+  Star,
+  Download,
+  FileJson,
+  LayoutGrid,
+  HelpCircle
+} from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function Home() {
   return (
@@ -35,8 +56,8 @@ export default function Home() {
           </div>
           
           <nav className="hidden lg:flex items-center gap-12">
-            {['Generator', 'Features', 'API', 'Templates'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-300 relative group">
+            {['Generator', 'Bulk Mode', 'Features', 'FAQ'].map((item) => (
+              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-300 relative group">
                 {item}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
               </a>
@@ -45,36 +66,35 @@ export default function Home() {
 
           <div className="flex items-center gap-4">
              <button className="text-[10px] font-black uppercase tracking-widest px-8 py-4 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-              Join Pro
+              Go Pro
              </button>
           </div>
         </div>
       </header>
 
-      {/* HERO SECTION */}
+      {/* HERO SECTION - SEO H1 */}
       <section className="container mx-auto px-6 py-24 md:py-32 relative">
         <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
-        <div className="absolute bottom-40 right-10 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
-
+        
         <div className="max-w-5xl mx-auto text-center mb-24 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 animate-in fade-in zoom-in duration-1000 border-primary/20">
             <Sparkles className="w-3.5 h-3.5 fill-primary/20" />
             <span>THE NEXT GENERATION OF QR BRANDING</span>
           </div>
-          <h1 className="text-6xl md:text-[92px] font-headline font-black mb-10 leading-[1] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/30">
-            Design Codes That <br />
-            <span className="text-primary italic underline decoration-white/10 underline-offset-8">Demand Attention</span>
+          <h1 className="text-5xl md:text-[80px] font-headline font-black mb-10 leading-[1] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/30">
+            Free QR Code Generator <br />
+            <span className="text-primary italic underline decoration-white/10 underline-offset-8">with Logo & Bulk Support</span>
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            The world's most advanced <span className="text-white font-medium">Free QR Code Generator</span> with Logo and Background support. Now with smart templates and AI-powered data optimization.
+            The world's most advanced <span className="text-white font-medium">Bulk QR Maker</span>. Create professional codes with brand logos, custom backgrounds, and batch processing for business marketing.
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-10">
             <div className="flex items-center gap-2 text-xs font-bold text-white/40 uppercase tracking-widest">
-              <CheckCircle2 className="w-4 h-4 text-primary" /> No Account Needed
+              <CheckCircle2 className="w-4 h-4 text-primary" /> Instant Bulk Mode
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-white/40 uppercase tracking-widest">
-              <CheckCircle2 className="w-4 h-4 text-primary" /> WhatsApp Support
+              <CheckCircle2 className="w-4 h-4 text-primary" /> Branded Templates
             </div>
             <div className="flex items-center gap-2 text-xs font-bold text-white/40 uppercase tracking-widest">
               <CheckCircle2 className="w-4 h-4 text-primary" /> Lifetime Free
@@ -87,54 +107,147 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SOCIAL PROOF */}
-      <div className="container mx-auto px-6 py-20 border-y border-white/[0.05] bg-white/[0.01]">
-        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale contrast-125">
-          {['FORBES', 'TECHCRUNCH', 'THE VERGE', 'WIRED', 'GIZMODO'].map(logo => (
-            <span key={logo} className="text-2xl font-black tracking-tighter">{logo}</span>
-          ))}
+      {/* BULK QR EXPLANATION - SEO H2 */}
+      <section id="bulk-mode" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="space-y-8">
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20">
+              <Layers className="w-8 h-8" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-headline font-bold text-white leading-tight">
+              Powerful Batch Processing for <br/><span className="text-primary">Enterprise QR Management</span>
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Why generate codes one by one? Our <strong>Bulk QR Code Generator</strong> allows you to paste a list of URLs or text data and generate hundreds of branded assets in seconds.
+            </p>
+            <ul className="space-y-4">
+              {[
+                "Branded style injection across entire batches",
+                "High-resolution PNG export in a single ZIP file",
+                "Auto-naming assets based on input data",
+                "Dynamic scannability checks for every code"
+              ].map((item, i) => (
+                <li key={i} className="flex items-center gap-3 text-sm font-medium text-white/80">
+                  <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <button className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+              Try Bulk Mode Now <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="relative">
+             <div className="glass-card p-10 rounded-[3rem] border-white/10 shadow-[0_50px_100px_-20px_rgba(16,185,129,0.15)] animate-float">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-3 h-3 rounded-full bg-red-500/50" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/50" />
+                    <div className="w-3 h-3 rounded-full bg-green-500/50" />
+                  </div>
+                  <div className="h-4 w-3/4 bg-white/5 rounded-full" />
+                  <div className="h-4 w-1/2 bg-white/5 rounded-full" />
+                  <div className="grid grid-cols-3 gap-4 py-8">
+                    {[1,2,3,4,5,6].map(i => (
+                      <div key={i} className="aspect-square bg-primary/10 rounded-xl border border-primary/20 flex items-center justify-center">
+                        <QrCode className="w-6 h-6 text-primary/40" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="h-12 w-full bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-black text-xs tracking-widest">
+                    BATCH EXPORTING...
+                  </div>
+                </div>
+             </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* FEATURES SECTION */}
-      <section id="features" className="container mx-auto px-6 py-32 relative overflow-hidden">
+      {/* FEATURES SECTION - SEO H2 */}
+      <section id="features" className="container mx-auto px-6 py-32 relative overflow-hidden bg-white/[0.01]">
         <div className="text-center mb-24">
-          <h2 className="text-4xl md:text-5xl font-headline font-bold mb-6">Built for Creators & Brands</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">Every feature you need to create custom QR codes with background images and brand logos in one beautiful interface.</p>
+          <h2 className="text-4xl md:text-5xl font-headline font-bold mb-6 text-white">Why Choose Our Professional QR Maker?</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
+            We offer enterprise-grade customization tools for free. From <span className="text-white font-bold">QR codes with background images</span> to custom branding with logos.
+          </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           <FeatureCard 
             icon={<Zap className="w-6 h-6 text-primary" />}
-            title="Instant Live Engine"
-            description="Our real-time rendering engine updates your design as you type. Zero lag, 100% visual feedback."
+            title="Real-Time Visual Engine"
+            description="Our live rendering engine updates your design as you type. Get instant feedback on colors, shapes, and logo placement."
           />
           <FeatureCard 
             icon={<Palette className="w-6 h-6 text-primary" />}
-            title="Premium Branding"
-            description="Upload center logos and full-canvas background images with precision opacity controls."
+            title="Premium Visual Branding"
+            description="Upload center logos and full-canvas background images with precision opacity controls for a truly unique brand asset."
           />
           <FeatureCard 
             icon={<Shield className="w-6 h-6 text-primary" />}
-            title="High Reliability"
-            description="Automatic Level H Error Correction forces your codes to scan even with heavy visual branding."
+            title="Reliable Error Correction"
+            description="Automatic Level H (High Density) Error Correction ensures your branded codes scan perfectly even with heavy visuals."
           />
           <FeatureCard 
             icon={<Globe className="w-6 h-6 text-primary" />}
-            title="WhatsApp Ready"
-            description="Generate dedicated wa.me links with custom messages. Perfect for business automation."
+            title="Multilingual & Global"
+            description="Supports all global characters and specific data types like WiFi, WhatsApp, vCard, and Payment Links."
           />
           <FeatureCard 
-            icon={<Layers className="w-6 h-6 text-primary" />}
-            title="Vector Fidelity"
-            description="Export in pixel-perfect SVG or high-resolution 1024px PNG for billboards and print media."
+            icon={<Download className="w-6 h-6 text-primary" />}
+            title="High-Resolution Exports"
+            description="Download in print-ready SVG vector format or high-resolution 1024px PNG for billboards and business cards."
           />
           <FeatureCard 
-            icon={<Smartphone className="w-6 h-6 text-primary" />}
-            title="Omni-Scanner Support"
-            description="Rigorously tested to work across iOS 15+, Android 12+, and all legacy scanner hardware."
+            icon={<LayoutGrid className="w-6 h-6 text-primary" />}
+            title="Smart Templates"
+            description="Instantly apply pre-configured templates for Restaurants, WiFi, Instagram, and more to save time."
           />
         </div>
+      </section>
+
+      {/* FAQ SECTION - SEO H2 & SCHEMA */}
+      <section id="faq" className="container mx-auto px-6 py-32 max-w-4xl">
+        <div className="text-center mb-16">
+          <HelpCircle className="w-12 h-12 text-primary mx-auto mb-6" />
+          <h2 className="text-4xl font-headline font-bold text-white">Frequently Asked Questions</h2>
+          <p className="text-muted-foreground mt-4 italic">Everything you need to know about our QR engine</p>
+        </div>
+        
+        <Accordion type="single" collapsible className="space-y-4">
+          <AccordionItem value="item-1" className="glass-card border-white/5 rounded-2xl px-6">
+            <AccordionTrigger className="text-left text-white font-bold hover:text-primary transition-all">Is this QR code generator truly free?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed">
+              Yes, QR Canvas is 100% free for both personal and commercial use. You can generate unlimited single or bulk QR codes with no account required and no hidden fees.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2" className="glass-card border-white/5 rounded-2xl px-6">
+            <AccordionTrigger className="text-left text-white font-bold hover:text-primary">How do I add my own logo to a QR code?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed">
+              Simply go to the "Brand Identity" section in our generator, upload your image file (PNG, JPG, or SVG), and use the scaling slider to adjust the center logo size.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3" className="glass-card border-white/5 rounded-2xl px-6">
+            <AccordionTrigger className="text-left text-white font-bold hover:text-primary">Can I use a background image for my QR code?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed">
+              Absolutely! Our tool allows you to upload any image as a full-canvas background. We recommend using the "Opacity" slider to ensure there is enough contrast for scanners to read the code.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-4" className="glass-card border-white/5 rounded-2xl px-6">
+            <AccordionTrigger className="text-left text-white font-bold hover:text-primary">What is Bulk QR Mode?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed">
+              Bulk Mode allows you to generate multiple QR codes at once. Just paste a list of URLs or text strings, and the engine will apply your branding to all of them and bundle them into a ZIP file.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-5" className="glass-card border-white/5 rounded-2xl px-6">
+            <AccordionTrigger className="text-left text-white font-bold hover:text-primary">Do these QR codes expire?</AccordionTrigger>
+            <AccordionContent className="text-muted-foreground leading-relaxed">
+              No, our QR codes are static, meaning the data is encoded directly into the pattern. They will never expire and will work as long as the underlying link or data is active.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
 
       {/* FOOTER */}
@@ -149,7 +262,7 @@ export default function Home() {
                 <span className="font-headline font-bold text-2xl tracking-tighter text-white">QR Canvas</span>
               </div>
               <p className="text-sm text-muted-foreground/60 leading-relaxed font-light">
-                Setting the global standard for <span className="text-white">Free QR Code Generators</span>. Built with cutting-edge technology for creators, agencies, and enterprise brands.
+                Setting the global standard for <span className="text-white">Professional QR Code Generators</span>. Built with cutting-edge technology for creators, marketing agencies, and enterprise brands.
               </p>
               <div className="flex gap-4">
                 {[1,2,3].map(i => (
@@ -161,8 +274,8 @@ export default function Home() {
             </div>
             
             <div className="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-12">
-               <FooterCol title="Product" links={['QR Generator', 'Logo Support', 'Background Engine', 'History Tool']} />
-               <FooterCol title="Resources" links={['Guidebook', 'API Reference', 'Brand Assets', 'Security Whitepaper']} />
+               <FooterCol title="Solutions" links={['Bulk Generator', 'Branded Codes', 'Logo Engine', 'Batch Export']} />
+               <FooterCol title="Resources" links={['SEO Guide', 'API Reference', 'Brand Assets', 'Security Docs']} />
                <FooterCol title="Legal" links={['Privacy Policy', 'Terms of Use', 'Cookie Policy', 'Disclaimer']} />
             </div>
           </div>
@@ -172,9 +285,9 @@ export default function Home() {
               &copy; <CopyrightYear /> QR CANVAS PRO SUITE. ALL RIGHTS RESERVED.
             </p>
             <div className="flex items-center gap-6 text-muted-foreground/40 text-[10px] font-black uppercase tracking-widest">
-              <span>Made with ❤️ for the Global Brand Community</span>
+              <span>Optimized for Global Brand Excellence</span>
               <div className="w-1.5 h-1.5 rounded-full bg-primary/20" />
-              <span>v5.0.0 Enterprise</span>
+              <span>v6.2.0 Enterprise SEO Edition</span>
             </div>
           </div>
         </div>
