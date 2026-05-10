@@ -31,7 +31,8 @@ import {
   Layers,
   Star,
   Youtube,
-  CreditCard
+  CreditCard,
+  RotateCcw
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -99,14 +100,45 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
     toast({ title: "Template Applied", description: `Loading ${template.label} preset.` });
   };
 
+  const handleReset = () => {
+    updateState({
+      data: 'https://google.com',
+      logo: null,
+      logoSize: 0.3,
+      backgroundImage: null,
+      backgroundOpacity: 1.0,
+      fgColor: '#26EA56',
+      bgColor: '#ffffff',
+      type: 'URL',
+      dotStyle: 'extra-rounded',
+      cornerStyle: 'rounded',
+      wifi: { ssid: '', password: '', encryption: 'WPA' },
+      email: { address: '', subject: '', body: '' },
+      whatsapp: { phone: '', message: '' },
+      vCard: { firstName: '', lastName: '', mobile: '', email: '', organization: '', jobTitle: '', website: '' }
+    });
+    toast({ title: "Generator Reset", description: "All settings restored to default." });
+  };
+
   return (
     <div className="space-y-10">
       {/* TEMPLATE SECTION */}
       <Card className="glass-card border-white/10 overflow-hidden">
         <CardHeader className="py-6 border-b border-white/[0.05]">
-          <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
-            <Star className="w-5 h-5 text-primary" /> Premium Ready Templates
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
+              <Star className="w-5 h-5 text-primary" /> Premium Ready Templates
+            </CardTitle>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleReset}
+              className="h-8 text-[10px] uppercase font-black tracking-[0.2em] text-muted-foreground hover:text-white hover:bg-white/5 transition-all border border-white/10 rounded-xl"
+            >
+              <RotateCcw className="w-3.5 h-3.5 mr-2" />
+              Reset All
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="pt-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4">
