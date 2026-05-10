@@ -78,10 +78,11 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
     if (!state.data) return;
     setIsRefining(true);
     try {
-      const refined = await qrContentRefiner(state.data);
+      const refined = await qrContentRefiner({ text: state.data });
       updateState({ data: refined });
       toast({ title: "AI Polish Complete", description: "Your content has been refined for maximum impact." });
     } catch (err) {
+      console.error(err);
       toast({ variant: "destructive", title: "AI Service Busy", description: "Try again in a moment." });
     } finally {
       setIsRefining(false);

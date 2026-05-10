@@ -10,14 +10,12 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const QrContentRefinerInputSchema = z
-  .string()
-  .describe('The text content to be refined for a QR code.');
+const QrContentRefinerInputSchema = z.object({
+  text: z.string().describe('The text content to be refined for a QR code.'),
+});
 export type QrContentRefinerInput = z.infer<typeof QrContentRefinerInputSchema>;
 
-const QrContentRefinerOutputSchema = z
-  .string()
-  .describe('The refined text content suitable for a QR code.');
+const QrContentRefinerOutputSchema = z.string().describe('The refined text content suitable for a QR code.');
 export type QrContentRefinerOutput = z.infer<typeof QrContentRefinerOutputSchema>;
 
 export async function qrContentRefiner(input: QrContentRefinerInput): Promise<QrContentRefinerOutput> {
@@ -31,7 +29,7 @@ const qrContentRefinerPrompt = ai.definePrompt({
   prompt: `You are an AI assistant specialized in creating concise and impactful text, particularly for QR code content. Your goal is to take the provided text and refine it to be as clear, brief, and effective as possible, suitable for a QR code where every character counts. Focus on enhancing clarity and call-to-action effectiveness.
 
 Here is the text to refine:
-"""{{{input}}}"""
+"""{{{text}}}"""
 
 Provide only the refined text, without any additional commentary or explanation.`,
 });
