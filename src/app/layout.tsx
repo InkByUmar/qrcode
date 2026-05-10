@@ -1,12 +1,11 @@
-
 import type {Metadata} from 'next';
 import './globals.css';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'QR Canvas - Professional Free QR Code Generator with Logo',
-  description: 'Create beautiful, custom QR codes for URLs, WiFi, Business Cards (vCard), and more. Real-time preview, high-quality SVG/PNG downloads, and AI-powered content refining. 100% free.',
-  keywords: 'qr code generator, free qr code, qr code with logo, vcard qr code, wifi qr code, custom qr design',
+  title: 'QR Canvas - Premium AI-Powered QR Generator',
+  description: 'The world\'s most advanced professional QR code generator. Create custom QR codes with logos, background images, and premium styling. High-resolution exports for print and web.',
+  keywords: 'qr code generator, professional qr, qr with logo, custom qr design, wifi qr, vcard qr, sasa qr tool',
 };
 
 export default function RootLayout({
@@ -19,13 +18,13 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
         <Script 
           src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js" 
           strategy="beforeInteractive"
         />
       </head>
-      <body className="font-body bg-background text-foreground antialiased">{children}</body>
+      <body className="font-body bg-[#060907] text-foreground antialiased selection:bg-primary selection:text-primary-foreground">{children}</body>
     </html>
   );
 }

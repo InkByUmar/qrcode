@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 140 30% 3%;
+    --background: 144 30% 2%;
     --foreground: 140 10% 98%;
-    --card: 140 25% 6%;
+    --card: 144 25% 4%;
     --card-foreground: 140 10% 98%;
-    --popover: 140 25% 6%;
+    --popover: 144 25% 4%;
     --popover-foreground: 140 10% 98%;
-    --primary: 142 76% 56%;
-    --primary-foreground: 140 30% 5%;
-    --secondary: 140 20% 12%;
+    --primary: 150 100% 50%;
+    --primary-foreground: 144 30% 2%;
+    --secondary: 144 20% 8%;
     --secondary-foreground: 140 10% 98%;
-    --muted: 140 20% 12%;
+    --muted: 144 20% 8%;
     --muted-foreground: 140 10% 65%;
-    --accent: 142 76% 56%;
-    --accent-foreground: 140 30% 5%;
+    --accent: 150 100% 50%;
+    --accent-foreground: 144 30% 2%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 140 20% 15%;
-    --input: 140 20% 15%;
-    --ring: 142 76% 56%;
-    --radius: 1rem;
+    --border: 144 20% 12%;
+    --input: 144 20% 12%;
+    --ring: 150 100% 50%;
+    --radius: 1.25rem;
   }
 }
 
@@ -32,20 +32,35 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground selection:bg-primary selection:text-primary-foreground;
+    @apply bg-background text-foreground antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline tracking-tight;
   }
 }
 
-.qr-preview-container {
-  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.08) 0%, transparent 80%);
-  box-shadow: 0 0 60px -15px rgba(34, 197, 94, 0.15);
+.glass-card {
+  @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl;
 }
 
-.dark {
-  color-scheme: dark;
+.neon-glow {
+  box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.3);
 }
 
-/* Custom shadow for premium feel */
-.premium-shadow {
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+.premium-gradient {
+  background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.05), transparent 40%),
+              radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.02), transparent 40%);
+}
+
+.font-headline {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+/* Custom slider thumb */
+input[type='range'] {
+  @apply accent-primary;
+}
+
+.qr-canvas-shadow {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
