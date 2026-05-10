@@ -3,8 +3,9 @@ import './globals.css';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'QR Canvas - Free QR Code Generator with Logo',
-  description: 'Generate modern, beautiful, and customizable QR codes in real-time. Support for URLs, WiFi, Phone, and more with AI-powered content refinement.',
+  title: 'QR Canvas - Professional Free QR Code Generator with Logo',
+  description: 'Create beautiful, custom QR codes for URLs, WiFi, Business Cards (vCard), and more. Real-time preview, high-quality SVG/PNG downloads, and AI-powered content refining. 100% free.',
+  keywords: 'qr code generator, free qr code, qr code with logo, vcard qr code, wifi qr code, custom qr design',
 };
 
 export default function RootLayout({

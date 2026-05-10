@@ -4,48 +4,26 @@
 
 @layer base {
   :root {
-    --background: 134 23% 98%;
-    --foreground: 134 40% 5%;
-    --card: 0 0% 100%;
-    --card-foreground: 134 40% 5%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 134 40% 5%;
-    --primary: 135 83% 53%;
-    --primary-foreground: 135 83% 10%;
-    --secondary: 83 85% 65%;
-    --secondary-foreground: 83 85% 10%;
-    --muted: 134 10% 90%;
-    --muted-foreground: 134 10% 40%;
-    --accent: 83 85% 65%;
-    --accent-foreground: 83 85% 10%;
-    --destructive: 0 84.2% 60.2%;
+    --background: 140 30% 3%;
+    --foreground: 140 10% 98%;
+    --card: 140 25% 6%;
+    --card-foreground: 140 10% 98%;
+    --popover: 140 25% 6%;
+    --popover-foreground: 140 10% 98%;
+    --primary: 142 76% 56%;
+    --primary-foreground: 140 30% 5%;
+    --secondary: 140 20% 12%;
+    --secondary-foreground: 140 10% 98%;
+    --muted: 140 20% 12%;
+    --muted-foreground: 140 10% 65%;
+    --accent: 142 76% 56%;
+    --accent-foreground: 140 30% 5%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 134 20% 90%;
-    --input: 134 20% 90%;
-    --ring: 135 83% 53%;
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 134 23% 14%;
-    --foreground: 0 0% 100%;
-    --card: 134 23% 16%;
-    --card-foreground: 0 0% 100%;
-    --popover: 134 23% 16%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 135 83% 53%;
-    --primary-foreground: 134 23% 10%;
-    --secondary: 83 85% 65%;
-    --secondary-foreground: 134 23% 10%;
-    --muted: 134 20% 25%;
-    --muted-foreground: 134 10% 65%;
-    --accent: 83 85% 65%;
-    --accent-foreground: 134 23% 10%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 134 20% 22%;
-    --input: 134 20% 22%;
-    --ring: 135 83% 53%;
+    --border: 140 20% 15%;
+    --input: 140 20% 15%;
+    --ring: 142 76% 56%;
+    --radius: 1rem;
   }
 }
 
@@ -59,5 +37,15 @@
 }
 
 .qr-preview-container {
-  background: radial-gradient(circle at center, rgba(38, 234, 86, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(34, 197, 94, 0.08) 0%, transparent 80%);
+  box-shadow: 0 0 60px -15px rgba(34, 197, 94, 0.15);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Custom shadow for premium feel */
+.premium-shadow {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
 }
