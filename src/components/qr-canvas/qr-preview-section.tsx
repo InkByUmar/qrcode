@@ -36,13 +36,38 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
   const qrCodeInstance = useRef<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [processedBg, setProcessedBg] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Create the config object once to use in update and download
+  // Pre-process background image to apply opacity using an off-screen canvas
+  useEffect(() => {
+    if (!state.backgroundImage) {
+      setProcessedBg(null);
+      return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = state.backgroundOpacity;
+        ctx.drawImage(img, 0, 0);
+        setProcessedBg(canvas.toDataURL('image/png'));
+      }
+    };
+    img.src = state.backgroundImage;
+  }, [state.backgroundImage, state.backgroundOpacity]);
+
+  // Create the config object
   const getQrConfig = (size: number = 320) => ({
     width: size,
     height: size,
-    type: 'canvas' as const, // Canvas is more reliable for PNG/Logo exports
+    type: 'canvas' as const,
     data: state.data || ' ',
     image: state.logo || '',
     dotsOptions: { 
@@ -55,19 +80,18 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
     },
     backgroundOptions: { 
       color: state.backgroundImage ? 'transparent' : state.bgColor,
-      image: state.backgroundImage || '',
+      image: processedBg || '',
       imageOptions: {
         crossOrigin: 'anonymous',
         margin: 0,
         imageSize: 1,
-        opacity: state.backgroundOpacity
       }
     },
     imageOptions: { 
       crossOrigin: 'anonymous', 
       margin: 8, 
       imageSize: state.logoSize,
-      hideBackgroundDots: true // Ensures dots don't bleed through logo
+      hideBackgroundDots: true 
     },
     qrOptions: { 
       typeNumber: 0, 
@@ -92,7 +116,7 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
       const timer = setTimeout(() => setIsGenerating(false), 200);
       return () => clearTimeout(timer);
     }
-  }, [state]);
+  }, [state, processedBg]);
 
   const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
     if (!qrCodeInstance.current) return;
@@ -100,8 +124,8 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
     setIsGenerating(true);
     
     try {
-      // Small delay to ensure all assets (logo/bg) are fully loaded in the library's internal state
-      await new Promise(resolve => setTimeout(resolve, 150));
+      // Delay to ensure buffers are clear and images are loaded
+      await new Promise(resolve => setTimeout(resolve, 200));
 
       await qrCodeInstance.current.download({ 
         name: `qr-canvas-${state.type.toLowerCase()}-${Date.now()}`, 

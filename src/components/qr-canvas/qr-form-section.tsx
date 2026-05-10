@@ -21,7 +21,6 @@ import {
   X, 
   Contact, 
   Palette, 
-  Smartphone, 
   Shield,
   LayoutGrid,
   Image as ImageIcon
@@ -244,15 +243,21 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 </div>
               </div>
               <div className="space-y-3">
-                <Label className="text-[10px] uppercase text-muted-foreground font-bold">Bg Color</Label>
+                <Label className={`text-[10px] uppercase font-bold ${state.backgroundImage ? 'text-muted-foreground/30' : 'text-muted-foreground'}`}>Bg Color</Label>
                 <div className="flex items-center gap-3">
                   <input 
                     type="color" 
                     value={state.bgColor} 
+                    disabled={!!state.backgroundImage}
                     onChange={(e) => updateState({ bgColor: e.target.value })}
-                    className="w-10 h-10 p-0 border-0 bg-transparent cursor-pointer rounded-lg overflow-hidden"
+                    className={`w-10 h-10 p-0 border-0 bg-transparent rounded-lg overflow-hidden ${state.backgroundImage ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}`}
                   />
-                  <Input value={state.bgColor} onChange={(e) => updateState({ bgColor: e.target.value })} className="flex-1 font-mono text-xs h-9 uppercase bg-white/5" />
+                  <Input 
+                    value={state.bgColor} 
+                    disabled={!!state.backgroundImage}
+                    onChange={(e) => updateState({ bgColor: e.target.value })} 
+                    className="flex-1 font-mono text-xs h-9 uppercase bg-white/5 disabled:opacity-30" 
+                  />
                 </div>
               </div>
             </div>
