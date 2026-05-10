@@ -12,16 +12,16 @@
     --popover-foreground: 140 10% 98%;
     --primary: 150 100% 50%;
     --primary-foreground: 144 30% 2%;
-    --secondary: 144 20% 8%;
+    --secondary: 144 20% 12%;
     --secondary-foreground: 140 10% 98%;
-    --muted: 144 20% 8%;
-    --muted-foreground: 140 10% 65%;
+    --muted: 144 20% 12%;
+    --muted-foreground: 140 10% 75%;
     --accent: 150 100% 50%;
     --accent-foreground: 144 30% 2%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 144 20% 12%;
-    --input: 144 20% 12%;
+    --border: 144 20% 15%;
+    --input: 144 20% 15%;
     --ring: 150 100% 50%;
     --radius: 1.25rem;
   }
@@ -40,16 +40,16 @@
 }
 
 .glass-card {
-  @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl;
+  @apply bg-white/[0.04] backdrop-blur-xl border border-white/[0.1] shadow-2xl;
 }
 
 .neon-glow {
-  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.5);
 }
 
 .premium-gradient {
-  background: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.08), transparent 40%),
-              radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.04), transparent 40%),
+  background: radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.1), transparent 40%),
+              radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.06), transparent 40%),
               #060907;
 }
 
