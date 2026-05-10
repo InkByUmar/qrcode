@@ -101,6 +101,11 @@ export function QrGeneratorContainer() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedHistory));
   };
 
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex justify-center mb-8">
@@ -134,6 +139,7 @@ export function QrGeneratorContainer() {
             state={debouncedState} 
             history={history} 
             onDownload={() => addToHistory(state.data, state.type)} 
+            onClearHistory={clearHistory}
           />
         </div>
       </div>

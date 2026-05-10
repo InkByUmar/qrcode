@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -18,8 +19,7 @@ import {
   Phone,
   MonitorSmartphone,
   ChevronRight,
-  Sparkles,
-  ArrowUpRight
+  Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -27,6 +27,7 @@ interface QrPreviewSectionProps {
   state: QRState;
   history: QRHistoryItem[];
   onDownload: () => void;
+  onClearHistory: () => void;
 }
 
 declare global {
@@ -35,7 +36,7 @@ declare global {
   }
 }
 
-export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectionProps) {
+export function QrPreviewSection({ state, history, onDownload, onClearHistory }: QrPreviewSectionProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCodeInstance = useRef<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -239,6 +240,15 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.4em] flex items-center gap-3 text-white/80">
               <History className="w-5 h-5 text-primary" /> Recent Brand Assets
             </CardTitle>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onClearHistory}
+              className="h-8 text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all border border-white/5 rounded-xl group"
+            >
+              <Trash2 className="w-3 h-3 mr-2 group-hover:scale-110 transition-transform" />
+              Clear All
+            </Button>
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-white/[0.05]">
@@ -267,7 +277,6 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
         <div className="w-16 h-1.5 bg-primary/10 rounded-full mb-2 group-hover:w-24 transition-all duration-700" />
         <span className="text-[10px] text-muted-foreground/30 uppercase tracking-[0.8em] font-black">Monetization Display</span>
         <p className="text-[11px] text-muted-foreground/40 leading-relaxed italic max-w-[240px] font-medium uppercase tracking-tight">Optimized for high-yield programmatic ad networks.</p>
-        <ArrowUpRight className="w-4 h-4 text-primary/20 group-hover:text-primary transition-colors" />
       </div>
     </div>
   );
