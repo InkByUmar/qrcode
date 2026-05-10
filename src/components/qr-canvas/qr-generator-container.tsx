@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { QRState } from '@/lib/qr-types';
 import { QrFormSection } from './qr-form-section';
 import { QrPreviewSection } from './qr-preview-section';
-import { Card } from '@/components/ui/card';
 import { suggestQrContentType } from '@/ai/flows/qr-content-type-suggester-flow';
 
 export function QrGeneratorContainer() {
@@ -18,32 +17,52 @@ export function QrGeneratorContainer() {
     type: 'URL'
   });
 
-  const [isTyping, setIsTyping] = useState(false);
+  const [debouncedState, setDebouncedState] = useState<QRState>(state);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debounce the state for preview rendering to avoid UI stutter
+  useEffect(() => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    
+    debounceTimerRef.current = setTimeout(() => {
+      setDebouncedState(state);
+    }, 200);
+
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, [state]);
 
   // AI Content Type Suggestion logic
   useEffect(() => {
-    if (state.data.length > 5 && isTyping) {
+    if (state.data.length > 5) {
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       
       typingTimerRef.current = setTimeout(async () => {
         try {
           const suggestion = await suggestQrContentType({ content: state.data });
           if (suggestion.type !== state.type) {
-             // We don't force switch but we could hint it. 
-             // For now, let's just keep the user flow manual or handle it if empty.
+             // Optional: Suggest type switch to user
           }
         } catch (err) {
           console.error("AI suggestion error", err);
         }
-        setIsTyping(false);
       }, 1500);
     }
-  }, [state.data, state.type, isTyping]);
+  }, [state.data, state.type]);
 
   const updateState = (updates: Partial<QRState>) => {
-    setState(prev => ({ ...prev, ...updates }));
-    if (updates.data !== undefined) setIsTyping(true);
+    setState(prev => {
+      const newState = { ...prev, ...updates };
+      
+      // Auto-adjust error correction to 'H' (Highest) if a logo is added
+      if (updates.logo && newState.errorLevel !== 'H') {
+        newState.errorLevel = 'H';
+      }
+      
+      return newState;
+    });
   };
 
   return (
@@ -52,7 +71,7 @@ export function QrGeneratorContainer() {
         <QrFormSection state={state} updateState={updateState} />
       </div>
       <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-8">
-        <QrPreviewSection state={state} />
+        <QrPreviewSection state={debouncedState} />
       </div>
     </div>
   );
