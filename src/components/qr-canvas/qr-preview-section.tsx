@@ -43,6 +43,9 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
   const [processedBg, setProcessedBg] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const dataLength = state.data?.length || 0;
+  const isHighDensity = dataLength > 500;
+
   // Optimized background pre-processor for opacity
   useEffect(() => {
     if (!state.backgroundImage) {
@@ -67,46 +70,58 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
     img.src = state.backgroundImage;
   }, [state.backgroundImage, state.backgroundOpacity]);
 
-  const getQrConfig = (size: number = 400) => ({
-    width: size,
-    height: size,
-    type: 'canvas' as const,
-    data: state.data || ' ',
-    image: state.logo || '',
-    dotsOptions: { 
-      color: state.fgColor, 
-      type: state.dotStyle 
-    },
-    cornersSquareOptions: {
-      type: state.cornerStyle,
-      color: state.fgColor
-    },
-    backgroundOptions: { 
-      color: state.backgroundImage ? 'transparent' : state.bgColor,
-      image: processedBg || '',
-      imageOptions: {
-        crossOrigin: 'anonymous',
-        margin: 0,
-        imageSize: 1,
+  const getQrConfig = (size: number = 400) => {
+    // Force High Density mode if data is long or branding is heavy
+    const errorCorrection = (state.logo || state.backgroundImage || isHighDensity) ? 'H' : state.errorLevel;
+    
+    // For high density data, simpler styles are often more scannable
+    const dotType = isHighDensity && (state.dotStyle === 'classy' || state.dotStyle === 'dots') 
+      ? 'rounded' 
+      : state.dotStyle;
+
+    return {
+      width: size,
+      height: size,
+      type: 'canvas' as const,
+      data: state.data || ' ',
+      image: state.logo || '',
+      dotsOptions: { 
+        color: state.fgColor, 
+        type: dotType 
+      },
+      cornersSquareOptions: {
+        type: state.cornerStyle,
+        color: state.fgColor
+      },
+      backgroundOptions: { 
+        color: state.backgroundImage ? 'transparent' : state.bgColor,
+        image: processedBg || '',
+        imageOptions: {
+          crossOrigin: 'anonymous',
+          margin: 0,
+          imageSize: 1,
+        }
+      },
+      imageOptions: { 
+        crossOrigin: 'anonymous', 
+        margin: 12, 
+        imageSize: state.logoSize,
+        hideBackgroundDots: true 
+      },
+      qrOptions: { 
+        typeNumber: 0, 
+        mode: 'Byte', 
+        errorCorrectionLevel: errorCorrection 
       }
-    },
-    imageOptions: { 
-      crossOrigin: 'anonymous', 
-      margin: 12, 
-      imageSize: state.logoSize,
-      hideBackgroundDots: true 
-    },
-    qrOptions: { 
-      typeNumber: 0, 
-      mode: 'Byte', 
-      errorCorrectionLevel: (state.logo || state.backgroundImage) ? 'H' : state.errorLevel 
-    }
-  });
+    };
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
-      const config = getQrConfig(400);
+      // Increased quality for high density data
+      const previewSize = isHighDensity ? 600 : 400;
+      const config = getQrConfig(previewSize);
 
       if (!qrCodeInstance.current) {
         qrCodeInstance.current = new window.QRCodeStyling(config);
@@ -118,21 +133,24 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
       const timer = setTimeout(() => setIsGenerating(false), 300);
       return () => clearTimeout(timer);
     }
-  }, [state, processedBg]);
+  }, [state, processedBg, isHighDensity]);
 
   const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
     if (!qrCodeInstance.current) return;
     setIsGenerating(true);
     try {
+      // Force higher resolution for high density data
+      const targetRes = isHighDensity ? Math.max(resolution, 1200) : resolution;
+      
       await new Promise(resolve => setTimeout(resolve, 300));
       await qrCodeInstance.current.download({ 
         name: `qr-canvas-premium-${state.type.toLowerCase()}-${Date.now()}`, 
         extension: ext,
-        width: resolution,
-        height: resolution
+        width: targetRes,
+        height: targetRes
       });
       onDownload();
-      toast({ title: "Export Succeeded", description: "High-resolution brand asset ready." });
+      toast({ title: "Export Succeeded", description: `High-resolution brand asset ready. (${targetRes}px)` });
     } catch (err) {
       toast({ variant: "destructive", title: "Render Error", description: "Could not finalize high-res asset." });
     } finally {
@@ -173,7 +191,7 @@ export function QrPreviewSection({ state, history, onDownload }: QrPreviewSectio
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-20 rounded-[2rem] flex items-center justify-center gap-5 text-2xl shadow-2xl transition-all hover:scale-[1.02] neon-glow active:scale-95 group"
             >
               <Download className="w-7 h-7 group-hover:translate-y-1 transition-transform" />
-              Get 1024px PNG
+              Get {isHighDensity ? '1200px' : '1024px'} PNG
             </Button>
             
             <div className="grid grid-cols-2 gap-5">

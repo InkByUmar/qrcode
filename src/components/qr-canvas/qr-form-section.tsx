@@ -26,10 +26,12 @@ import {
   Image as ImageIcon,
   Zap,
   MousePointer2,
-  Info
+  Info,
+  AlertTriangle
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface QrFormSectionProps {
   state: QRState;
@@ -39,6 +41,9 @@ interface QrFormSectionProps {
 export function QrFormSection({ state, updateState }: QrFormSectionProps) {
   const { toast } = useToast();
   const [isRefining, setIsRefining] = React.useState(false);
+
+  const dataLength = state.data?.length || 0;
+  const isTooLong = dataLength > 800;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'backgroundImage') => {
     const file = e.target.files?.[0];
@@ -180,23 +185,39 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                     <Label className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       {state.type === 'URL' ? 'Destination Website' : state.type === 'Phone' ? 'Global Phone Number' : 'Custom Payload'}
                     </Label>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-8 text-[10px] uppercase font-black tracking-[0.2em] text-primary hover:bg-primary/10 transition-all border border-primary/20 rounded-xl"
-                      onClick={handleAIRefine}
-                      disabled={isRefining || !state.data || ['WiFi', 'vCard', 'Email'].includes(state.type)}
-                    >
-                      <Sparkles className={`w-3.5 h-3.5 mr-2 ${isRefining ? 'animate-spin' : ''}`} />
-                      {isRefining ? 'Analyzing...' : 'Optimize Content'}
-                    </Button>
+                    <div className="flex items-center gap-4">
+                      <span className={cn("text-[10px] font-mono", dataLength > 500 ? "text-amber-500" : "text-muted-foreground/40")}>
+                        {dataLength} chars
+                      </span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 text-[10px] uppercase font-black tracking-[0.2em] text-primary hover:bg-primary/10 transition-all border border-primary/20 rounded-xl"
+                        onClick={handleAIRefine}
+                        disabled={isRefining || !state.data || ['WiFi', 'vCard', 'Email'].includes(state.type)}
+                      >
+                        <Sparkles className={`w-3.5 h-3.5 mr-2 ${isRefining ? 'animate-spin' : ''}`} />
+                        {isRefining ? 'Analyzing...' : 'Optimize Content'}
+                      </Button>
+                    </div>
                   </div>
                   <Textarea 
                     placeholder={state.type === 'URL' ? 'https://your-premium-brand.com' : state.type === 'Phone' ? '+1 000 000 0000' : 'Enter your professional content here...'}
                     value={state.data}
                     onChange={(e) => updateState({ data: e.target.value })}
-                    className="min-h-[160px] bg-white/[0.02] border-white/10 text-xl rounded-3xl focus:ring-primary/40 p-6 leading-relaxed transition-all resize-none shadow-inner"
+                    className={cn(
+                      "min-h-[160px] bg-white/[0.02] border-white/10 text-xl rounded-3xl focus:ring-primary/40 p-6 leading-relaxed transition-all resize-none shadow-inner",
+                      isTooLong && "border-amber-500/50 focus:ring-amber-500/40"
+                    )}
                   />
+                  {isTooLong && (
+                    <div className="flex items-center gap-3 p-4 bg-amber-500/5 border border-amber-500/20 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                      <AlertTriangle className="w-5 h-5 text-amber-500" />
+                      <p className="text-[11px] text-amber-500/80 font-medium">
+                        Content exceeds 800 chars. To ensure perfect scannability on all devices, we recommend using a URL shortener or more concise text.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -244,7 +265,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
             <div className="space-y-8">
               <div className="flex flex-col gap-5">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[10px] uppercase text-muted-foreground font-black tracking-[0.2em]">Matrix Color</Label>
+                  <Label className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em]">Matrix Color</Label>
                   <span className="text-[10px] font-mono text-primary font-bold">{state.fgColor}</span>
                 </div>
                 <div className="flex items-center gap-5">
@@ -404,8 +425,8 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
               <div className="space-y-2">
                  <p className="text-[11px] text-primary font-black uppercase tracking-widest">Auto-Correction Standard</p>
                  <p className="text-[11px] text-primary/60 leading-relaxed font-medium">
-                  {(state.logo || state.backgroundImage) 
-                    ? 'Engine has automatically engaged Level H (30%) Error Correction to maintain perfect scannability with brand visual assets.' 
+                  {(state.logo || state.backgroundImage || dataLength > 500) 
+                    ? 'High Density Engine Engaged: Level H (30%) Error Correction active for maximum scannability.' 
                     : `Current: Level ${state.errorLevel} (Standard Performance)`}
                  </p>
               </div>
