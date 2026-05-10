@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -30,7 +29,9 @@ import {
   Info,
   AlertTriangle,
   Layers,
-  Star
+  Star,
+  Youtube,
+  CreditCard
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -44,9 +45,11 @@ interface QrFormSectionProps {
 const TEMPLATES = [
   { id: 'restaurant', label: 'Restaurant Menu', type: 'URL', data: 'https://menu.yourbrand.com', color: '#FF5733' },
   { id: 'wifi', label: 'Guest WiFi', type: 'WiFi', wifi: { ssid: 'Guest_WiFi', password: 'password123', encryption: 'WPA' }, color: '#33FF57' },
+  { id: 'upi', label: 'UPI Payment', type: 'Text', data: 'upi://pay?pa=yourname@bank&pn=YourName&cu=INR', color: '#10B981' },
   { id: 'business', label: 'Business Card', type: 'vCard', vCard: { firstName: 'John', lastName: 'Doe', mobile: '+1 234 567 890', email: 'john@company.com', organization: 'Tech Inc', jobTitle: 'CEO', website: 'https://company.com' }, color: '#3357FF' },
   { id: 'instagram', label: 'Instagram Profile', type: 'URL', data: 'https://instagram.com/yourbrand', color: '#E1306C' },
   { id: 'youtube', label: 'YouTube Channel', type: 'URL', data: 'https://youtube.com/@channel', color: '#FF0000' },
+  { id: 'whatsapp', label: 'WhatsApp Connect', type: 'WhatsApp', whatsapp: { phone: '+1234567890', message: 'Hi! Let\'s connect.' }, color: '#25D366' },
   { id: 'review', label: 'Google Review', type: 'URL', data: 'https://g.page/r/your-review-link', color: '#4285F4' },
 ];
 
@@ -91,6 +94,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
       fgColor: template.color || state.fgColor,
       ...(template.wifi && { wifi: template.wifi }),
       ...(template.vCard && { vCard: template.vCard }),
+      ...(template.whatsapp && { whatsapp: template.whatsapp }),
     });
     toast({ title: "Template Applied", description: `Loading ${template.label} preset.` });
   };
@@ -105,7 +109,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-8">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4">
             {TEMPLATES.map((t) => (
               <button
                 key={t.id}
@@ -113,7 +117,12 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all group"
               >
                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform" style={{ color: t.color }}>
-                  {t.type === 'URL' ? <Link2 className="w-5 h-5" /> : t.type === 'WiFi' ? <Wifi className="w-5 h-5" /> : <Contact className="w-5 h-5" />}
+                  {t.id === 'youtube' ? <Youtube className="w-5 h-5" /> : 
+                   t.id === 'upi' ? <CreditCard className="w-5 h-5" /> :
+                   t.type === 'URL' ? <Link2 className="w-5 h-5" /> : 
+                   t.type === 'WiFi' ? <Wifi className="w-5 h-5" /> : 
+                   t.type === 'WhatsApp' ? <MessageSquare className="w-5 h-5" /> :
+                   <Contact className="w-5 h-5" />}
                 </div>
                 <span className="text-[10px] font-bold text-center leading-tight text-white/60 group-hover:text-white">{t.label}</span>
               </button>

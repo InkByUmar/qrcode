@@ -30,7 +30,10 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body className="font-body bg-[#060907] text-foreground antialiased selection:bg-primary selection:text-primary-foreground">
+      <body 
+        className="font-body bg-[#060907] text-foreground antialiased selection:bg-primary selection:text-primary-foreground"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

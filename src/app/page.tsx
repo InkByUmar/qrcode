@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -69,7 +68,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center mb-24 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 animate-in fade-in zoom-in duration-1000 border-primary/20">
             <Sparkles className="w-3.5 h-3.5 fill-primary/20" />
-            <span>AI-POWERED BRANDING ENGINE</span>
+            <span>THE NEXT GENERATION OF QR BRANDING</span>
           </div>
           <h1 className="text-6xl md:text-[92px] font-headline font-black mb-10 leading-[1] tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/30">
             Design Codes That <br />
