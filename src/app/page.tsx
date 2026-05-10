@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -18,7 +19,12 @@ import {
   Download,
   FileJson,
   LayoutGrid,
-  HelpCircle
+  HelpCircle,
+  BookOpen,
+  MousePointer2,
+  Settings,
+  Image as ImageIcon,
+  QrCode as QrIcon
 } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 import {
@@ -56,7 +62,7 @@ export default function Home() {
           </div>
           
           <nav className="hidden lg:flex items-center gap-12">
-            {['Generator', 'Bulk Mode', 'Features', 'FAQ'].map((item) => (
+            {['Generator', 'Bulk Mode', 'Guide', 'Features', 'FAQ'].map((item) => (
               <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all duration-300 relative group">
                 {item}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
@@ -107,6 +113,90 @@ export default function Home() {
         </div>
       </section>
 
+      {/* HOW TO USE & BLOG SECTION - SEO H2 */}
+      <section id="guide" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative">
+        <div className="text-center mb-24">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black tracking-[0.3em] text-primary mb-6">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>EXPERT RESOURCE CENTER</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-headline font-bold text-white mb-6">Mastering the Art of QR Branding</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg leading-relaxed">
+            From technical setup to marketing strategy, learn how to leverage QR Canvas for maximum engagement.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
+          <BlogCard 
+            step="01"
+            title="Design with Purpose"
+            description="Choose the right QR type for your goal. Use vCards for networking, WiFi for hospitality, and URLs for marketing. Our templates provide the perfect foundation for any use case."
+            icon={<Settings className="w-5 h-5" />}
+          />
+          <BlogCard 
+            step="02"
+            title="Enhance Scannability"
+            description="High contrast is key. When using background images, use our opacity slider to ensure the QR dots remain clear. We automatically set Level H error correction to protect your brand assets."
+            icon={<ImageIcon className="w-5 h-5" />}
+          />
+          <BlogCard 
+            step="03"
+            title="Scale with Bulk Mode"
+            description="For agencies and enterprise users, use Batch Processing. Paste a list of unique destination URLs and generate branded codes in one organized bundle with synchronized naming."
+            icon={<Layers className="w-5 h-5" />}
+          />
+        </div>
+
+        <div className="glass-card p-12 rounded-[3rem] border-white/10 bg-white/[0.01] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div className="space-y-8">
+              <h3 className="text-3xl font-headline font-bold text-white">Why Your Brand Needs Custom QR Codes</h3>
+              <div className="space-y-6">
+                <p className="text-muted-foreground leading-relaxed">
+                  Generic black-and-white QR codes are often ignored. Customizing your codes with a logo and brand colors can increase scan rates by up to <strong>40%</strong>. It builds trust by showing users exactly who they are interacting with.
+                </p>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                    <span className="text-2xl font-black text-primary block mb-1">94M+</span>
+                    <span className="text-[10px] uppercase font-bold text-white/40 tracking-widest">Active QR Users</span>
+                  </div>
+                  <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                    <span className="text-2xl font-black text-primary block mb-1">30%</span>
+                    <span className="text-[10px] uppercase font-bold text-white/40 tracking-widest">Scan Increase</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="space-y-8">
+              <h4 className="text-xl font-headline font-bold text-white flex items-center gap-3">
+                <Star className="w-5 h-5 text-primary" /> Pro Tips for 2025
+              </h4>
+              <ul className="space-y-5">
+                <li className="flex gap-4">
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground"><strong className="text-white">Avoid Complexity:</strong> Keep your URLs short or use our AI Refiner to ensure the QR grid stays clean and fast-scanning.</p>
+                </li>
+                <li className="flex gap-4">
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground"><strong className="text-white">Print Quality:</strong> Always use the SVG export for large format prints like banners or signage to ensure zero pixelation.</p>
+                </li>
+                <li className="flex gap-4">
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground"><strong className="text-white">Mobile Context:</strong> Test your codes in various lighting conditions to guarantee a 100% success rate for your customers.</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* BULK QR EXPLANATION - SEO H2 */}
       <section id="bulk-mode" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -152,7 +242,7 @@ export default function Home() {
                   <div className="grid grid-cols-3 gap-4 py-8">
                     {[1,2,3,4,5,6].map(i => (
                       <div key={i} className="aspect-square bg-primary/10 rounded-xl border border-primary/20 flex items-center justify-center">
-                        <QrCode className="w-6 h-6 text-primary/40" />
+                        <QrIcon className="w-6 h-6 text-primary/40" />
                       </div>
                     ))}
                   </div>
@@ -257,7 +347,7 @@ export default function Home() {
             <div className="lg:col-span-1 space-y-8">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary border border-primary/20">
-                  <QrCode className="w-5 h-5" />
+                  <QrIcon className="w-5 h-5" />
                 </div>
                 <span className="font-headline font-bold text-2xl tracking-tighter text-white">QR Canvas</span>
               </div>
@@ -308,6 +398,25 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       <p className="text-muted-foreground/70 leading-relaxed font-light text-sm group-hover:text-white/80 transition-colors duration-500">{description}</p>
       <div className="mt-10 flex items-center gap-2 text-[10px] font-black tracking-[0.3em] text-primary opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0 duration-700">
         EXPLORE FEATURE <ArrowRight className="w-3 h-3" />
+      </div>
+    </div>
+  );
+}
+
+function BlogCard({ step, title, description, icon }: { step: string; title: string; description: string; icon: React.ReactNode }) {
+  return (
+    <div className="group p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden">
+      <div className="absolute -right-8 -bottom-8 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+      <div className="flex justify-between items-start mb-10">
+        <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-xl shadow-black/40 ring-1 ring-primary/20">
+          {icon}
+        </div>
+        <span className="text-4xl font-headline font-black text-white/5 group-hover:text-primary/10 transition-colors duration-500">{step}</span>
+      </div>
+      <h3 className="text-xl font-headline font-bold text-white mb-4 group-hover:text-primary transition-colors">{title}</h3>
+      <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-white/80 transition-colors">{description}</p>
+      <div className="mt-8 flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all duration-500">
+        Read Full Article <ArrowRight className="w-3 h-3" />
       </div>
     </div>
   );
