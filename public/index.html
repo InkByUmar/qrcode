@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Canvas - Standalone Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- QR Code Styling Library -->
+    <script src="https://unpkg.com/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#26EA56',
+                        background: '#0F1611',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0F1611; color: white; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .qr-shadow { box-shadow: 0 0 50px -10px rgba(38, 234, 86, 0.15); }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl font-black tracking-tighter mb-2">QR <span class="text-primary">CANVAS</span></h1>
+            <p class="text-gray-400">Standalone Professional QR Generator</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <!-- Controls -->
+            <div class="space-y-6">
+                <div class="glass p-6 rounded-3xl space-y-6">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span class="w-2 h-6 bg-primary rounded-full"></span>
+                        Configuration
+                    </h2>
+
+                    <!-- Content Input -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-400 uppercase tracking-widest">Content / URL</label>
+                        <input id="qr-data" type="text" value="https://example.com" placeholder="Enter URL or text..." 
+                            class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:border-primary/50 outline-none transition-all">
+                    </div>
+
+                    <!-- Logo Upload -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-400 uppercase tracking-widest">Center Logo</label>
+                        <div class="flex items-center gap-4">
+                            <label for="logo-upload" class="cursor-pointer flex-1 bg-black/40 border border-dashed border-white/20 rounded-xl p-4 hover:border-primary/50 transition-all text-center group">
+                                <span class="text-sm text-gray-400 group-hover:text-primary transition-colors">Click to upload logo</span>
+                                <input id="logo-upload" type="file" accept="image/*" class="hidden">
+                            </label>
+                            <button id="clear-logo" class="bg-red-500/10 text-red-500 p-3 rounded-xl hover:bg-red-500 hover:text-white transition-all hidden">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-gray-400 uppercase tracking-widest text-xs">Dots Color</label>
+                            <div class="flex items-center gap-3 bg-black/40 p-2 rounded-xl border border-white/5">
+                                <input id="color-dots" type="color" value="#26EA56" class="w-8 h-8 cursor-pointer">
+                                <span id="dots-val" class="text-xs font-mono uppercase">#26EA56</span>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-gray-400 uppercase tracking-widest text-xs">Background</label>
+                            <div class="flex items-center gap-3 bg-black/40 p-2 rounded-xl border border-white/5">
+                                <input id="color-bg" type="color" value="#0F1611" class="w-8 h-8 cursor-pointer">
+                                <span id="bg-val" class="text-xs font-mono uppercase">#0F1611</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-400 uppercase tracking-widest">Error Correction</label>
+                        <select id="error-correction" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 outline-none">
+                            <option value="L">Low (7%)</option>
+                            <option value="M">Medium (15%)</option>
+                            <option value="Q">Quartile (25%)</option>
+                            <option value="H" selected>High (30%) - Best for logos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="glass p-6 rounded-3xl space-y-4">
+                    <h2 class="text-xl font-bold">Export Options</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="downloadQR('png', 300)" class="bg-primary text-black font-bold py-3 rounded-xl hover:scale-[1.02] transition-all">Download PNG 300px</button>
+                        <button onclick="downloadQR('png', 500)" class="bg-primary text-black font-bold py-3 rounded-xl hover:scale-[1.02] transition-all">Download PNG 500px</button>
+                        <button onclick="downloadQR('png', 1000)" class="bg-primary text-black font-bold py-3 rounded-xl hover:scale-[1.02] transition-all col-span-1 sm:col-span-2">Download PNG 1000px (Print Ready)</button>
+                        <button onclick="downloadQR('svg')" class="bg-white/10 text-white font-bold py-3 rounded-xl hover:bg-white/20 transition-all col-span-1 sm:col-span-2">Download Vector SVG</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview -->
+            <div class="lg:sticky lg:top-8 flex flex-col items-center gap-6">
+                <div class="glass p-8 rounded-[3rem] qr-shadow relative">
+                    <div id="canvas-container" class="bg-white rounded-2xl overflow-hidden"></div>
+                    <div id="loading" class="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center rounded-[3rem] opacity-0 pointer-events-none transition-opacity">
+                        <div class="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                </div>
+                <div class="text-center space-y-2">
+                    <p class="text-primary font-bold tracking-widest text-xs uppercase">Live Preview</p>
+                    <p class="text-gray-500 text-sm italic">Scan with your phone to test</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const qrDataInput = document.getElementById('qr-data');
+        const logoUpload = document.getElementById('logo-upload');
+        const clearLogoBtn = document.getElementById('clear-logo');
+        const colorDots = document.getElementById('color-dots');
+        const colorBg = document.getElementById('color-bg');
+        const errorLevelSelect = document.getElementById('error-correction');
+        const dotsValLabel = document.getElementById('dots-val');
+        const bgValLabel = document.getElementById('bg-val');
+        const loadingOverlay = document.getElementById('loading');
+
+        let currentLogo = null;
+        let qrCode = null;
+
+        const config = {
+            width: 320,
+            height: 320,
+            type: "svg",
+            data: qrDataInput.value,
+            image: "",
+            dotsOptions: {
+                color: colorDots.value,
+                type: "rounded"
+            },
+            backgroundOptions: {
+                color: colorBg.value,
+            },
+            imageOptions: {
+                crossOrigin: "anonymous",
+                margin: 10,
+                imageSize: 0.4
+            },
+            qrOptions: {
+                typeNumber: 0,
+                mode: "Byte",
+                errorCorrectionLevel: errorLevelSelect.value
+            }
+        };
+
+        function initQR() {
+            console.log('Initializing QR Code Styling...');
+            qrCode = new QRCodeStyling(config);
+            qrCode.append(document.getElementById("canvas-container"));
+            updateQR();
+        }
+
+        function updateQR() {
+            console.log('Updating QR with current state...');
+            loadingOverlay.classList.remove('opacity-0');
+            
+            const options = {
+                data: qrDataInput.value || " ",
+                image: currentLogo || "",
+                dotsOptions: { color: colorDots.value },
+                backgroundOptions: { color: colorBg.value },
+                qrOptions: { errorCorrectionLevel: errorLevelSelect.value }
+            };
+
+            dotsValLabel.textContent = colorDots.value;
+            bgValLabel.textContent = colorBg.value;
+
+            qrCode.update(options);
+            
+            setTimeout(() => {
+                loadingOverlay.classList.add('opacity-0');
+            }, 300);
+        }
+
+        // Handle Logo
+        logoUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                console.log('File detected:', file.name);
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    currentLogo = event.target.result;
+                    clearLogoBtn.classList.remove('hidden');
+                    // Automatically set error correction to High for logos
+                    errorLevelSelect.value = 'H';
+                    updateQR();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        clearLogoBtn.addEventListener('click', () => {
+            currentLogo = null;
+            logoUpload.value = '';
+            clearLogoBtn.classList.add('hidden');
+            updateQR();
+        });
+
+        // Listeners
+        [qrDataInput, colorDots, colorBg, errorLevelSelect].forEach(el => {
+            el.addEventListener('input', updateQR);
+        });
+
+        async function downloadQR(ext, size) {
+            console.log(`Requesting download: ${ext} at ${size || 'vector'} size`);
+            try {
+                const downloadOptions = {
+                    name: `qr-canvas-${Date.now()}`,
+                    extension: ext
+                };
+                
+                if (size) {
+                    downloadOptions.width = size;
+                    downloadOptions.height = size;
+                }
+
+                await qrCode.download(downloadOptions);
+            } catch (err) {
+                console.error('Download failed:', err);
+            }
+        }
+
+        // Bootstrap
+        window.addEventListener('load', initQR);
+    </script>
+</body>
+</html>
