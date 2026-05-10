@@ -3,13 +3,14 @@ import './globals.css';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'QR Canvas - Professional Free QR Code Generator with Logo & Background',
-  description: 'Create stunning, high-resolution custom QR codes for free. Add your logo, custom background images, and brand colors. Perfect for URLs, WiFi, vCards, and Business Cards. No sign-up required.',
-  keywords: 'free qr code generator, qr code with logo, custom qr code background, professional qr generator, high quality qr code, wifi qr code generator, vcard qr code creator',
+  title: 'Free QR Code Generator with Logo & Background | Custom QR Codes',
+  description: 'Create professional QR codes for free. Add brand logos, custom background images, and premium colors. High-resolution SVG and PNG exports. No signup required.',
+  keywords: 'free qr code generator, qr code generator with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code',
   openGraph: {
     title: 'QR Canvas | Premium AI-Powered QR Generator',
     description: 'The world\'s most advanced professional QR code generator with logo and background support.',
     type: 'website',
+    url: 'https://qrcanvas.pro',
   }
 };
 
