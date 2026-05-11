@@ -52,7 +52,11 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Draw Background (Image or Solid)
+    // 1. Layer 1: Foundation (Solid Background)
+    ctx.fillStyle = state.bgColor;
+    ctx.fillRect(0, 0, resolution, resolution);
+
+    // 2. Layer 2: Visual Brand (Background Image)
     if (state.backgroundImage) {
       try {
         const bgImg = await loadImage(state.backgroundImage);
@@ -64,15 +68,12 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
         ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
         ctx.restore();
       } catch (e) {
-        ctx.fillStyle = state.bgColor;
-        ctx.fillRect(0, 0, resolution, resolution);
+        console.warn("Bulk background image failed", e);
       }
-    } else {
-      ctx.fillStyle = state.bgColor;
-      ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    // 2. Generate QR Pattern (including logo and transparency)
+    // 3. Layer 3: Pattern & Identity (QR dots + Logo)
+    // We force transparency for compositing
     const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
     const config = {
       width: resolution,
@@ -81,7 +82,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       image: state.logo || '',
       dotsOptions: { color: state.fgColor, type: state.dotStyle },
       cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
-      // Force transparency for compositing
       backgroundOptions: { color: 'rgba(0,0,0,0)' }, 
       imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
       qrOptions: { errorCorrectionLevel: errorLevel }

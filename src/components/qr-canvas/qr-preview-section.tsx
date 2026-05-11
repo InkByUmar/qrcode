@@ -47,8 +47,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const dataLength = state.data?.length || 0;
   const isHighDensity = dataLength > 300 || !!state.backgroundImage || !!state.logo;
 
-  const getQrConfig = (size: number = 400) => {
-    // Force Level H if branding is present
+  const getQrConfig = (size: number, forceTransparent: boolean = false) => {
     const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
     
     return {
@@ -70,9 +69,8 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, 
         color: state.fgColor 
       },
-      // CRITICAL: Force absolute transparency if background image is present
       backgroundOptions: { 
-        color: state.backgroundImage ? 'rgba(0,0,0,0)' : state.bgColor 
+        color: forceTransparent ? 'rgba(0,0,0,0)' : state.bgColor 
       },
       imageOptions: { 
         crossOrigin: 'anonymous', 
@@ -103,32 +101,29 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Draw Background Layer (Image or Solid)
+    // 1. Layer 1: Foundation (Solid Background)
+    ctx.fillStyle = state.bgColor;
+    ctx.fillRect(0, 0, resolution, resolution);
+
+    // 2. Layer 2: Visual Brand (Background Image)
     if (state.backgroundImage) {
       try {
         const bgImg = await loadImage(state.backgroundImage);
         ctx.save();
         ctx.globalAlpha = state.backgroundOpacity;
-        
-        // Center-Crop Cover Logic
         const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
         const x = (resolution - bgImg.width * scale) / 2;
         const y = (resolution - bgImg.height * scale) / 2;
         ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
         ctx.restore();
       } catch (e) {
-        console.warn("Background image load failed, falling back to solid", e);
-        ctx.fillStyle = state.bgColor;
-        ctx.fillRect(0, 0, resolution, resolution);
+        console.warn("Background image failed to load", e);
       }
-    } else {
-      ctx.fillStyle = state.bgColor;
-      ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    // 2. Draw Pattern Layer (Composited over background)
-    // The pattern includes the logo if state.logo is present
-    const qrConfig = getQrConfig(resolution);
+    // 3. Layer 3: Pattern & Identity (QR dots + Logo)
+    // We force transparency here so we don't hide the background imagery/color
+    const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');
     const qrImg = await loadImage(URL.createObjectURL(qrBlob));
@@ -167,7 +162,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     setIsGenerating(true);
     try {
       if (ext === 'svg') {
-        const qrConfig = getQrConfig(resolution);
+        const qrConfig = getQrConfig(resolution, !!state.backgroundImage);
         const styling = new window.QRCodeStyling(qrConfig);
         await styling.download({ name: 'qrcanvas', extension: 'svg' });
       } else {
