@@ -31,7 +31,10 @@ import {
   Star,
   Youtube,
   CreditCard,
-  RotateCcw
+  RotateCcw,
+  Zap,
+  Eye,
+  Paintbrush
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -118,7 +121,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
 
   return (
     <div className="space-y-10">
-      {/* PREMIUM TEMPLATE SECTION - REFINED FOR PRO LOOK */}
+      {/* PREMIUM TEMPLATE SECTION */}
       <Card className="glass-card border-white/10 overflow-hidden shadow-2xl relative">
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         <CardHeader className="py-6 border-b border-white/[0.05] bg-white/[0.02]">
@@ -158,9 +161,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                   className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-lg border border-white/10 group-hover:border-primary/30"
                   style={{ color: t.color }}
                 >
-                  {t.id === 'youtube' ? <Youtube className="w-5 h-5" /> : 
-                   t.id === 'upi' ? <CreditCard className="w-5 h-5" /> :
-                   t.type === 'URL' ? <Link2 className="w-5 h-5" /> : 
+                   {t.type === 'URL' ? <Link2 className="w-5 h-5" /> : 
                    t.type === 'WiFi' ? <Wifi className="w-5 h-5" /> : 
                    t.type === 'WhatsApp' ? <MessageSquare className="w-5 h-5" /> :
                    <Contact className="w-5 h-5" />}
@@ -226,10 +227,6 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                       <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-lg text-white" placeholder="Hi! I'm interested in..." value={state.whatsapp.message} onChange={e => updateState({ whatsapp: { ...state.whatsapp, message: e.target.value } })} />
                     </div>
                   </div>
-                  <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 shadow-inner">
-                    <p className="text-[10px] text-primary font-bold uppercase tracking-widest mb-1">Generated Link</p>
-                    <p className="text-xs font-mono text-primary/80 truncate">https://wa.me/{state.whatsapp.phone.replace(/[^0-9]/g, '')}</p>
-                  </div>
                 </div>
               ) : state.type === 'WiFi' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
@@ -280,23 +277,6 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                     <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-lg text-white" placeholder="Managing Director" value={state.vCard.jobTitle} onChange={e => updateState({ vCard: { ...state.vCard, jobTitle: e.target.value } })} />
                   </div>
                 </div>
-              ) : state.type === 'Email' ? (
-                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-                    <div className="space-y-3.5">
-                      <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Recipient Email Address</Label>
-                      <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-lg text-white" placeholder="contact@example.com" value={state.email.address} onChange={e => updateState({ email: { ...state.email, address: e.target.value } })} />
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                      <div className="space-y-3.5">
-                        <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Subject Line</Label>
-                        <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-lg text-white" placeholder="Business Inquiry" value={state.email.subject} onChange={e => updateState({ email: { ...state.email, subject: e.target.value } })} />
-                      </div>
-                      <div className="space-y-3.5">
-                        <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Message Body</Label>
-                        <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-lg text-white" placeholder="Hi team, I am interested in..." value={state.email.body} onChange={e => updateState({ email: { ...state.email, body: e.target.value } })} />
-                      </div>
-                    </div>
-                 </div>
               ) : (
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
                   <div className="flex items-center justify-between">
@@ -328,14 +308,6 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                       isTooLong && "border-amber-500/60 focus:ring-amber-500/40"
                     )}
                   />
-                  {isTooLong && (
-                    <div className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl animate-in fade-in slide-in-from-top-2">
-                      <AlertTriangle className="w-5 h-5 text-amber-500" />
-                      <p className="text-[11px] text-amber-500 font-bold uppercase tracking-tight">
-                        Content exceeds 800 chars. Use a shortener for best scanning performance.
-                      </p>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -343,21 +315,33 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
         </CardContent>
       </Card>
 
-      {/* SECTION 2: VISUAL CUSTOMIZATION */}
+      {/* SECTION 2: ADVANCED VISUAL CUSTOMIZATION */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* DESIGN MATRIX */}
-        <Card className="glass-card shadow-2xl border-white/10">
+        
+        {/* DESIGN MATRIX (Technical Styling) */}
+        <Card className="glass-card shadow-2xl border-white/10 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
           <CardHeader className="border-b border-white/[0.05] bg-white/[0.02] py-8">
-            <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
-              <Palette className="w-5 h-5 text-primary" /> Technical Styling
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
+                <Paintbrush className="w-5 h-5 text-primary" /> Design Matrix
+              </CardTitle>
+              <div className="px-2 py-0.5 rounded-md bg-primary/10 border border-primary/20 text-[8px] font-black uppercase tracking-widest text-primary">Advanced Engine</div>
+            </div>
           </CardHeader>
-          <CardContent className="pt-10 space-y-10">
-            <div className="grid grid-cols-2 gap-8">
+          <CardContent className="pt-10 space-y-12">
+            
+            {/* Pattern Geometry */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                <div className="space-y-4">
-                 <Label className="text-[10px] uppercase font-black text-white/60 tracking-[0.2em]">Dot Engine</Label>
+                 <div className="flex items-center gap-2 mb-1">
+                    <Zap className="w-3.5 h-3.5 text-primary" />
+                    <Label className="text-[10px] uppercase font-black text-white/60 tracking-[0.2em]">Dot Architecture</Label>
+                 </div>
                  <Select value={state.dotStyle} onValueChange={val => updateState({ dotStyle: val as any })}>
-                    <SelectTrigger className="h-12 bg-white/[0.03] border-white/10 rounded-xl text-white"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-14 bg-white/[0.04] border-white/10 rounded-2xl text-white hover:bg-white/[0.08] transition-all">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent className="glass-card">
                       <SelectItem value="extra-rounded">Lux Rounded</SelectItem>
                       <SelectItem value="rounded">Soft Flow</SelectItem>
@@ -368,9 +352,14 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                  </Select>
                </div>
                <div className="space-y-4">
-                 <Label className="text-[10px] uppercase font-black text-white/60 tracking-[0.2em]">Corner Geometry</Label>
+                 <div className="flex items-center gap-2 mb-1">
+                    <Eye className="w-3.5 h-3.5 text-primary" />
+                    <Label className="text-[10px] uppercase font-black text-white/60 tracking-[0.2em]">Eye Geometry</Label>
+                 </div>
                  <Select value={state.cornerStyle} onValueChange={val => updateState({ cornerStyle: val as any })}>
-                    <SelectTrigger className="h-12 bg-white/[0.03] border-white/10 rounded-xl text-white"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-14 bg-white/[0.04] border-white/10 rounded-2xl text-white hover:bg-white/[0.08] transition-all">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent className="glass-card">
                       <SelectItem value="rounded">Circular Eye</SelectItem>
                       <SelectItem value="dot">Soft Corner</SelectItem>
@@ -380,15 +369,21 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                </div>
             </div>
 
-            <div className="space-y-8">
-              <div className="flex flex-col gap-5">
+            {/* Chromatic Controls */}
+            <div className="space-y-10">
+              <div className="flex flex-col gap-6 p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-primary/20 transition-all">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[10px] uppercase font-black text-white/60 tracking-[0.2em]">Matrix Color</Label>
-                  <span className="text-[10px] font-mono text-primary font-bold">{state.fgColor}</span>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                      <Palette className="w-4 h-4 text-primary" />
+                    </div>
+                    <Label className="text-[10px] uppercase font-black text-white tracking-[0.2em]">Pattern Hue</Label>
+                  </div>
+                  <span className="text-[10px] font-mono text-primary font-black uppercase px-2 py-0.5 bg-primary/10 rounded-md tracking-widest">{state.fgColor}</span>
                 </div>
-                <div className="flex items-center gap-5">
+                <div className="flex items-center gap-6">
                    <div 
-                     className="w-14 h-14 rounded-2xl border-2 border-white/20 relative overflow-hidden group cursor-pointer shadow-lg hover:border-primary transition-all"
+                     className="w-16 h-16 rounded-2xl border-2 border-white/20 relative overflow-hidden group cursor-pointer shadow-2xl hover:border-primary hover:scale-105 transition-all ring-4 ring-black/20"
                      style={{ backgroundColor: state.fgColor }}
                    >
                      <input 
@@ -398,25 +393,34 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full scale-150"
                      />
                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-                       <MousePointer2 className="w-4 h-4 text-white" />
+                       <MousePointer2 className="w-5 h-5 text-white" />
                      </div>
                    </div>
                    <Input 
                      value={state.fgColor} 
                      onChange={(e) => updateState({ fgColor: e.target.value })} 
-                     className="flex-1 font-mono text-sm h-14 bg-white/[0.03] border-white/10 rounded-2xl text-white" 
+                     className="flex-1 font-mono text-base h-16 bg-white/[0.03] border-white/10 rounded-2xl text-white focus:border-primary/50 transition-all" 
                    />
                 </div>
               </div>
 
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-6 p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all">
                 <div className="flex items-center justify-between">
-                  <Label className={`text-[10px] uppercase font-black tracking-[0.2em] ${state.backgroundImage ? 'text-white/30' : 'text-white/60'}`}>Canvas Background</Label>
-                  <span className="text-[10px] font-mono text-white/40 font-bold">{state.backgroundImage ? 'DISABLED (IMAGE PRIORITY)' : state.bgColor}</span>
+                  <div className="flex items-center gap-3">
+                    <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center border transition-all", state.backgroundImage ? "bg-white/5 border-white/10 opacity-30" : "bg-white/10 border-white/20")}>
+                      <Paintbrush className={cn("w-4 h-4", state.backgroundImage ? "text-white/20" : "text-white/60")} />
+                    </div>
+                    <Label className={cn("text-[10px] uppercase font-black tracking-[0.2em]", state.backgroundImage ? 'text-white/20' : 'text-white/60')}>Canvas Tone</Label>
+                  </div>
+                  {state.backgroundImage ? (
+                    <span className="text-[8px] font-black uppercase text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md tracking-tighter">BG Image Override Active</span>
+                  ) : (
+                    <span className="text-[10px] font-mono text-white/40 font-black uppercase px-2 py-0.5 bg-white/5 rounded-md tracking-widest">{state.bgColor}</span>
+                  )}
                 </div>
-                <div className="flex items-center gap-5">
+                <div className={cn("flex items-center gap-6 transition-opacity", state.backgroundImage && "opacity-20 pointer-events-none")}>
                    <div 
-                     className={`w-14 h-14 rounded-2xl border-2 border-white/20 relative overflow-hidden group ${state.backgroundImage ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer hover:border-primary shadow-lg'} transition-all`}
+                     className="w-16 h-16 rounded-2xl border-2 border-white/20 relative overflow-hidden group cursor-pointer shadow-2xl hover:border-primary hover:scale-105 transition-all ring-4 ring-black/20"
                      style={{ backgroundColor: state.bgColor }}
                    >
                      {!state.backgroundImage && (
@@ -432,7 +436,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                      value={state.bgColor} 
                      disabled={!!state.backgroundImage}
                      onChange={(e) => updateState({ bgColor: e.target.value })} 
-                     className="flex-1 font-mono text-sm h-14 bg-white/[0.03] border-white/10 rounded-2xl text-white disabled:opacity-30 transition-opacity" 
+                     className="flex-1 font-mono text-base h-16 bg-white/[0.03] border-white/10 rounded-2xl text-white disabled:opacity-30 transition-opacity" 
                    />
                 </div>
               </div>
@@ -440,112 +444,138 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
           </CardContent>
         </Card>
 
-        {/* BRANDING SUITE */}
-        <Card className="glass-card shadow-2xl border-white/10">
+        {/* BRANDING SUITE (Brand Identity) */}
+        <Card className="glass-card shadow-2xl border-white/10 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
           <CardHeader className="border-b border-white/[0.05] bg-white/[0.02] py-8">
-             <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
-              <Shield className="w-5 h-5 text-primary" /> Brand Identity
-            </CardTitle>
+             <div className="flex items-center justify-between">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
+                  <Shield className="w-5 h-5 text-primary" /> Branding Suite
+                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-glow" />
+                  <span className="text-[9px] font-black tracking-widest text-white/40 uppercase">Safe Assets Only</span>
+                </div>
+             </div>
           </CardHeader>
-          <CardContent className="pt-10 space-y-10">
+          <CardContent className="pt-10 space-y-12">
+            
             <div className="space-y-8">
-              {/* Logo Manager */}
-              <div className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 group transition-all duration-500 hover:border-primary/60 hover:bg-white/[0.06] shadow-inner">
-                <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <div className="w-20 h-20 rounded-3xl flex items-center justify-center overflow-hidden bg-black/70 border-2 border-white/20 group-hover:border-primary/80 transition-all shadow-2xl">
+              {/* Premium Logo Manager */}
+              <div className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/10 group transition-all duration-700 hover:border-primary/40 hover:bg-white/[0.06] shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000" />
+                <div className="flex items-center gap-8 relative z-10">
+                  <div className="relative group/thumb">
+                    <div className="w-24 h-24 rounded-[1.75rem] flex items-center justify-center overflow-hidden bg-black/80 border-2 border-white/10 group-hover:border-primary/50 transition-all shadow-2xl ring-4 ring-black/20">
                       {state.logo ? (
-                        <img src={state.logo} alt="Logo" className="w-full h-full object-contain p-3" />
+                        <img src={state.logo} alt="Logo" className="w-full h-full object-contain p-4 group-hover/thumb:scale-110 transition-transform duration-500" />
                       ) : (
-                        <Upload className="w-8 h-8 text-white/20 group-hover:text-primary transition-all duration-500" />
+                        <Upload className="w-10 h-10 text-white/10 group-hover:text-primary transition-all duration-700" />
                       )}
                     </div>
                     {state.logo && (
                       <button 
                         onClick={() => updateState({ logo: null })}
-                        className="absolute -top-3 -right-3 p-2 bg-destructive text-destructive-foreground rounded-full shadow-2xl hover:scale-125 active:scale-90 transition-all z-10 border-2 border-background"
+                        className="absolute -top-3 -right-3 p-2.5 bg-destructive text-destructive-foreground rounded-full shadow-2xl hover:scale-125 active:scale-90 transition-all z-10 border-4 border-[#060907]"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <Label htmlFor="logo-upload" className="cursor-pointer block text-sm font-bold text-white tracking-wide hover:text-primary transition-all">
-                      {state.logo ? 'Update Brand Icon' : 'Upload Brand Icon'}
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="logo-upload" className="cursor-pointer block text-lg font-headline font-bold text-white tracking-tight hover:text-primary transition-all group-hover:translate-x-1 duration-500">
+                      {state.logo ? 'Update Brand Icon' : 'Embed Brand Icon'}
                     </Label>
-                    <p className="text-[10px] text-white/40 mt-1.5 uppercase font-black tracking-widest">High Res • PNG / SVG Preferred</p>
+                    <p className="text-[10px] text-white/30 uppercase font-black tracking-[0.2em] leading-relaxed">
+                      Optimized for transparent PNG or SVG vectors. Recommended size: 512px.
+                    </p>
                     <input id="logo-upload" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'logo')} className="hidden" />
                   </div>
                 </div>
                 {state.logo && (
-                  <div className="mt-10 space-y-5 animate-in fade-in duration-700">
+                  <div className="mt-10 pt-8 border-t border-white/5 space-y-6 animate-in fade-in duration-1000">
                     <div className="flex justify-between items-center">
-                      <Label className="text-[10px] uppercase font-black text-white/60 tracking-widest">Icon Scaling</Label>
-                      <span className="text-[10px] font-mono text-primary font-bold">{(state.logoSize * 100).toFixed(0)}%</span>
+                      <div className="flex items-center gap-2">
+                        <LayoutGrid className="w-3.5 h-3.5 text-primary" />
+                        <Label className="text-[10px] uppercase font-black text-white/60 tracking-widest">Icon Projection Scale</Label>
+                      </div>
+                      <span className="text-[10px] font-mono text-primary font-black px-2 py-0.5 bg-primary/10 rounded-md">{(state.logoSize * 100).toFixed(0)}%</span>
                     </div>
                     <Slider 
                       value={[state.logoSize * 100]} 
                       min={15} max={45} step={1} 
                       onValueChange={(val) => updateState({ logoSize: val[0] / 100 })} 
-                      className="py-2"
+                      className="py-4"
                     />
                   </div>
                 )}
               </div>
 
-              {/* Background Manager */}
-              <div className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 group transition-all duration-500 hover:border-primary/60 hover:bg-white/[0.06] shadow-inner">
-                <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <div className="w-20 h-20 rounded-3xl flex items-center justify-center overflow-hidden bg-black/70 border-2 border-white/20 group-hover:border-primary/80 transition-all shadow-2xl">
+              {/* Advanced Background Manager */}
+              <div className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/10 group transition-all duration-700 hover:border-primary/40 hover:bg-white/[0.06] shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-1000" />
+                <div className="flex items-center gap-8 relative z-10">
+                  <div className="relative group/thumb">
+                    <div className="w-24 h-24 rounded-[1.75rem] flex items-center justify-center overflow-hidden bg-black/80 border-2 border-white/10 group-hover:border-primary/50 transition-all shadow-2xl ring-4 ring-black/20">
                       {state.backgroundImage ? (
-                        <img src={state.backgroundImage} alt="BG" className="w-full h-full object-cover" />
+                        <img src={state.backgroundImage} alt="BG" className="w-full h-full object-cover group-hover/thumb:scale-110 transition-transform duration-500" />
                       ) : (
-                        <ImageIcon className="w-8 h-8 text-white/20 group-hover:text-primary transition-all duration-500" />
+                        <ImageIcon className="w-10 h-10 text-white/10 group-hover:text-primary transition-all duration-700" />
                       )}
                     </div>
                     {state.backgroundImage && (
                       <button 
                         onClick={() => updateState({ backgroundImage: null })}
-                        className="absolute -top-3 -right-3 p-2 bg-destructive text-destructive-foreground rounded-full shadow-2xl hover:scale-125 active:scale-90 transition-all z-10 border-2 border-background"
+                        className="absolute -top-3 -right-3 p-2.5 bg-destructive text-destructive-foreground rounded-full shadow-2xl hover:scale-125 active:scale-90 transition-all z-10 border-4 border-[#060907]"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <Label htmlFor="bg-upload" className="cursor-pointer block text-sm font-bold text-white tracking-wide hover:text-primary transition-all">
-                      {state.backgroundImage ? 'Change Background' : 'Upload Background'}
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="bg-upload" className="cursor-pointer block text-lg font-headline font-bold text-white tracking-tight hover:text-primary transition-all group-hover:translate-x-1 duration-500">
+                      {state.backgroundImage ? 'Modify Background' : 'Inject Background'}
                     </Label>
-                    <p className="text-[10px] text-white/40 mt-1.5 uppercase font-black tracking-widest">4K Support • Professional Visuals</p>
+                    <p className="text-[10px] text-white/30 uppercase font-black tracking-[0.2em] leading-relaxed">
+                      Supports full-canvas imagery. Auto-dimming filters available for scan safety.
+                    </p>
                     <input id="bg-upload" type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'backgroundImage')} className="hidden" />
                   </div>
                 </div>
                 {state.backgroundImage && (
-                  <div className="mt-10 space-y-5 animate-in fade-in duration-700">
+                  <div className="mt-10 pt-8 border-t border-white/5 space-y-6 animate-in fade-in duration-1000">
                     <div className="flex justify-between items-center">
-                      <Label className="text-[10px] uppercase font-black text-white/60 tracking-widest">Image Density (Alpha)</Label>
-                      <span className="text-[10px] font-mono text-primary font-bold">{(state.backgroundOpacity * 100).toFixed(0)}%</span>
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
+                        <Label className="text-[10px] uppercase font-black text-white/60 tracking-widest">Image Density (Alpha)</Label>
+                      </div>
+                      <span className="text-[10px] font-mono text-primary font-black px-2 py-0.5 bg-primary/10 rounded-md">{(state.backgroundOpacity * 100).toFixed(0)}%</span>
                     </div>
                     <Slider 
                       value={[state.backgroundOpacity * 100]} 
                       min={30} max={100} step={1} 
                       onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} 
-                      className="py-2"
+                      className="py-4"
                     />
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="p-5 rounded-3xl bg-primary/10 border border-primary/40 flex items-start gap-5 shadow-2xl">
-              <Info className="w-6 h-6 text-primary mt-0.5" />
+            {/* Reliability Insights */}
+            <div className="p-6 rounded-[2rem] bg-primary/5 border border-primary/20 flex items-start gap-6 shadow-2xl group/info transition-all hover:bg-primary/10">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary shrink-0 ring-1 ring-primary/30 group-hover/info:scale-110 transition-transform duration-500">
+                 <Shield className="w-6 h-6" />
+              </div>
               <div className="space-y-2">
-                 <p className="text-[11px] text-primary font-black uppercase tracking-widest">Auto-Correction Standard</p>
-                 <p className="text-[11px] text-primary/80 leading-relaxed font-bold">
+                 <div className="flex items-center gap-2">
+                    <p className="text-[11px] text-primary font-black uppercase tracking-[0.3em]">Reliability Engine</p>
+                    <div className="px-2 py-0.5 rounded-full bg-primary/20 text-[7px] font-bold text-primary animate-pulse uppercase">Active Guard</div>
+                 </div>
+                 <p className="text-[11px] text-white/60 leading-relaxed font-medium">
                   {(state.logo || state.backgroundImage || dataLength > 500) 
-                    ? 'High Density Engine Engaged: Level H (30%) Error Correction active for maximum scannability.' 
-                    : `Current: Level ${state.errorLevel} (Standard Performance)`}
+                    ? 'Scan Safety Engaged: Level H (High Density) Error Correction active to bypass visual interference.' 
+                    : `Currently optimized for Level ${state.errorLevel} (Standard Balance). Scannability guaranteed.`}
                  </p>
               </div>
             </div>
