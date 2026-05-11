@@ -20,10 +20,10 @@ import {
   ChevronRight,
   Trash2,
   AlertCircle,
-  ImageIcon
+  MessageSquare,
+  Sparkles
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import Script from 'next/script';
 
 interface QrPreviewSectionProps {
   state: QRState;
@@ -48,9 +48,8 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
 
   const dataLength = state.data?.length || 0;
   const isHighDensity = dataLength > 300;
-  const isUltraHighDensity = dataLength > 600;
 
-  // Optimized Background Pre-processor
+  // Optimized Background Pre-processor for Image QR
   useEffect(() => {
     if (!state.backgroundImage) {
       setProcessedBg(null);
@@ -61,7 +60,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      // High res for processing to ensure sharp QR background
       canvas.width = 1024;
       canvas.height = 1024;
       const ctx = canvas.getContext('2d');
@@ -71,7 +69,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         // Background Opacity Application
         ctx.globalAlpha = state.backgroundOpacity;
         
-        // Professional Center-Crop Cover Logic
+        // Center-Crop Cover Logic
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         const x = (canvas.width - img.width * scale) / 2;
         const y = (canvas.height - img.height * scale) / 2;
@@ -84,18 +82,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   }, [state.backgroundImage, state.backgroundOpacity]);
 
   const getQrConfig = (size: number = 400) => {
-    // Advanced Scannability Guard: Force High-Level Error Correction if visual complexity is high
+    // Advanced Scannability Guard: Force Level H if image or high density
     const errorCorrection = (state.logo || state.backgroundImage || isHighDensity) ? 'H' : state.errorLevel;
     
-    let dotType = state.dotStyle;
-    // Fallback to more reliable dots if data density is extreme
-    if (isHighDensity && (state.dotStyle === 'classy' || state.dotStyle === 'dots')) {
-      dotType = 'rounded';
-    }
-    if (isUltraHighDensity) {
-      dotType = 'square';
-    }
-
     return {
       width: size,
       height: size,
@@ -105,7 +94,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       margin: 20,
       dotsOptions: { 
         color: state.fgColor, 
-        type: dotType 
+        type: state.dotStyle 
       },
       cornersSquareOptions: {
         type: state.cornerStyle,
@@ -141,9 +130,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
-      // High-res preview for high-density screens
-      const previewSize = 800;
-      const config = getQrConfig(previewSize);
+      const config = getQrConfig(800);
 
       if (!qrCodeInstance.current) {
         qrCodeInstance.current = new window.QRCodeStyling(config);
@@ -152,7 +139,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         qrCodeInstance.current.update(config);
       }
       
-      // Ensure canvas maintains sharp responsiveness
       const canvas = qrRef.current.querySelector('canvas');
       if (canvas) {
         canvas.style.width = '100%';
@@ -164,62 +150,59 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       const timer = setTimeout(() => setIsGenerating(false), 300);
       return () => clearTimeout(timer);
     }
-  }, [state, processedBg, isHighDensity, isUltraHighDensity]);
+  }, [state, processedBg]);
 
   const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
     if (!qrCodeInstance.current) return;
     setIsGenerating(true);
     try {
-      // Print-quality resolution enforcement for premium branding
-      const targetRes = isHighDensity ? Math.max(resolution, 1200) : resolution;
-      
       await new Promise(resolve => setTimeout(resolve, 300));
       await qrCodeInstance.current.download({ 
         name: `qrcanvas-${state.type.toLowerCase()}-${Date.now()}`, 
         extension: ext,
-        width: targetRes,
-        height: targetRes
+        width: resolution,
+        height: resolution
       });
       onDownload();
-      toast({ title: "Export Succeeded", description: `High-resolution brand asset ready. (${targetRes}px)` });
+      toast({ title: "Asset Exported", description: `High-resolution ${ext.toUpperCase()} ready.` });
     } catch (err) {
-      toast({ variant: "destructive", title: "Render Error", description: "Could not finalize high-res asset." });
+      toast({ variant: "destructive", title: "Render Error", description: "Could not finalize export." });
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleCopyLink = () => {
+  const handleCopyData = () => {
     if (!state.data) return;
     navigator.clipboard.writeText(state.data);
     setCopied(true);
-    toast({ title: "Copied to Clipboard", description: "Payload ready for pasting." });
+    toast({ title: "Data Copied", description: "QR payload copied to clipboard." });
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <Card className="glass-card relative overflow-hidden group shadow-2xl transition-all duration-700 hover:shadow-primary/20">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-80" />
-        <CardHeader className="text-center pb-6 pt-10">
-          <CardTitle className="text-[11px] font-black text-primary uppercase tracking-[0.6em]">Live Scannability Preview</CardTitle>
+        <CardHeader className="text-center pb-6 pt-8">
+          <CardTitle className="text-[10px] font-black text-primary uppercase tracking-[0.5em]">Live Studio Preview</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col items-center gap-10 px-10 pb-12">
-          <div className="relative p-6 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.02] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
+        <CardContent className="flex flex-col items-center gap-8 px-8 pb-10">
+          <div className="relative p-5 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.01] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
             {isGenerating && (
               <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-[4px] rounded-[2.5rem] flex items-center justify-center">
-                <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
               </div>
             )}
-            <div ref={qrRef} className="w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] flex items-center justify-center overflow-hidden rounded-xl bg-white" />
+            <div ref={qrRef} className="w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl bg-white" />
           </div>
 
           <div className="w-full space-y-4">
-            {(isHighDensity || state.backgroundImage || state.logo) && (
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/30 mb-2">
-                <AlertCircle className="w-4 h-4 text-primary shrink-0" />
+            {(state.backgroundImage || state.logo || isHighDensity) && (
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 mb-2">
+                <Sparkles className="w-4 h-4 text-primary shrink-0" />
                 <p className="text-[10px] text-primary font-bold uppercase leading-tight">
-                  Premium branding active. <span className="text-white">Reliability Engine</span> using Level H.
+                  Visual Branding Active. <span className="text-white">Reliability Guard Engaged.</span>
                 </p>
               </div>
             )}
@@ -227,7 +210,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
             <Button 
               onClick={() => handleDownload('png', 1024)} 
               disabled={isGenerating}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-16 rounded-2xl flex items-center justify-center gap-4 text-xl shadow-xl transition-all hover:translate-y-[-2px] active:translate-y-0 active:scale-95 group"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-16 rounded-2xl flex items-center justify-center gap-4 text-xl shadow-xl transition-all active:scale-95 group"
             >
               <Download className="w-6 h-6 group-hover:animate-bounce" />
               Download PNG
@@ -238,15 +221,15 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
                 variant="outline" 
                 disabled={isGenerating}
                 onClick={() => handleDownload('svg', 1024)} 
-                className="bg-white/5 border-white/10 hover:bg-white/15 hover:text-white h-14 rounded-xl text-xs font-black tracking-widest uppercase"
+                className="bg-white/5 border-white/10 hover:bg-white/15 hover:text-white h-14 rounded-xl text-[10px] font-black tracking-widest uppercase"
               >
                 <FileCode className="w-4 h-4 mr-2 text-primary" />
                 Vector SVG
               </Button>
               <Button 
                 variant="outline" 
-                onClick={handleCopyLink}
-                className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-xs font-black tracking-widest uppercase"
+                onClick={handleCopyData}
+                className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase"
               >
                 {copied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
                 {copied ? 'Copied' : 'Copy Data'}
@@ -254,27 +237,27 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
             </div>
           </div>
         </CardContent>
-        <div className="bg-white/[0.03] border-t border-white/[0.1] p-6 text-center">
-           <div className="flex items-center justify-center gap-3 text-white/50 text-[10px] font-black uppercase tracking-[0.2em]">
+        <div className="bg-white/[0.03] border-t border-white/[0.1] p-5 text-center">
+           <div className="flex items-center justify-center gap-3 text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">
              <MonitorSmartphone className="w-4 h-4" />
-             Scannable on all Modern Devices
+             Verified for iOS & Android Scanners
            </div>
         </div>
       </Card>
       
       {history.length > 0 && (
         <Card className="glass-card animate-in slide-in-from-right-10 duration-700 shadow-2xl border-white/10 overflow-hidden">
-          <CardHeader className="py-5 px-6 border-b border-white/[0.05] flex flex-row items-center justify-between bg-white/[0.02]">
-            <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
-              <History className="w-4 h-4 text-primary" /> Recent History
+          <CardHeader className="py-4 px-6 border-b border-white/[0.05] flex flex-row items-center justify-between bg-white/[0.02]">
+            <CardTitle className="text-[9px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
+              <History className="w-4 h-4 text-primary" /> Recent Studio History
             </CardTitle>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={onClearHistory}
-              className="h-7 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-destructive hover:bg-destructive/10 transition-all border border-white/10 rounded-lg group"
+              className="h-7 text-[8px] font-black uppercase tracking-widest text-white/40 hover:text-destructive hover:bg-destructive/10 transition-all border border-white/10 rounded-lg"
             >
-              <Trash2 className="w-3 h-3 mr-1.5" />
+              <Trash2 className="w-3 h-3 mr-1" />
               Clear
             </Button>
           </CardHeader>
@@ -283,12 +266,12 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
               {history.map((item) => (
                 <div key={item.id} className="px-6 py-4 hover:bg-white/[0.05] transition-all group flex items-center justify-between cursor-pointer">
                   <div className="flex items-center gap-4 overflow-hidden">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-white/5 group-hover:border-primary/40 transition-all shadow-lg">
-                       {item.type === 'WiFi' ? <Wifi className="w-5 h-5" /> : item.type === 'vCard' ? <Contact className="w-5 h-5" /> : item.type === 'Phone' ? <Phone className="w-5 h-5" /> : <Link2 className="w-5 h-5" />}
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-white/5 group-hover:border-primary/40 transition-all">
+                       {item.type === 'WiFi' ? <Wifi className="w-4 h-4" /> : item.type === 'vCard' ? <Contact className="w-4 h-4" /> : item.type === 'WhatsApp' ? <MessageSquare className="w-4 h-4" /> : item.type === 'Phone' ? <Phone className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
                     </div>
                     <div className="overflow-hidden">
-                      <p className="text-xs font-bold text-white truncate max-w-[150px]">{item.data}</p>
-                      <p className="text-[9px] text-white/30 uppercase font-black tracking-widest mt-0.5">{new Date(item.timestamp).toLocaleTimeString()}</p>
+                      <p className="text-[11px] font-bold text-white truncate max-w-[140px]">{item.data}</p>
+                      <p className="text-[8px] text-white/30 uppercase font-black tracking-widest mt-0.5">{new Date(item.timestamp).toLocaleTimeString()}</p>
                     </div>
                   </div>
                   <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-primary transition-all group-hover:translate-x-1" />
@@ -298,18 +281,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           </CardContent>
         </Card>
       )}
-
-      {/* Adsterra Native Placement */}
-      <div className="w-full glass-card rounded-[2.5rem] p-6 text-center border-white/10 overflow-hidden min-h-[200px] flex flex-col items-center justify-center relative">
-        <div className="text-[9px] text-white/20 uppercase tracking-[0.3em] mb-4">Sponsored Suggestions</div>
-        <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full"></div>
-        <Script 
-          src="https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js" 
-          strategy="afterInteractive"
-          async
-          data-cfasync="false"
-        />
-      </div>
     </div>
   );
 }
