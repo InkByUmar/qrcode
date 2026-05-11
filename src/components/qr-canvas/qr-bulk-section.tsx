@@ -52,22 +52,27 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Draw Background
+    // 1. Draw Background (Image or Solid)
     if (state.backgroundImage) {
-      const bgImg = await loadImage(state.backgroundImage);
-      ctx.save();
-      ctx.globalAlpha = state.backgroundOpacity;
-      const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
-      const x = (resolution - bgImg.width * scale) / 2;
-      const y = (resolution - bgImg.height * scale) / 2;
-      ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
-      ctx.restore();
+      try {
+        const bgImg = await loadImage(state.backgroundImage);
+        ctx.save();
+        ctx.globalAlpha = state.backgroundOpacity;
+        const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
+        const x = (resolution - bgImg.width * scale) / 2;
+        const y = (resolution - bgImg.height * scale) / 2;
+        ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
+        ctx.restore();
+      } catch (e) {
+        ctx.fillStyle = state.bgColor;
+        ctx.fillRect(0, 0, resolution, resolution);
+      }
     } else {
       ctx.fillStyle = state.bgColor;
       ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    // 2. Generate QR with transparent background
+    // 2. Generate QR Pattern (Transparent background)
     const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
     const config = {
       width: resolution,
@@ -76,7 +81,8 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       image: state.logo || '',
       dotsOptions: { color: state.fgColor, type: state.dotStyle },
       cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
-      backgroundOptions: { color: 'rgba(255,255,255,0)' }, 
+      // Force transparency for compositing
+      backgroundOptions: { color: 'rgba(0,0,0,0)' }, 
       imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
       qrOptions: { errorCorrectionLevel: errorLevel }
     };

@@ -69,9 +69,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, 
         color: state.fgColor 
       },
-      // Force transparency if we have a background image
+      // CRITICAL: Force absolute transparency if background image is present
       backgroundOptions: { 
-        color: state.backgroundImage ? 'rgba(255,255,255,0)' : state.bgColor 
+        color: state.backgroundImage ? 'rgba(0,0,0,0)' : state.bgColor 
       },
       imageOptions: { 
         crossOrigin: 'anonymous', 
@@ -102,23 +102,30 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Draw Background (Solid or Image)
+    // 1. Draw Background Layer (Image or Solid)
     if (state.backgroundImage) {
-      const bgImg = await loadImage(state.backgroundImage);
-      ctx.save();
-      ctx.globalAlpha = state.backgroundOpacity;
-      
-      const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
-      const x = (resolution - bgImg.width * scale) / 2;
-      const y = (resolution - bgImg.height * scale) / 2;
-      ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
-      ctx.restore();
+      try {
+        const bgImg = await loadImage(state.backgroundImage);
+        ctx.save();
+        ctx.globalAlpha = state.backgroundOpacity;
+        
+        // Center-Crop Cover Logic
+        const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
+        const x = (resolution - bgImg.width * scale) / 2;
+        const y = (resolution - bgImg.height * scale) / 2;
+        ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
+        ctx.restore();
+      } catch (e) {
+        console.warn("Background image load failed, falling back to solid", e);
+        ctx.fillStyle = state.bgColor;
+        ctx.fillRect(0, 0, resolution, resolution);
+      }
     } else {
       ctx.fillStyle = state.bgColor;
       ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    // 2. Draw Pattern (from library)
+    // 2. Draw Pattern Layer (Composited over background)
     const qrConfig = getQrConfig(resolution);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');
@@ -134,6 +141,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       
       const renderPreview = async () => {
         try {
+          // Render at decent preview resolution
           const finalCanvas = await compositeCanvas(800);
           if (qrRef.current) {
             qrRef.current.innerHTML = '';

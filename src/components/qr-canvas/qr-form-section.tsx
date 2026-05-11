@@ -33,7 +33,10 @@ import {
   Youtube,
   Search,
   CheckCircle2,
-  Trash2
+  Trash2,
+  Layers,
+  Box,
+  Shapes
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -333,6 +336,28 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
              </CardTitle>
           </CardHeader>
           <CardContent className="pt-10 space-y-8">
+              {/* Feature Map / Layer Guide */}
+              <div className="p-5 rounded-3xl bg-primary/5 border border-primary/20 space-y-4">
+                <div className="flex items-center gap-3">
+                   <Layers className="w-4 h-4 text-primary" />
+                   <h4 className="text-[10px] font-black uppercase tracking-widest text-white">Studio Layer Map</h4>
+                </div>
+                <div className="flex gap-2 h-10">
+                  <div className={cn("flex-1 rounded-lg border border-white/10 flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-tighter transition-all", state.backgroundImage ? "bg-primary/20 text-primary border-primary/30" : "bg-white/5 text-white/20")}>
+                    <ImageIcon className="w-3 h-3" /> Background
+                  </div>
+                  <div className="flex-1 rounded-lg bg-primary/10 text-primary border border-primary/30 flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-tighter">
+                    <Shapes className="w-3 h-3" /> Matrix
+                  </div>
+                  <div className={cn("flex-1 rounded-lg border border-white/10 flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-tighter transition-all", state.logo ? "bg-primary/20 text-primary border-primary/30" : "bg-white/5 text-white/20")}>
+                    <Box className="w-3 h-3" /> Logo
+                  </div>
+                </div>
+                <p className="text-[9px] text-white/40 font-medium italic leading-relaxed">
+                  Tip: Background Layer handles 0% to 100% density seamlessly. Error correction scales automatically.
+                </p>
+              </div>
+
               {/* Logo Manager */}
               <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/10 flex items-center gap-6 group transition-all hover:bg-white/[0.05]">
                 <div className="w-20 h-20 rounded-2xl bg-black/50 border border-white/10 flex items-center justify-center overflow-hidden relative shadow-inner">
@@ -395,7 +420,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                   </div>
                   {state.backgroundImage && (
                     <div className="space-y-3">
-                      <Slider value={[state.backgroundOpacity * 100]} min={20} max={100} step={1} onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} />
+                      <Slider value={[state.backgroundOpacity * 100]} min={1} max={100} step={1} onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} />
                       <div className="flex justify-between text-[9px] font-black text-primary uppercase">
                         <span>Image Intensity</span>
                         <span>{(state.backgroundOpacity * 100).toFixed(0)}%</span>
