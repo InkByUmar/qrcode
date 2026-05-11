@@ -22,7 +22,8 @@ import {
   Sparkles,
   MessageSquare,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  Maximize
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -50,18 +51,21 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const dataLength = state.data?.length || 0;
   const isHighDensity = dataLength > 300;
 
-  // Load image utility for merging
+  // Robust image loading utility
   const loadImage = (src: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => resolve(img);
-      img.onerror = reject;
+      img.onerror = (e) => {
+        console.error("Image load failed", src, e);
+        reject(e);
+      };
       img.src = src;
     });
   };
 
-  // Background Pre-processor to ensure "Cover" aspect ratio and Opacity
+  // Background Pre-processor (Cover + Opacity)
   useEffect(() => {
     if (!state.backgroundImage) {
       setProcessedBg(null);
@@ -77,23 +81,26 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.globalAlpha = state.backgroundOpacity;
           
+          // Draw image as "cover"
           const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
           const x = (canvas.width - img.width * scale) / 2;
           const y = (canvas.height - img.height * scale) / 2;
+          
+          ctx.globalAlpha = state.backgroundOpacity;
           ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
           
           setProcessedBg(canvas.toDataURL('image/png'));
         }
       } catch (e) {
-        console.error("Failed to process background", e);
+        console.error("Background processor failed", e);
       }
     };
     process();
   }, [state.backgroundImage, state.backgroundOpacity]);
 
   const getQrConfig = (size: number = 400) => {
+    // Auto-Level H for Image QR
     const errorCorrection = (state.logo || state.backgroundImage || isHighDensity) ? 'H' : state.errorLevel;
     
     return {
@@ -116,7 +123,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         color: state.fgColor
       },
       backgroundOptions: { 
-        color: 'transparent' // Critical for image QR: dots must be on transparent base
+        color: 'transparent' // Critical: Background is handled by our compositing layer
       },
       imageOptions: { 
         crossOrigin: 'anonymous', 
@@ -151,7 +158,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         canvas.style.display = 'block';
         canvas.style.position = 'relative';
         canvas.style.zIndex = '10';
-        canvas.style.mixBlendMode = 'multiply'; // Visual enhancement for image QRs
       }
       
       const timer = setTimeout(() => setIsGenerating(false), 300);
@@ -171,7 +177,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       
       if (!ctx) throw new Error("Canvas context failed");
 
-      // 1. Render Background layer
+      // 1. Render Composite Background
       if (processedBg) {
         const bgImg = await loadImage(processedBg);
         ctx.drawImage(bgImg, 0, 0, resolution, resolution);
@@ -180,23 +186,22 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         ctx.fillRect(0, 0, resolution, resolution);
       }
 
-      // 2. Render QR layer (High-Res Transparent)
-      // We get the raw PNG blob from the library which contains only the dots/logo
+      // 2. Render Transparent QR Pattern
       const qrBlob = await qrCodeInstance.current.getRawData('png');
       const qrImg = await loadImage(URL.createObjectURL(qrBlob));
       ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
-      // 3. Export combined result
+      // 3. Export
       const link = document.createElement('a');
       link.download = `qrcanvas-${Date.now()}.${ext}`;
       link.href = finalCanvas.toDataURL(`image/${ext === 'png' ? 'png' : 'svg+xml'}`, 1.0);
       link.click();
       
       onDownload();
-      toast({ title: "Asset Exported", description: `Premium ${ext.toUpperCase()} branding ready.` });
+      toast({ title: "Master Export Ready", description: `High-res branded asset (${resolution}px) saved.` });
     } catch (err) {
       console.error(err);
-      toast({ variant: "destructive", title: "Render Error", description: "Could not finalize export." });
+      toast({ variant: "destructive", title: "Export Failed", description: "The rendering engine encountered an error." });
     } finally {
       setIsGenerating(false);
     }
@@ -206,52 +211,52 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     if (!state.data) return;
     navigator.clipboard.writeText(state.data);
     setCopied(true);
-    toast({ title: "Data Copied", description: "QR payload copied to clipboard." });
+    toast({ title: "Content Copied", description: "Payload ready for clipboard." });
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <div className="space-y-8">
       <Card className="glass-card relative overflow-hidden group shadow-2xl transition-all duration-700 hover:shadow-primary/20 border-white/10">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-80" />
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
         <CardHeader className="text-center pb-6 pt-8">
           <CardTitle className="text-[10px] font-black text-primary uppercase tracking-[0.5em] flex items-center justify-center gap-2">
             <Zap className="w-3 h-3 fill-primary/20" />
-            Live Studio Preview
+            Live Brand Rendering
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 px-8 pb-10">
           <div className="relative p-5 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.01] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
-            {/* Visual Background Layer for Preview */}
+            {/* Live Background Projection */}
             {processedBg && (
               <div 
-                className="absolute inset-5 z-0 rounded-xl bg-cover bg-center overflow-hidden"
+                className="absolute inset-5 z-0 rounded-xl bg-cover bg-center overflow-hidden transition-all duration-500"
                 style={{ backgroundImage: `url(${processedBg})` }}
               />
             )}
             {!processedBg && (
               <div 
-                className="absolute inset-5 z-0 rounded-xl"
+                className="absolute inset-5 z-0 rounded-xl transition-all duration-500"
                 style={{ backgroundColor: state.bgColor }}
               />
             )}
             
             {isGenerating && (
-              <div className="absolute inset-0 z-20 bg-black/10 backdrop-blur-[2px] rounded-[2.5rem] flex items-center justify-center">
-                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              <div className="absolute inset-0 z-20 bg-black/10 backdrop-blur-[1px] rounded-[2.5rem] flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
               </div>
             )}
-            {/* The QR Canvas is rendered here */}
+            
             <div ref={qrRef} className="relative z-10 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl" />
           </div>
 
           <div className="w-full space-y-4">
             {(state.backgroundImage || state.logo || isHighDensity) && (
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 mb-2">
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 mb-2 animate-in fade-in slide-in-from-top-2">
                 <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
                 <div className="space-y-0.5">
                   <p className="text-[10px] text-primary font-black uppercase tracking-wider">Reliability Guard Active</p>
-                  <p className="text-[9px] text-white/50 font-bold uppercase">Auto-Level H Error Correction Engaged</p>
+                  <p className="text-[9px] text-white/50 font-bold uppercase">Level H (High Density) Optimized</p>
                 </div>
               </div>
             )}
@@ -262,7 +267,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-16 rounded-2xl flex items-center justify-center gap-4 text-xl shadow-xl transition-all active:scale-95 group"
             >
               <Download className="w-6 h-6 group-hover:animate-bounce" />
-              Download PNG
+              Export High-Res PNG
             </Button>
             
             <div className="grid grid-cols-2 gap-4">
@@ -270,7 +275,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
                 variant="outline" 
                 disabled={isGenerating}
                 onClick={() => handleDownload('svg', 1024)} 
-                className="bg-white/5 border-white/10 hover:bg-white/15 hover:text-white h-14 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all"
+                className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all"
               >
                 <FileCode className="w-4 h-4 mr-2 text-primary" />
                 Vector SVG
@@ -281,15 +286,15 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
                 className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all"
               >
                 {copied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
-                {copied ? 'Copied' : 'Copy Data'}
+                {copied ? 'Copied' : 'Copy Payload'}
               </Button>
             </div>
           </div>
         </CardContent>
-        <div className="bg-white/[0.03] border-t border-white/[0.1] p-5 text-center">
+        <div className="bg-white/[0.03] border-t border-white/[0.1] p-5">
            <div className="flex items-center justify-center gap-3 text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">
              <MonitorSmartphone className="w-4 h-4" />
-             Optimized for Apple & Android Lens
+             Scannable on all Modern Devices
            </div>
         </div>
       </Card>
