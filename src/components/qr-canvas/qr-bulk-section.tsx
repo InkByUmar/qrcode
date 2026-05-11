@@ -16,10 +16,9 @@ import {
   FileJson,
   AlertCircle,
   Settings2,
-  ArrowRight,
-  ClipboardType,
+  Archive,
   Palette,
-  Archive
+  ClipboardType
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import JSZip from 'jszip';
@@ -35,30 +34,55 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Helper to process background with opacity for the batch
-  const processBackground = async (imageUrl: string, opacity: number): Promise<string> => {
-    return new Promise((resolve) => {
+  const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1024;
-        canvas.height = 1024;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.globalAlpha = opacity;
-          const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-          const x = (canvas.width - img.width * scale) / 2;
-          const y = (canvas.height - img.height * scale) / 2;
-          ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-          resolve(canvas.toDataURL('image/png'));
-        } else {
-          resolve(imageUrl);
-        }
-      };
-      img.onerror = () => resolve(imageUrl);
-      img.src = imageUrl;
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  };
+
+  const processMergedQr = async (data: string, bgDataUrl: string | null): Promise<Blob> => {
+    const resolution = 1024;
+    const config = {
+      width: resolution,
+      height: resolution,
+      data: data,
+      image: state.logo || '',
+      dotsOptions: { color: state.fgColor, type: state.dotStyle },
+      cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
+      backgroundOptions: { color: 'transparent' },
+      imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
+      qrOptions: { errorCorrectionLevel: 'H' }
+    };
+
+    const qrCode = new window.QRCodeStyling(config);
+    const qrBlob = await qrCode.getRawData('png');
+    const qrImg = await loadImage(URL.createObjectURL(qrBlob));
+
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = resolution;
+    finalCanvas.height = resolution;
+    const ctx = finalCanvas.getContext('2d');
+    
+    if (!ctx) throw new Error("Canvas context failed");
+
+    // 1. Draw Background
+    if (bgDataUrl) {
+      const bgImg = await loadImage(bgDataUrl);
+      ctx.drawImage(bgImg, 0, 0, resolution, resolution);
+    } else {
+      ctx.fillStyle = state.bgColor;
+      ctx.fillRect(0, 0, resolution, resolution);
+    }
+
+    // 2. Draw QR
+    ctx.drawImage(qrImg, 0, 0, resolution, resolution);
+
+    return new Promise((resolve) => {
+      finalCanvas.toBlob((blob) => resolve(blob!), 'image/png');
     });
   };
 
@@ -69,13 +93,8 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       return;
     }
 
-    if (lines.length > 100) {
-      toast({ variant: "destructive", title: "Batch Too Large", description: "Bulk processing is currently limited to 100 items." });
-      return;
-    }
-
-    if (typeof window === 'undefined' || !window.QRCodeStyling) {
-      toast({ variant: "destructive", title: "Engine Error", description: "QR library not loaded." });
+    if (lines.length > 50) {
+      toast({ variant: "destructive", title: "Batch Too Large", description: "Bulk processing is limited to 50 items." });
       return;
     }
 
@@ -85,34 +104,28 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
 
     try {
       // Pre-process background once for the entire batch
-      let finalBg = '';
+      let bgDataUrl: string | null = null;
       if (state.backgroundImage) {
-        finalBg = await processBackground(state.backgroundImage, state.backgroundOpacity);
+        const bgImg = await loadImage(state.backgroundImage);
+        const bgCanvas = document.createElement('canvas');
+        bgCanvas.width = 1024;
+        bgCanvas.height = 1024;
+        const bgCtx = bgCanvas.getContext('2d');
+        if (bgCtx) {
+          bgCtx.globalAlpha = state.backgroundOpacity;
+          const scale = Math.max(bgCanvas.width / bgImg.width, bgCanvas.height / bgImg.height);
+          const x = (bgCanvas.width - bgImg.width * scale) / 2;
+          const y = (bgCanvas.height - bgImg.height * scale) / 2;
+          bgCtx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
+          bgDataUrl = bgCanvas.toDataURL('image/png');
+        }
       }
 
       for (let i = 0; i < lines.length; i++) {
         const data = lines[i];
+        const blob = await processMergedQr(data, bgDataUrl);
         
-        const config = {
-          width: 1024,
-          height: 1024,
-          data: data,
-          image: state.logo || '',
-          dotsOptions: { color: state.fgColor, type: state.dotStyle },
-          cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
-          backgroundOptions: { 
-            color: state.backgroundImage ? 'transparent' : state.bgColor,
-            image: finalBg || '',
-            imageOptions: { margin: 0, imageSize: 1, crossOrigin: 'anonymous' }
-          },
-          imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
-          qrOptions: { errorCorrectionLevel: 'H' }
-        };
-
-        const qrCode = new window.QRCodeStyling(config);
-        const blob = await qrCode.getRawData('png');
-        
-        const filename = `${data.substring(0, 30).replace(/[^a-z0-9]/gi, '_') || 'qr'}_${i + 1}.png`;
+        const filename = `${data.substring(0, 20).replace(/[^a-z0-9]/gi, '_') || 'qr'}_${i + 1}.png`;
         zip.file(filename, blob);
         
         setProgress(Math.round(((i + 1) / lines.length) * 100));
@@ -121,7 +134,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `qrcanvas-batch-${Date.now()}.zip`;
+      link.download = `qrcanvas-bulk-${Date.now()}.zip`;
       link.click();
 
       toast({ title: "Bulk Export Ready", description: `Successfully bundled ${lines.length} high-res assets.` });
@@ -143,15 +156,15 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
             <ClipboardType className="w-5 h-5" />
           </div>
           <h4 className="text-[11px] font-black uppercase tracking-widest text-white">1. Input Data</h4>
-          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Paste your URLs or text strings, one per line, in the field below.</p>
+          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Paste your URLs or text strings, one per line.</p>
         </div>
         <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary border border-white/20">
             <Palette className="w-5 h-5" />
           </div>
-          <h4 className="text-[11px] font-black uppercase tracking-widest text-white">2. Inherit Design</h4>
-          <p className="text-[11px] text-white/70 leading-relaxed font-medium">The engine uses your current Logo and Colors from the Single QR tab.</p>
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-white">2. Auto Branding</h4>
+          <p className="text-[11px] text-white/70 leading-relaxed font-medium">The engine injects your active logo and background settings.</p>
         </div>
         <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
@@ -159,7 +172,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
             <Archive className="w-5 h-5" />
           </div>
           <h4 className="text-[11px] font-black uppercase tracking-widest text-white">3. Export ZIP</h4>
-          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Download all generated high-res codes in a single organized bundle.</p>
+          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Download all high-res codes in one organized bundle.</p>
         </div>
       </div>
 
@@ -170,13 +183,11 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/40 shadow-inner">
                 <Layers className="w-6 h-6" />
               </div>
-              Batch Production Engine
+              Bulk Production Studio
             </CardTitle>
-            <div className="flex items-center gap-3">
-               <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/30">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-glow" />
-                  <span className="text-[9px] font-black tracking-widest text-primary uppercase">Active Preset Attached</span>
-               </div>
+            <div className="hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30">
+               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+               <span className="text-[9px] font-black tracking-widest text-primary uppercase">Active Preset Locked</span>
             </div>
           </div>
         </CardHeader>
@@ -185,17 +196,17 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Batch Payload</Label>
-                <p className="text-[10px] text-white/40 font-bold uppercase">One link or text string per line</p>
+                <p className="text-[10px] text-white/40 font-bold uppercase">One URL or string per line</p>
               </div>
               <div className="px-3 py-1 rounded-lg bg-white/10 border border-white/20">
                 <span className="text-[10px] font-mono text-primary font-black">{bulkData.split('\n').filter(l => l.trim()).length} Items</span>
               </div>
             </div>
             <Textarea 
-              placeholder="https://google.com&#10;https://facebook.com&#10;https://instagram.com"
+              placeholder="https://example.com&#10;https://brand.com&#10;https://social.com"
               value={bulkData}
               onChange={(e) => setBulkData(e.target.value)}
-              className="min-h-[250px] bg-white/[0.03] border-white/10 text-lg rounded-3xl focus:ring-primary/40 p-8 text-white leading-relaxed resize-none shadow-inner font-mono"
+              className="min-h-[250px] bg-white/[0.03] border-white/10 text-lg rounded-3xl focus:ring-primary/40 p-8 text-white leading-relaxed resize-none font-mono"
             />
           </div>
 
@@ -207,10 +218,9 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                 <Settings2 className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Dynamic Style Injection</h4>
+                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Advanced Brand Injection</h4>
                 <p className="text-xs text-white/70 leading-relaxed font-medium">
-                  Every code in this batch will inherit your <span className="text-primary font-black">active design settings</span>: 
-                  Colors ({state.fgColor}), Dot Style ({state.dotStyle}), and Brand assets.
+                  Applying active chromatic matrix ({state.fgColor}) and brand imagery to entire batch.
                 </p>
               </div>
             </div>
@@ -218,7 +228,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
             {isProcessing && (
               <div className="space-y-3 animate-in fade-in duration-500">
                 <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-primary">
-                  <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Rendering Batch...</span>
+                  <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Batch Rendering...</span>
                   <span>{progress}%</span>
                 </div>
                 <Progress value={progress} className="h-2 bg-white/10" />
@@ -238,25 +248,25 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
               ) : (
                 <>
                   <Download className="w-6 h-6" />
-                  Process & Export Bundle
+                  Export Premium Bundle
                 </>
               )}
             </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-             <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] hover:bg-white/[0.05] transition-colors group">
-                <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+             <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] group">
+                <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="space-y-1">
                   <p className="text-[11px] font-black text-white uppercase tracking-widest">Master Quality (1024px)</p>
-                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">Full high-resolution PNG assets suitable for print and billboard use.</p>
+                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">Full high-resolution PNG assets with brand backgrounds.</p>
                 </div>
              </div>
-             <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] hover:bg-white/[0.05] transition-colors group">
-                <FileJson className="w-5 h-5 text-primary mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+             <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] group">
+                <FileJson className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="space-y-1">
-                  <p className="text-[11px] font-black text-white uppercase tracking-widest">SEO-Friendly Naming</p>
-                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">Automatic file sanitization based on input content for better asset management.</p>
+                  <p className="text-[11px] font-black text-white uppercase tracking-widest">Branded Naming</p>
+                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">Automatic asset sanitization for project organization.</p>
                 </div>
              </div>
           </div>
@@ -266,9 +276,9 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       <div className="flex items-center gap-4 p-6 rounded-2xl bg-amber-500/10 border border-amber-500/30">
         <AlertCircle className="w-5 h-5 text-amber-500 shrink-0" />
         <div className="space-y-1">
-          <p className="text-[11px] text-amber-500 font-black uppercase tracking-widest">Performance Warning</p>
+          <p className="text-[11px] text-amber-500 font-black uppercase tracking-widest">Performance Note</p>
           <p className="text-[11px] text-amber-500/80 font-bold leading-relaxed">
-            Large batches with backgrounds or logos require significant CPU power. Do not close the browser while processing.
+            Rendering images in bulk is CPU intensive. Ensure your device is connected to power.
           </p>
         </div>
       </div>
