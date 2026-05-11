@@ -41,7 +41,6 @@ declare global {
 
 export function QrPreviewSection({ state, history, onDownload, onClearHistory }: QrPreviewSectionProps) {
   const qrRef = useRef<HTMLDivElement>(null);
-  const hiddenQrRef = useRef<HTMLDivElement>(null);
   const qrCodeInstance = useRef<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -62,7 +61,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     });
   };
 
-  // Background Pre-processor
+  // Background Pre-processor to ensure "Cover" aspect ratio and Opacity
   useEffect(() => {
     if (!state.backgroundImage) {
       setProcessedBg(null);
@@ -94,7 +93,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     process();
   }, [state.backgroundImage, state.backgroundOpacity]);
 
-  const getQrConfig = (size: number = 400, isForExport: boolean = false) => {
+  const getQrConfig = (size: number = 400) => {
     const errorCorrection = (state.logo || state.backgroundImage || isHighDensity) ? 'H' : state.errorLevel;
     
     return {
@@ -117,7 +116,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         color: state.fgColor
       },
       backgroundOptions: { 
-        color: 'transparent' // Always transparent for the QR part to allow merging
+        color: 'transparent' // Critical for image QR: dots must be on transparent base
       },
       imageOptions: { 
         crossOrigin: 'anonymous', 
@@ -150,6 +149,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         canvas.style.width = '100%';
         canvas.style.height = '100%';
         canvas.style.display = 'block';
+        canvas.style.position = 'relative';
+        canvas.style.zIndex = '10';
+        canvas.style.mixBlendMode = 'multiply'; // Visual enhancement for image QRs
       }
       
       const timer = setTimeout(() => setIsGenerating(false), 300);
@@ -169,7 +171,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       
       if (!ctx) throw new Error("Canvas context failed");
 
-      // 1. Render Background
+      // 1. Render Background layer
       if (processedBg) {
         const bgImg = await loadImage(processedBg);
         ctx.drawImage(bgImg, 0, 0, resolution, resolution);
@@ -178,12 +180,13 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         ctx.fillRect(0, 0, resolution, resolution);
       }
 
-      // 2. Render QR (High-Res Transparent)
-      const qrBlob = await qrCodeInstance.current.getRawData(ext);
+      // 2. Render QR layer (High-Res Transparent)
+      // We get the raw PNG blob from the library which contains only the dots/logo
+      const qrBlob = await qrCodeInstance.current.getRawData('png');
       const qrImg = await loadImage(URL.createObjectURL(qrBlob));
       ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
-      // 3. Export
+      // 3. Export combined result
       const link = document.createElement('a');
       link.download = `qrcanvas-${Date.now()}.${ext}`;
       link.href = finalCanvas.toDataURL(`image/${ext === 'png' ? 'png' : 'svg+xml'}`, 1.0);
@@ -219,7 +222,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 px-8 pb-10">
           <div className="relative p-5 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.01] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
-            {/* Real Background Layer for Preview */}
+            {/* Visual Background Layer for Preview */}
             {processedBg && (
               <div 
                 className="absolute inset-5 z-0 rounded-xl bg-cover bg-center overflow-hidden"
@@ -238,7 +241,8 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
                 <Loader2 className="w-10 h-10 text-primary animate-spin" />
               </div>
             )}
-            <div ref={qrRef} className="relative z-10 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl mix-blend-multiply" />
+            {/* The QR Canvas is rendered here */}
+            <div ref={qrRef} className="relative z-10 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl" />
           </div>
 
           <div className="w-full space-y-4">

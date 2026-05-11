@@ -53,7 +53,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       image: state.logo || '',
       dotsOptions: { color: state.fgColor, type: state.dotStyle },
       cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
-      backgroundOptions: { color: 'transparent' },
+      backgroundOptions: { color: 'transparent' }, // Use transparent for combined rendering
       imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
       qrOptions: { errorCorrectionLevel: 'H' }
     };
@@ -78,7 +78,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    // 2. Draw QR
+    // 2. Draw QR Layer
     ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
     return new Promise((resolve) => {
@@ -103,7 +103,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const zip = new JSZip();
 
     try {
-      // Pre-process background once for the entire batch
+      // Pre-process background image once for the entire batch
       let bgDataUrl: string | null = null;
       if (state.backgroundImage) {
         const bgImg = await loadImage(state.backgroundImage);
