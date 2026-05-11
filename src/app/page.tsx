@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -26,7 +27,11 @@ import {
   QrCode as QrIcon,
   Menu,
   X,
-  ExternalLink
+  ExternalLink,
+  Crown,
+  BarChart3,
+  RefreshCcw,
+  ShieldCheck
 } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 import {
@@ -42,25 +47,30 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cn } from '@/lib/utils';
 
 export default function Home() {
   const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const scrollToGenerator = (mode: 'single' | 'bulk') => {
-    setGeneratorMode(mode);
+  const scrollTo = (id: string) => {
     setIsMobileMenuOpen(false);
-    const el = document.getElementById('generator');
+    const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  const scrollToGenerator = (mode: 'single' | 'bulk') => {
+    setGeneratorMode(mode);
+    scrollTo('generator');
+  };
+
   const navItems = [
     { label: 'Generator', href: '#generator', action: () => scrollToGenerator('single') },
     { label: 'Bulk Mode', href: '#bulk-mode-info', action: () => scrollToGenerator('bulk') },
+    { label: 'Pro Features', href: '#pricing', action: () => scrollTo('pricing') },
     { label: 'Guide', href: '#guide' },
-    { label: 'Features', href: '#features' },
     { label: 'FAQ', href: '#faq' },
   ];
 
@@ -101,7 +111,10 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-3 md:gap-4">
-             <button className="hidden sm:block text-[10px] font-black uppercase tracking-widest px-6 md:px-8 py-3 md:py-4 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+             <button 
+                onClick={() => scrollTo('pricing')}
+                className="hidden sm:block text-[10px] font-black uppercase tracking-widest px-6 md:px-8 py-3 md:py-4 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+             >
               Go Pro
              </button>
 
@@ -133,7 +146,6 @@ export default function Home() {
                               e.preventDefault();
                               item.action();
                             }
-                            setIsMobileMenuOpen(false);
                           }}
                           className="text-sm font-black uppercase tracking-[0.2em] text-white/60 hover:text-primary flex items-center justify-between group"
                         >
@@ -144,7 +156,10 @@ export default function Home() {
                     </nav>
 
                     <div className="p-6 border-t border-white/5 space-y-4">
-                      <button className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-black text-xs tracking-widest uppercase shadow-xl">
+                      <button 
+                        onClick={() => scrollTo('pricing')}
+                        className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-black text-xs tracking-widest uppercase shadow-xl"
+                      >
                         Go Pro
                       </button>
                       <p className="text-[10px] text-center text-white/30 uppercase font-bold tracking-widest">
@@ -190,6 +205,79 @@ export default function Home() {
 
         <div id="generator" className="relative z-10 scroll-mt-24">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
+        </div>
+      </section>
+
+      {/* GO PRO SECTION - NEW */}
+      <section id="pricing" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative scroll-mt-24 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/5 blur-[150px] rounded-full pointer-events-none" />
+        
+        <div className="text-center mb-24 relative z-10">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-6 border-primary/20">
+            <Crown className="w-4 h-4 fill-primary/20" />
+            <span>ELEVATE YOUR BRAND IDENTITY</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Unlock Professional QR Tools</h2>
+          <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg leading-relaxed">
+            Move beyond static codes. Our Pro Suite gives marketing agencies and brands the power of dynamic content and deep analytics.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto relative z-10">
+          {/* FREE PLAN */}
+          <div className="glass-card p-10 md:p-14 rounded-[3rem] border-white/5 hover:border-white/10 transition-all duration-500 group">
+            <div className="mb-10">
+              <h3 className="text-2xl font-headline font-bold text-white mb-2">Essential</h3>
+              <p className="text-white/40 text-xs font-black uppercase tracking-widest">Always free for creators</p>
+            </div>
+            <div className="flex items-end gap-2 mb-10">
+              <span className="text-5xl font-headline font-black text-white">$0</span>
+              <span className="text-white/40 text-sm mb-2 uppercase font-bold tracking-widest">/ Lifetime</span>
+            </div>
+            <ul className="space-y-6 mb-12">
+              <PricingItem text="Static QR Generation" active />
+              <PricingItem text="Custom Colors & Shapes" active />
+              <PricingItem text="Logo Upload Support" active />
+              <PricingItem text="Standard Bulk Mode (100 items)" active />
+              <PricingItem text="Editable Dynamic Links" active={false} />
+              <PricingItem text="Advanced Scan Analytics" active={false} />
+            </ul>
+            <button 
+              onClick={() => scrollToGenerator('single')}
+              className="w-full py-5 rounded-2xl border border-white/10 text-white/70 font-black text-xs uppercase tracking-widest hover:bg-white/5 transition-all"
+            >
+              Current Plan
+            </button>
+          </div>
+
+          {/* PRO PLAN */}
+          <div className="p-[2px] rounded-[3rem] bg-gradient-to-br from-primary via-primary/50 to-transparent shadow-2xl shadow-primary/20 transform lg:scale-105">
+            <div className="bg-[#060907] p-10 md:p-14 rounded-[3rem] h-full flex flex-col relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl" />
+              <div className="mb-10 relative z-10">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-2xl font-headline font-bold text-white">Professional</h3>
+                  <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-[9px] font-black uppercase tracking-widest border border-primary/30">Most Popular</span>
+                </div>
+                <p className="text-white/40 text-xs font-black uppercase tracking-widest">For serious brands & agencies</p>
+              </div>
+              <div className="flex items-end gap-2 mb-10 relative z-10">
+                <span className="text-5xl font-headline font-black text-white">$19</span>
+                <span className="text-white/40 text-sm mb-2 uppercase font-bold tracking-widest">/ Month</span>
+              </div>
+              <ul className="space-y-6 mb-12 relative z-10 flex-1">
+                <PricingItem text="Everything in Essential" active />
+                <PricingItem text="Unlimited Bulk Processing" active icon={<RefreshCcw className="w-4 h-4 text-primary" />} />
+                <PricingItem text="Dynamic Editable QR Codes" active icon={<RefreshCcw className="w-4 h-4 text-primary" />} />
+                <PricingItem text="White-Label (No QRCanvas Branding)" active icon={<ShieldCheck className="w-4 h-4 text-primary" />} />
+                <PricingItem text="Real-time Scan Analytics & Geos" active icon={<BarChart3 className="w-4 h-4 text-primary" />} />
+                <PricingItem text="Priority Cloud Rendering" active icon={<Zap className="w-4 h-4 text-primary" />} />
+              </ul>
+              <button className="w-full py-5 rounded-2xl bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all relative z-10">
+                Start Pro Free Trial
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -467,6 +555,19 @@ export default function Home() {
       </footer>
       <Toaster />
     </main>
+  );
+}
+
+function PricingItem({ text, active, icon }: { text: string; active: boolean; icon?: React.ReactNode }) {
+  return (
+    <li className={cn("flex items-center gap-3 text-xs md:text-sm transition-opacity", active ? "text-white" : "text-white/20")}>
+      {icon ? icon : (
+        <div className={cn("w-5 h-5 rounded-full flex items-center justify-center shrink-0", active ? "bg-primary/20 text-primary" : "bg-white/5 text-white/10")}>
+          <CheckCircle2 className="w-3.5 h-3.5" />
+        </div>
+      )}
+      {text}
+    </li>
   );
 }
 
