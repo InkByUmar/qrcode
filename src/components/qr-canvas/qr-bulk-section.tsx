@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from 'react';
@@ -12,9 +11,7 @@ import {
   Layers, 
   Download, 
   Loader2, 
-  CheckCircle2, 
   FileJson,
-  AlertCircle,
   Settings2,
   Archive,
   Palette,
@@ -23,6 +20,9 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import JSZip from 'jszip';
+import { QrStylingControls } from './qr-styling-controls';
+import { QrBrandingControls } from './qr-branding-controls';
+import { QrPresetsControls } from './qr-presets-controls';
 
 interface QrBulkSectionProps {
   state: QRState;
@@ -73,7 +73,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     }
 
     // 3. Layer 3: Pattern & Identity (QR dots + Logo)
-    // We force transparency for compositing
     const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
     const config = {
       width: resolution,
@@ -87,7 +86,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       qrOptions: { errorCorrectionLevel: errorLevel }
     };
 
-    const qrCode = new window.QRCodeStyling(config);
+    const qrCode = new (window as any).QRCodeStyling(config);
     const qrBlob = await qrCode.getRawData('png');
     const qrImg = await loadImage(URL.createObjectURL(qrBlob));
     ctx.drawImage(qrImg, 0, 0, resolution, resolution);
@@ -139,7 +138,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
+    <div className="space-y-10 animate-in fade-in duration-700">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
@@ -167,6 +166,14 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
         </div>
       </div>
 
+      {/* SHARED STUDIO CONTROLS FOR BULK */}
+      <QrPresetsControls state={state} updateState={updateState} />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <QrStylingControls state={state} updateState={updateState} />
+        <QrBrandingControls state={state} updateState={updateState} />
+      </div>
+
       <Card className="glass-card border-white/20 shadow-2xl overflow-hidden">
         <CardHeader className="py-8 border-b border-white/[0.05] bg-white/[0.02]">
           <div className="flex items-center justify-between">
@@ -178,7 +185,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
             </CardTitle>
             <div className="hidden sm:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30">
                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-               <span className="text-[9px] font-black tracking-widest text-primary uppercase">Preset Locked</span>
+               <span className="text-[9px] font-black tracking-widest text-primary uppercase">Engine Active</span>
             </div>
           </div>
         </CardHeader>
