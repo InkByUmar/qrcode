@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -39,7 +40,6 @@ declare global {
 
 export function QrPreviewSection({ state, history, onDownload, onClearHistory }: QrPreviewSectionProps) {
   const qrRef = useRef<HTMLDivElement>(null);
-  const qrCodeInstance = useRef<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -50,7 +50,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const getQrConfig = (size: number = 400) => {
     const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
     
-    // Core Engine Config
     return {
       width: size,
       height: size,
@@ -70,9 +69,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, 
         color: state.fgColor 
       },
-      // Integrated Background Engine
+      // Force transparency if we have a background image
       backgroundOptions: { 
-        color: state.backgroundImage ? 'transparent' : state.bgColor 
+        color: state.backgroundImage ? 'rgba(255,255,255,0)' : state.bgColor 
       },
       imageOptions: { 
         crossOrigin: 'anonymous', 
@@ -106,13 +105,14 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     // 1. Draw Background (Solid or Image)
     if (state.backgroundImage) {
       const bgImg = await loadImage(state.backgroundImage);
+      ctx.save();
       ctx.globalAlpha = state.backgroundOpacity;
       
       const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
       const x = (resolution - bgImg.width * scale) / 2;
       const y = (resolution - bgImg.height * scale) / 2;
       ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
-      ctx.globalAlpha = 1.0;
+      ctx.restore();
     } else {
       ctx.fillStyle = state.bgColor;
       ctx.fillRect(0, 0, resolution, resolution);

@@ -45,11 +45,30 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     });
   };
 
-  const processMergedQr = async (data: string, bgDataUrl: string | null): Promise<Blob> => {
-    const resolution = 1024;
-    // Auto-Level H for Batch with images
-    const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
+  const processMergedQr = async (data: string, resolution: number = 1024): Promise<Blob> => {
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = resolution;
+    finalCanvas.height = resolution;
+    const ctx = finalCanvas.getContext('2d');
+    if (!ctx) throw new Error("Canvas context failed");
 
+    // 1. Draw Background
+    if (state.backgroundImage) {
+      const bgImg = await loadImage(state.backgroundImage);
+      ctx.save();
+      ctx.globalAlpha = state.backgroundOpacity;
+      const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
+      const x = (resolution - bgImg.width * scale) / 2;
+      const y = (resolution - bgImg.height * scale) / 2;
+      ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
+      ctx.restore();
+    } else {
+      ctx.fillStyle = state.bgColor;
+      ctx.fillRect(0, 0, resolution, resolution);
+    }
+
+    // 2. Generate QR with transparent background
+    const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
     const config = {
       width: resolution,
       height: resolution,
@@ -57,7 +76,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       image: state.logo || '',
       dotsOptions: { color: state.fgColor, type: state.dotStyle },
       cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
-      backgroundOptions: { color: 'transparent' }, 
+      backgroundOptions: { color: 'rgba(255,255,255,0)' }, 
       imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
       qrOptions: { errorCorrectionLevel: errorLevel }
     };
@@ -65,24 +84,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const qrCode = new window.QRCodeStyling(config);
     const qrBlob = await qrCode.getRawData('png');
     const qrImg = await loadImage(URL.createObjectURL(qrBlob));
-
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = resolution;
-    finalCanvas.height = resolution;
-    const ctx = finalCanvas.getContext('2d');
-    
-    if (!ctx) throw new Error("Canvas context failed");
-
-    // 1. Draw Master Background
-    if (bgDataUrl) {
-      const bgImg = await loadImage(bgDataUrl);
-      ctx.drawImage(bgImg, 0, 0, resolution, resolution);
-    } else {
-      ctx.fillStyle = state.bgColor;
-      ctx.fillRect(0, 0, resolution, resolution);
-    }
-
-    // 2. Draw Pattern Overlay
     ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
     return new Promise((resolve) => {
@@ -107,31 +108,11 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const zip = new JSZip();
 
     try {
-      // Pre-process master background once for the entire batch
-      let bgDataUrl: string | null = null;
-      if (state.backgroundImage) {
-        const bgImg = await loadImage(state.backgroundImage);
-        const bgCanvas = document.createElement('canvas');
-        bgCanvas.width = 1024;
-        bgCanvas.height = 1024;
-        const bgCtx = bgCanvas.getContext('2d');
-        if (bgCtx) {
-          bgCtx.globalAlpha = state.backgroundOpacity;
-          const scale = Math.max(bgCanvas.width / bgImg.width, bgCanvas.height / bgImg.height);
-          const x = (bgCanvas.width - bgImg.width * scale) / 2;
-          const y = (bgCanvas.height - bgImg.height * scale) / 2;
-          bgCtx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
-          bgDataUrl = bgCanvas.toDataURL('image/png');
-        }
-      }
-
       for (let i = 0; i < lines.length; i++) {
         const data = lines[i];
-        const blob = await processMergedQr(data, bgDataUrl);
-        
+        const blob = await processMergedQr(data);
         const filename = `${data.substring(0, 20).replace(/[^a-z0-9]/gi, '_') || 'qr'}_${i + 1}.png`;
         zip.file(filename, blob);
-        
         setProgress(Math.round(((i + 1) / lines.length) * 100));
       }
 
