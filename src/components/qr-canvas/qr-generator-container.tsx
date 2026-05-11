@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -5,7 +6,7 @@ import { QRState, QRHistoryItem } from '@/lib/qr-types';
 import { QrFormSection } from './qr-form-section';
 import { QrPreviewSection } from './qr-preview-section';
 import { QrBulkSection } from './qr-bulk-section';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QrCode, Layers } from 'lucide-react';
 
 const STORAGE_KEY = 'qr_canvas_history_v3';
@@ -91,7 +92,9 @@ export function QrGeneratorContainer({
         newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
       }
 
-      if ((newState.logo || newState.backgroundImage) && newState.errorLevel !== 'H') {
+      // Robust check for scannability
+      const dataLen = newState.data?.length || 0;
+      if ((newState.logo || newState.backgroundImage || dataLen > 300) && newState.errorLevel !== 'H') {
         newState.errorLevel = 'H';
       }
       
@@ -107,7 +110,7 @@ export function QrGeneratorContainer({
       timestamp: Date.now(),
       preview: '' 
     };
-    const updatedHistory = [newItem, ...history.filter(h => h.data !== data)].slice(0, 6);
+    const updatedHistory = [newItem, ...history.filter(h => h.data !== data)].slice(0, 8);
     setHistory(updatedHistory);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedHistory));
   };
@@ -120,16 +123,20 @@ export function QrGeneratorContainer({
   return (
     <div className="space-y-8">
       <div className="flex justify-center mb-8">
-        <Tabs value={activeMode} onValueChange={(val) => setActiveMode(val as any)} className="w-full max-w-md">
-          <TabsList className="grid grid-cols-2 bg-white/5 border border-white/10 p-1 h-14 rounded-2xl">
-            <TabsTrigger value="single" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black uppercase tracking-widest text-[10px] gap-2">
-              <QrCode className="w-4 h-4" /> Single QR
-            </TabsTrigger>
-            <TabsTrigger value="bulk" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-black uppercase tracking-widest text-[10px] gap-2">
-              <Layers className="w-4 h-4" /> Bulk Mode
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="w-full max-w-md bg-white/5 border border-white/10 p-1.5 h-16 rounded-3xl flex">
+          <button 
+            onClick={() => setActiveMode('single')}
+            className={`flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px] ${activeMode === 'single' ? 'bg-primary text-primary-foreground shadow-xl' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+          >
+            <QrCode className="w-4 h-4" /> Single QR
+          </button>
+          <button 
+            onClick={() => setActiveMode('bulk')}
+            className={`flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px] ${activeMode === 'bulk' ? 'bg-primary text-primary-foreground shadow-xl' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+          >
+            <Layers className="w-4 h-4" /> Bulk Mode
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
