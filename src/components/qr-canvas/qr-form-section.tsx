@@ -345,7 +345,16 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-[11px] font-black text-white uppercase tracking-wider">Brand Icon</Label>
-                    <span className="text-[9px] text-white/30 uppercase font-bold">High Res • PNG</span>
+                    {state.logo && (
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 text-white/40 hover:text-destructive"
+                        onClick={() => updateState({ logo: null })}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                   {state.logo && (
                     <div className="space-y-3">
@@ -372,7 +381,16 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-[11px] font-black text-white uppercase tracking-wider">Background Layer</Label>
-                    <span className="text-[9px] text-white/30 uppercase font-bold">4K Support • Branded</span>
+                    {state.backgroundImage && (
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 text-white/40 hover:text-destructive"
+                        onClick={() => updateState({ backgroundImage: null })}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                   {state.backgroundImage && (
                     <div className="space-y-3">
