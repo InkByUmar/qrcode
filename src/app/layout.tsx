@@ -70,6 +70,30 @@ export default function RootLayout({
             }
           })}
         </Script>
+        <Script id="schema-faq" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is this QR code generator truly free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, QRCanvas is 100% free for both personal and commercial use. You can generate unlimited single or bulk QR codes with no account required and no hidden fees."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is Bulk QR Mode?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Bulk Mode allows you to generate multiple QR codes at once. Just paste a list of URLs or text strings, and the engine will apply your branding to all of them and bundle them into a ZIP file."
+                }
+              }
+            ]
+          })}
+        </Script>
       </head>
       <body 
         className="font-body bg-[#060907] text-foreground antialiased selection:bg-primary selection:text-primary-foreground"

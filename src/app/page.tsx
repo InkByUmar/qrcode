@@ -134,7 +134,7 @@ export default function Home() {
           </div>
           <h2 className="text-4xl md:text-5xl font-headline font-bold text-white mb-6">Mastering the Art of QR Branding</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed">
-            From technical setup to marketing strategy, learn how to leverage QR Canvas for maximum engagement.
+            From technical setup to marketing strategy, learn how to leverage QR Canvas for maximum engagement and brand growth.
           </p>
         </div>
 
@@ -166,7 +166,7 @@ export default function Home() {
               <h3 className="text-3xl font-headline font-bold text-white">Why Your Brand Needs Custom QR Codes</h3>
               <div className="space-y-6">
                 <p className="text-white/70 leading-relaxed">
-                  Generic black-and-white QR codes are often ignored. Customizing your codes with a logo and brand colors can increase scan rates by up to <strong>40%</strong>. It builds trust by showing users exactly who they are interacting with.
+                  Generic black-and-white QR codes are often ignored by modern consumers. Customizing your codes with a logo and brand colors can increase scan rates by up to <strong>40%</strong>. It builds trust by showing users exactly who they are interacting with.
                 </p>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="p-5 rounded-2xl bg-white/10 border border-white/20">
@@ -195,7 +195,7 @@ export default function Home() {
                   <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                   </div>
-                  <p className="text-sm text-white/70"><strong className="text-white">Print Quality:</strong> Always use the SVG export for large format prints like banners or signage to ensure zero pixelation.</p>
+                  <p className="text-sm text-white/70"><strong className="text-white">Print Quality:</strong> Always use the SVG export for large format prints like banners or signage to ensure zero pixelation at any size.</p>
                 </li>
                 <li className="flex gap-4">
                   <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
@@ -239,7 +239,7 @@ export default function Home() {
             </ul>
             <button 
               onClick={() => scrollToGenerator('bulk')}
-              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all shadow-lg"
+              className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all shadow-lg"
             >
               Try Bulk Mode Now <ArrowRight className="w-4 h-4" />
             </button>
@@ -275,7 +275,7 @@ export default function Home() {
         <div className="text-center mb-24">
           <h2 className="text-4xl md:text-5xl font-headline font-bold mb-6 text-white">Why Choose Our Professional QR Maker?</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed">
-            We offer enterprise-grade customization tools for free. From <span className="text-white font-bold">QR codes with background images</span> to custom branding with logos.
+            We offer enterprise-grade customization tools for free. From <span className="text-white font-bold">QR codes with background images</span> to custom branding with logos and vector exports.
           </p>
         </div>
         
@@ -318,7 +318,7 @@ export default function Home() {
         <div className="text-center mb-16">
           <HelpCircle className="w-12 h-12 text-primary mx-auto mb-6" />
           <h2 className="text-4xl font-headline font-bold text-white">Frequently Asked Questions</h2>
-          <p className="text-white/60 mt-4 italic">Everything you need to know about our QR engine</p>
+          <p className="text-white/60 mt-4 italic">Everything you need to know about our professional QR engine</p>
         </div>
         
         <Accordion type="single" collapsible className="space-y-4">
@@ -343,13 +343,13 @@ export default function Home() {
           <AccordionItem value="item-4" className="glass-card border-white/10 rounded-2xl px-6">
             <AccordionTrigger className="text-left text-white font-bold hover:text-primary">What is Bulk QR Mode?</AccordionTrigger>
             <AccordionContent className="text-white/70 leading-relaxed">
-              Bulk Mode allows you to generate multiple QR codes at once. Just paste a list of URLs or text strings, and the engine will apply your branding to all of them and bundle them into a ZIP file.
+              Bulk Mode allows you to generate multiple QR codes at once. Just paste a list of URLs or text strings, and the engine will apply your branding to all of them and bundle them into a ZIP file for easy distribution.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-5" className="glass-card border-white/10 rounded-2xl px-6">
             <AccordionTrigger className="text-left text-white font-bold hover:text-primary">Do these QR codes expire?</AccordionTrigger>
             <AccordionContent className="text-white/70 leading-relaxed">
-              No, our QR codes are static, meaning the data is encoded directly into the pattern. They will never expire and will work as long as the underlying link or data is active.
+              No, our QR codes are static, meaning the data is encoded directly into the pattern. They will never expire and will work as long as the underlying link or data remains active.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -367,7 +367,7 @@ export default function Home() {
                 <span className="font-headline font-bold text-2xl tracking-tighter text-white">QRCanvas</span>
               </div>
               <p className="text-sm text-white/50 leading-relaxed font-light">
-                Setting the global standard for <span className="text-white">Professional QR Code Generators</span>. Built with cutting-edge technology for creators, marketing agencies, and enterprise brands.
+                Setting the global standard for <span className="text-white font-medium">Professional QR Code Generators</span>. Built with cutting-edge technology for creators, marketing agencies, and global enterprise brands.
               </p>
               <div className="flex gap-4">
                 {[1,2,3].map(i => (
