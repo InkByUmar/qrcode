@@ -45,12 +45,8 @@ interface QrFormSectionProps {
 const TEMPLATES = [
   { id: 'restaurant', label: 'Restaurant Menu', type: 'URL', data: 'https://menu.yourbrand.com', color: '#FF5733' },
   { id: 'wifi', label: 'Guest WiFi', type: 'WiFi', wifi: { ssid: 'Guest_WiFi', password: 'password123', encryption: 'WPA' }, color: '#33FF57' },
-  { id: 'upi', label: 'UPI Payment', type: 'Text', data: 'upi://pay?pa=yourname@bank&pn=YourName&cu=INR', color: '#10B981' },
   { id: 'business', label: 'Business Card', type: 'vCard', vCard: { firstName: 'John', lastName: 'Doe', mobile: '+1 234 567 890', email: 'john@company.com', organization: 'Tech Inc', jobTitle: 'CEO', website: 'https://company.com' }, color: '#3357FF' },
-  { id: 'instagram', label: 'Instagram Profile', type: 'URL', data: 'https://instagram.com/yourbrand', color: '#E1306C' },
-  { id: 'youtube', label: 'YouTube Channel', type: 'URL', data: 'https://youtube.com/@channel', color: '#FF0000' },
   { id: 'whatsapp', label: 'WhatsApp Connect', type: 'WhatsApp', whatsapp: { phone: '+1234567890', message: 'Hi! Let\'s connect.' }, color: '#25D366' },
-  { id: 'review', label: 'Google Review', type: 'URL', data: 'https://g.page/r/your-review-link', color: '#4285F4' },
 ];
 
 export function QrFormSection({ state, updateState }: QrFormSectionProps) {
@@ -150,7 +146,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
           </div>
         </CardHeader>
         <CardContent className="pt-8 px-8 pb-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
             {TEMPLATES.map((t) => (
               <button
                 key={t.id}
