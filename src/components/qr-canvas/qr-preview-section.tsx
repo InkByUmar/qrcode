@@ -21,6 +21,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import Script from 'next/script';
 
 interface QrPreviewSectionProps {
   state: QRState;
@@ -265,12 +266,16 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </Card>
       )}
 
-      {/* ADSENSE PLACEHOLDER: PREMIUM SIDEBAR */}
-      <div className="w-full h-56 glass-card rounded-[3rem] flex flex-col items-center justify-center p-12 text-center space-y-5 group relative overflow-hidden border-white/10">
-        <div className="absolute top-0 left-0 w-full h-full bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-        <div className="w-16 h-1.5 bg-primary/20 rounded-full mb-2 group-hover:w-24 transition-all duration-700" />
-        <span className="text-[11px] text-white/40 uppercase tracking-[0.8em] font-black">Monetization Display</span>
-        <p className="text-[11px] text-white/50 leading-relaxed italic max-w-[240px] font-bold uppercase tracking-tight">Optimized for high-yield programmatic ad networks.</p>
+      {/* ADSTERRA NATIVE BANNER */}
+      <div className="w-full glass-card rounded-[3rem] p-6 text-center border-white/10 overflow-hidden min-h-[250px] flex flex-col items-center justify-center relative">
+        <div className="text-[10px] text-white/20 uppercase tracking-[0.4em] mb-4">Branded Recommendations</div>
+        <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full"></div>
+        <Script 
+          src="https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js" 
+          strategy="afterInteractive"
+          async
+          data-cfasync="false"
+        />
       </div>
     </div>
   );

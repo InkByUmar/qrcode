@@ -76,6 +76,12 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
+        
+        {/* Adsterra Social Bar */}
+        <Script 
+          src="https://archaicmsflip.com/f8/d2/33/f8d2333ae12f97dc648dbb943b8bf90d.js" 
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
