@@ -14,12 +14,10 @@ import {
   Phone, 
   Mail, 
   Wifi, 
-  Sparkles, 
   Contact, 
   LayoutGrid,
   MessageSquare,
 } from 'lucide-react';
-import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { QrStylingControls } from './qr-styling-controls';
@@ -33,23 +31,7 @@ interface QrFormSectionProps {
 
 export function QrFormSection({ state, updateState }: QrFormSectionProps) {
   const { toast } = useToast();
-  const [isRefining, setIsRefining] = React.useState(false);
-
   const dataLength = state.data?.length || 0;
-
-  const handleAIRefine = async () => {
-    if (!state.data) return;
-    setIsRefining(true);
-    try {
-      const refined = await qrContentRefiner({ text: state.data });
-      updateState({ data: refined });
-      toast({ title: "AI Optimization Complete", description: "Content refined for maximum impact." });
-    } catch (err) {
-      toast({ variant: "destructive", title: "AI Busy", description: "Could not optimize at this time." });
-    } finally {
-      setIsRefining(false);
-    }
-  };
 
   return (
     <div className="space-y-10">
@@ -126,16 +108,6 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                     </Label>
                     <div className="flex items-center gap-4">
                       <span className="text-[10px] font-mono text-white/30">{dataLength} chars</span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-8 text-[9px] uppercase font-black tracking-[0.2em] text-primary border border-primary/20 rounded-xl"
-                        onClick={handleAIRefine}
-                        disabled={isRefining || !state.data || ['WiFi', 'vCard', 'WhatsApp'].includes(state.type)}
-                      >
-                        <Sparkles className={cn("w-3.5 h-3.5 mr-2", isRefining && "animate-spin")} />
-                        Optimize Content
-                      </Button>
                     </div>
                   </div>
                   <Textarea 
