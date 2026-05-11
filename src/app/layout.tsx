@@ -10,13 +10,13 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   alternates: {
-    canonical: 'https://qrcanvas.pro',
+    canonical: 'https://qrcanvas.online',
   },
   openGraph: {
     title: 'QR Canvas | Premium AI-Powered Bulk QR Generator',
     description: 'The world\'s most advanced professional QR code generator with logo and bulk background support. Perfect for brands and agencies.',
     type: 'website',
-    url: 'https://qrcanvas.pro',
+    url: 'https://qrcanvas.online',
     siteName: 'QR Canvas',
     images: [
       {
