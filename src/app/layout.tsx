@@ -49,7 +49,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
         <Script 
           src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js" 
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <Script id="schema-software" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
@@ -100,10 +100,6 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         {children}
-        <Script 
-          src="https://archaicmsflip.com/f8/d2/33/f8d2333ae12f97dc648dbb943b8bf90d.js" 
-          strategy="lazyOnload"
-        />
       </body>
     </html>
   );

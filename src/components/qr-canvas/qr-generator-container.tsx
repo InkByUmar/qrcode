@@ -5,79 +5,96 @@ import { QRState, QRHistoryItem } from '@/lib/qr-types';
 import { QrFormSection } from './qr-form-section';
 import { QrPreviewSection } from './qr-preview-section';
 import { QrBulkSection } from './qr-bulk-section';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { QrCode, Layers } from 'lucide-react';
 
-const STORAGE_KEY = 'qr_canvas_history_v3';
+const HISTORY_KEY = 'qr_canvas_history_v3';
+const STATE_KEY = 'qr_canvas_current_state_v3';
 
 interface QrGeneratorContainerProps {
   activeMode?: 'single' | 'bulk';
   onModeChange?: (mode: 'single' | 'bulk') => void;
 }
 
+const DEFAULT_STATE: QRState = {
+  data: 'https://google.com',
+  logo: null,
+  logoSize: 0.3,
+  backgroundImage: null,
+  backgroundOpacity: 1.0,
+  fgColor: '#26EA56',
+  bgColor: '#ffffff',
+  size: 1024,
+  errorLevel: 'Q',
+  type: 'URL',
+  dotStyle: 'extra-rounded',
+  cornerStyle: 'rounded',
+  wifi: { ssid: '', password: '', encryption: 'WPA' },
+  email: { address: '', subject: '', body: '' },
+  whatsapp: { phone: '', message: '' },
+  vCard: {
+    firstName: '',
+    lastName: '',
+    mobile: '',
+    email: '',
+    organization: '',
+    jobTitle: '',
+    website: ''
+  }
+};
+
 export function QrGeneratorContainer({ 
   activeMode: controlledMode, 
   onModeChange 
 }: QrGeneratorContainerProps) {
   const [uncontrolledMode, setUncontrolledMode] = useState<'single' | 'bulk'>('single');
+  const [state, setState] = useState<QRState>(DEFAULT_STATE);
+  const [debouncedState, setDebouncedState] = useState<QRState>(state);
+  const [history, setHistory] = useState<QRHistoryItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   const activeMode = controlledMode ?? uncontrolledMode;
   const setActiveMode = onModeChange ?? setUncontrolledMode;
 
-  const [state, setState] = useState<QRState>({
-    data: 'https://google.com',
-    logo: null,
-    logoSize: 0.3,
-    backgroundImage: null,
-    backgroundOpacity: 1.0,
-    fgColor: '#26EA56',
-    bgColor: '#ffffff',
-    size: 1024,
-    errorLevel: 'Q',
-    type: 'URL',
-    dotStyle: 'extra-rounded',
-    cornerStyle: 'rounded',
-    wifi: { ssid: '', password: '', encryption: 'WPA' },
-    email: { address: '', subject: '', body: '' },
-    whatsapp: { phone: '', message: '' },
-    vCard: {
-      firstName: '',
-      lastName: '',
-      mobile: '',
-      email: '',
-      organization: '',
-      jobTitle: '',
-      website: ''
-    }
-  });
-
-  const [debouncedState, setDebouncedState] = useState<QRState>(state);
-  const [history, setHistory] = useState<QRHistoryItem[]>([]);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
+  // Initial Load
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        setHistory(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse history", e);
+    const savedHistory = localStorage.getItem(HISTORY_KEY);
+    const savedState = localStorage.getItem(STATE_KEY);
+    
+    if (savedHistory) {
+      try { setHistory(JSON.parse(savedHistory)); } catch (e) { console.error(e); }
+    }
+    
+    if (savedState) {
+      try { 
+        const parsed = JSON.parse(savedState);
+        setState(parsed); 
+        setDebouncedState(parsed);
+      } catch (e) { 
+        console.error(e); 
       }
     }
+    setIsLoaded(true);
   }, []);
 
+  // Save State on Change
   useEffect(() => {
+    if (!isLoaded) return;
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     debounceTimerRef.current = setTimeout(() => {
       setDebouncedState(state);
-    }, 300);
+    }, 400);
+
     return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
-  }, [state]);
+  }, [state, isLoaded]);
 
   const updateState = (updates: Partial<QRState>) => {
     setState(prev => {
       const newState = { ...prev, ...updates };
       
+      // Sync derived data based on type
       if (newState.type === 'WiFi') {
         newState.data = `WIFI:T:${newState.wifi.encryption};S:${newState.wifi.ssid};P:${newState.wifi.password};;`;
       } else if (newState.type === 'Email') {
@@ -91,7 +108,7 @@ export function QrGeneratorContainer({
         newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
       }
 
-      // Robust check for scannability
+      // Reliability logic
       const dataLen = newState.data?.length || 0;
       if ((newState.logo || newState.backgroundImage || dataLen > 300) && newState.errorLevel !== 'H') {
         newState.errorLevel = 'H';
@@ -109,15 +126,17 @@ export function QrGeneratorContainer({
       timestamp: Date.now(),
       preview: '' 
     };
-    const updatedHistory = [newItem, ...history.filter(h => h.data !== data)].slice(0, 8);
+    const updatedHistory = [newItem, ...history.filter(h => h.data !== data)].slice(0, 10);
     setHistory(updatedHistory);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedHistory));
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
   };
 
   const clearHistory = () => {
     setHistory([]);
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(HISTORY_KEY);
   };
+
+  if (!isLoaded) return null;
 
   return (
     <div className="space-y-8">
