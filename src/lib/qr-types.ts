@@ -1,4 +1,3 @@
-
 export type QRErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
 
 export interface QRHistoryItem {

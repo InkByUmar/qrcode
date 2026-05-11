@@ -559,4 +559,3 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
     </div>
   );
 }
-
