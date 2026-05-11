@@ -40,7 +40,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => resolve(img);
-      img.onerror = reject;
+      img.onerror = (e) => reject(e);
       img.src = src;
     });
   };
@@ -72,7 +72,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    // 2. Generate QR Pattern (Transparent background)
+    // 2. Generate QR Pattern (including logo and transparency)
     const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
     const config = {
       width: resolution,

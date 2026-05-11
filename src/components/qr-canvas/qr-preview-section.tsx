@@ -48,6 +48,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const isHighDensity = dataLength > 300 || !!state.backgroundImage || !!state.logo;
 
   const getQrConfig = (size: number = 400) => {
+    // Force Level H if branding is present
     const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
     
     return {
@@ -90,7 +91,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       const img = new Image();
       img.crossOrigin = 'anonymous';
       img.onload = () => resolve(img);
-      img.onerror = reject;
+      img.onerror = (e) => reject(e);
       img.src = src;
     });
   };
@@ -126,6 +127,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     }
 
     // 2. Draw Pattern Layer (Composited over background)
+    // The pattern includes the logo if state.logo is present
     const qrConfig = getQrConfig(resolution);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');
@@ -141,7 +143,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       
       const renderPreview = async () => {
         try {
-          // Render at decent preview resolution
           const finalCanvas = await compositeCanvas(800);
           if (qrRef.current) {
             qrRef.current.innerHTML = '';
