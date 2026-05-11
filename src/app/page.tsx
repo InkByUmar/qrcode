@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { QrGeneratorContainer } from '@/components/qr-generator-container';
+import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { Toaster } from '@/components/ui/toaster';
 import { 
   QrCode, 
@@ -282,7 +282,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-20 items-center">
           <div className="space-y-8">
             <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/30">
-              <Layers className="w-7 h-7 md:w-8 md:h-8" />
+              <Layers className="w-7 h-7 md:w-8 h-8" />
             </div>
             <h2 className="text-3xl md:text-5xl font-headline font-bold text-white leading-tight">
               Powerful Batch Processing for <br/><span className="text-primary">Enterprise QR Management</span>
