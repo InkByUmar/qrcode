@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -8,7 +9,6 @@ import {
   FileCode, 
   Loader2, 
   History, 
-  MessageCircle, 
   Download, 
   Wifi, 
   Contact, 
@@ -19,7 +19,8 @@ import {
   MonitorSmartphone,
   ChevronRight,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  ImageIcon
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Script from 'next/script';
@@ -45,12 +46,10 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const [processedBg, setProcessedBg] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Lowered threshold to 300 for better reliability
   const dataLength = state.data?.length || 0;
   const isHighDensity = dataLength > 300;
   const isUltraHighDensity = dataLength > 600;
 
-  // Optimized background pre-processor for opacity
   useEffect(() => {
     if (!state.backgroundImage) {
       setProcessedBg(null);
@@ -61,13 +60,20 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
+      // High res for processing
+      canvas.width = 1024;
+      canvas.height = 1024;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.globalAlpha = state.backgroundOpacity;
-        ctx.drawImage(img, 0, 0);
+        
+        // Center-crop Cover Logic
+        const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+        const x = (canvas.width - img.width * scale) / 2;
+        const y = (canvas.height - img.height * scale) / 2;
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        
         setProcessedBg(canvas.toDataURL('image/png'));
       }
     };
@@ -75,16 +81,14 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   }, [state.backgroundImage, state.backgroundOpacity]);
 
   const getQrConfig = (size: number = 400) => {
-    // FORCE Level H if any brand asset or high density data is used
     const errorCorrection = (state.logo || state.backgroundImage || isHighDensity) ? 'H' : state.errorLevel;
     
-    // Automatic fallback for complex dot styles on high density data to ensure scannability
     let dotType = state.dotStyle;
     if (isHighDensity && (state.dotStyle === 'classy' || state.dotStyle === 'dots')) {
       dotType = 'rounded';
     }
     if (isUltraHighDensity) {
-      dotType = 'square'; // Maximum scannability for huge payloads
+      dotType = 'square';
     }
 
     return {
@@ -93,7 +97,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       type: 'canvas' as const,
       data: state.data || ' ',
       image: state.logo || '',
-      margin: 20, // Increased margin for scanner focus in preview
+      margin: 20,
       dotsOptions: { 
         color: state.fgColor, 
         type: dotType 
@@ -112,12 +116,12 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         imageOptions: {
           crossOrigin: 'anonymous',
           margin: 0,
-          imageSize: 1,
+          imageSize: 1, // Ensure it fills the whole canvas
         }
       },
       imageOptions: { 
         crossOrigin: 'anonymous', 
-        margin: 15, // Increased margin around logo
+        margin: 15,
         imageSize: state.logoSize,
         hideBackgroundDots: true 
       },
@@ -132,7 +136,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
-      const previewSize = 800; // Higher internal resolution for sharp scaling
+      const previewSize = 800;
       const config = getQrConfig(previewSize);
 
       if (!qrCodeInstance.current) {
@@ -142,7 +146,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         qrCodeInstance.current.update(config);
       }
       
-      // Ensure canvas is responsive
       const canvas = qrRef.current.querySelector('canvas');
       if (canvas) {
         canvas.style.width = '100%';
@@ -188,7 +191,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
 
   return (
     <div className="space-y-10">
-      {/* PREMIUM PREVIEW CARD */}
       <Card className="glass-card relative overflow-hidden group shadow-2xl transition-all duration-700 hover:shadow-primary/20">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-80" />
         <CardHeader className="text-center pb-6 pt-10">
@@ -205,11 +207,11 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           </div>
 
           <div className="w-full space-y-4">
-            {isHighDensity && (
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 mb-2">
-                <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
-                <p className="text-[10px] text-amber-500 font-bold uppercase leading-tight">
-                  High density data detected. <span className="text-white">Reliability Engine</span> active (Level H).
+            {(isHighDensity || state.backgroundImage || state.logo) && (
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/30 mb-2">
+                <AlertCircle className="w-4 h-4 text-primary shrink-0" />
+                <p className="text-[10px] text-primary font-bold uppercase leading-tight">
+                  Premium branding active. <span className="text-white">Reliability Engine</span> using Level H.
                 </p>
               </div>
             )}
@@ -252,7 +254,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </div>
       </Card>
       
-      {/* HISTORY ENGINE */}
       {history.length > 0 && (
         <Card className="glass-card animate-in slide-in-from-right-10 duration-700 shadow-2xl border-white/10 overflow-hidden">
           <CardHeader className="py-5 px-6 border-b border-white/[0.05] flex flex-row items-center justify-between bg-white/[0.02]">
@@ -290,7 +291,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </Card>
       )}
 
-      {/* ADSTERRA NATIVE BANNER */}
       <div className="w-full glass-card rounded-[2.5rem] p-6 text-center border-white/10 overflow-hidden min-h-[200px] flex flex-col items-center justify-center relative">
         <div className="text-[9px] text-white/20 uppercase tracking-[0.3em] mb-4">Sponsored Suggestions</div>
         <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full"></div>

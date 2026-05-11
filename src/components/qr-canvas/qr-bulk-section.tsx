@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -34,6 +35,33 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  // Helper to process background with opacity for the batch
+  const processBackground = async (imageUrl: string, opacity: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.globalAlpha = opacity;
+          const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+          const x = (canvas.width - img.width * scale) / 2;
+          const y = (canvas.height - img.height * scale) / 2;
+          ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+          resolve(canvas.toDataURL('image/png'));
+        } else {
+          resolve(imageUrl);
+        }
+      };
+      img.onerror = () => resolve(imageUrl);
+      img.src = imageUrl;
+    });
+  };
+
   const handleBulkGenerate = async () => {
     const lines = bulkData.split('\n').map(l => l.trim()).filter(l => l.length > 0);
     if (lines.length === 0) {
@@ -42,12 +70,12 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     }
 
     if (lines.length > 100) {
-      toast({ variant: "destructive", title: "Batch Too Large", description: "Bulk processing is currently limited to 100 items for performance." });
+      toast({ variant: "destructive", title: "Batch Too Large", description: "Bulk processing is currently limited to 100 items." });
       return;
     }
 
     if (typeof window === 'undefined' || !window.QRCodeStyling) {
-      toast({ variant: "destructive", title: "Engine Error", description: "QR generation library not loaded." });
+      toast({ variant: "destructive", title: "Engine Error", description: "QR library not loaded." });
       return;
     }
 
@@ -56,6 +84,12 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const zip = new JSZip();
 
     try {
+      // Pre-process background once for the entire batch
+      let finalBg = '';
+      if (state.backgroundImage) {
+        finalBg = await processBackground(state.backgroundImage, state.backgroundOpacity);
+      }
+
       for (let i = 0; i < lines.length; i++) {
         const data = lines[i];
         
@@ -68,9 +102,10 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
           cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
           backgroundOptions: { 
             color: state.backgroundImage ? 'transparent' : state.bgColor,
-            image: state.backgroundImage || '' 
+            image: finalBg || '',
+            imageOptions: { margin: 0, imageSize: 1, crossOrigin: 'anonymous' }
           },
-          imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true },
+          imageOptions: { margin: 12, imageSize: state.logoSize, hideBackgroundDots: true, crossOrigin: 'anonymous' },
           qrOptions: { errorCorrectionLevel: 'H' }
         };
 
@@ -86,7 +121,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `qr-bulk-export-${Date.now()}.zip`;
+      link.download = `qrcanvas-batch-${Date.now()}.zip`;
       link.click();
 
       toast({ title: "Bulk Export Ready", description: `Successfully bundled ${lines.length} high-res assets.` });
@@ -101,7 +136,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      {/* QUICK STEP GUIDE */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
@@ -176,7 +210,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                 <h4 className="text-sm font-bold text-white uppercase tracking-tight">Dynamic Style Injection</h4>
                 <p className="text-xs text-white/70 leading-relaxed font-medium">
                   Every code in this batch will inherit your <span className="text-primary font-black">active design settings</span>: 
-                  Colors ({state.fgColor}), Dot Style ({state.dotStyle}), and Brand Logo ({state.logo ? 'Active' : 'None'}).
+                  Colors ({state.fgColor}), Dot Style ({state.dotStyle}), and Brand assets.
                 </p>
               </div>
             </div>
