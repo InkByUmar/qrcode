@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -101,7 +100,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Layer 1: Foundation (Solid Background)
+    // 1. Layer 1: Foundation (Solid Background Color)
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, resolution, resolution);
 
@@ -110,6 +109,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       try {
         const bgImg = await loadImage(state.backgroundImage);
         ctx.save();
+        // Use the opacity from state (Auto mode sets this to 0.25 in container)
         ctx.globalAlpha = state.backgroundOpacity;
         const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
         const x = (resolution - bgImg.width * scale) / 2;
@@ -117,12 +117,12 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
         ctx.restore();
       } catch (e) {
-        console.warn("Background image failed to load", e);
+        console.warn("Background image layer failed to render", e);
       }
     }
 
-    // 3. Layer 3: Pattern & Identity (QR dots + Logo)
-    // We force transparency here so we don't hide the background imagery/color
+    // 3. Layer 3: Pattern & Identity (QR Matrix + Logo)
+    // Always force transparent for the QR library's internal background to show Layer 1 & 2
     const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');
@@ -148,7 +148,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
             qrRef.current.appendChild(finalCanvas);
           }
         } catch (e) {
-          console.error("Preview render failed", e);
+          console.error("Studio render failed", e);
         } finally {
           setIsGenerating(false);
         }
@@ -162,9 +162,10 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     setIsGenerating(true);
     try {
       if (ext === 'svg') {
+        // SVG export relies on the library's internal handling
         const qrConfig = getQrConfig(resolution, !!state.backgroundImage);
         const styling = new window.QRCodeStyling(qrConfig);
-        await styling.download({ name: 'qrcanvas', extension: 'svg' });
+        await styling.download({ name: 'qrcanvas-pro', extension: 'svg' });
       } else {
         const finalCanvas = await compositeCanvas(resolution);
         const link = document.createElement('a');
@@ -174,10 +175,10 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       }
       
       onDownload();
-      toast({ title: "Export Ready", description: "Your branded asset has been saved." });
+      toast({ title: "Premium Export Ready", description: "Your branded asset has been saved to your device." });
     } catch (err) {
       console.error(err);
-      toast({ variant: "destructive", title: "Export Failed", description: "An error occurred during rendering." });
+      toast({ variant: "destructive", title: "Export Pipeline Failed", description: "An error occurred during high-res rendering." });
     } finally {
       setIsGenerating(false);
     }
@@ -187,7 +188,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     if (!state.data) return;
     navigator.clipboard.writeText(state.data);
     setCopied(true);
-    toast({ title: "Copied", description: "Content ready for clipboard." });
+    toast({ title: "Data Copied", description: "QR payload copied to system clipboard." });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -198,7 +199,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         <CardHeader className="text-center pb-6 pt-8">
           <CardTitle className="text-[10px] font-black text-primary uppercase tracking-[0.5em] flex items-center justify-center gap-2">
             <Zap className="w-3 h-3 fill-primary/20" />
-            Studio Rendering
+            Live Studio Rendering
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 px-8 pb-10">
@@ -216,8 +217,8 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
               <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 mb-2">
                 <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
                 <div className="space-y-0.5">
-                  <p className="text-[10px] text-primary font-black uppercase tracking-wider">Reliability Active</p>
-                  <p className="text-[9px] text-white/50 font-bold uppercase">Level H Optimized</p>
+                  <p className="text-[10px] text-primary font-black uppercase tracking-wider">Reliability Guard Active</p>
+                  <p className="text-[9px] text-white/50 font-bold uppercase">Level H Error Correction Optimized</p>
                 </div>
               </div>
             )}
@@ -255,7 +256,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         <div className="bg-white/[0.03] border-t border-white/[0.1] p-5">
            <div className="flex items-center justify-center gap-3 text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">
              <MonitorSmartphone className="w-4 h-4" />
-             Verified Scannable
+             Scannability Verified
            </div>
         </div>
       </Card>

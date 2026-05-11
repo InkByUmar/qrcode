@@ -14,6 +14,7 @@ export interface QRState {
   logoSize: number;
   backgroundImage: string | null;
   backgroundOpacity: number;
+  backgroundMode: 'auto' | 'manual';
   fgColor: string;
   bgColor: string;
   size: number;

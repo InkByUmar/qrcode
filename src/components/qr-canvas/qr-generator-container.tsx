@@ -7,20 +7,16 @@ import { QrPreviewSection } from './qr-preview-section';
 import { QrBulkSection } from './qr-bulk-section';
 import { QrCode, Layers } from 'lucide-react';
 
-const HISTORY_KEY = 'qr_canvas_history_v3';
-const STATE_KEY = 'qr_canvas_current_state_v3';
-
-interface QrGeneratorContainerProps {
-  activeMode?: 'single' | 'bulk';
-  onModeChange?: (mode: 'single' | 'bulk') => void;
-}
+const HISTORY_KEY = 'qr_canvas_history_v4';
+const STATE_KEY = 'qr_canvas_current_state_v4';
 
 const DEFAULT_STATE: QRState = {
   data: 'https://google.com',
   logo: null,
   logoSize: 0.3,
   backgroundImage: null,
-  backgroundOpacity: 0.5,
+  backgroundOpacity: 0.25,
+  backgroundMode: 'auto',
   fgColor: '#26EA56',
   bgColor: '#ffffff',
   size: 1024,
@@ -68,7 +64,8 @@ export function QrGeneratorContainer({
     if (savedState) {
       try { 
         const parsed = JSON.parse(savedState);
-        // Clamp opacity if needed on load
+        // Ensure legacy states migrate correctly
+        if (!parsed.backgroundMode) parsed.backgroundMode = 'auto';
         if (parsed.backgroundOpacity > 0.5) parsed.backgroundOpacity = 0.5;
         setState(parsed); 
         setDebouncedState(parsed);
@@ -96,7 +93,12 @@ export function QrGeneratorContainer({
     setState(prev => {
       const newState = { ...prev, ...updates };
       
-      // Clamp background opacity to 50% max
+      // Automatic Density Logic
+      if (newState.backgroundMode === 'auto' && newState.backgroundImage) {
+        newState.backgroundOpacity = 0.25; // 25% is the scannability sweet spot
+      }
+
+      // Clamp background opacity to 50% max for manual mode
       if (newState.backgroundOpacity > 0.5) {
         newState.backgroundOpacity = 0.5;
       }
@@ -184,4 +186,9 @@ export function QrGeneratorContainer({
       </div>
     </div>
   );
+}
+
+interface QrGeneratorContainerProps {
+  activeMode?: 'single' | 'bulk';
+  onModeChange?: (mode: 'single' | 'bulk') => void;
 }
