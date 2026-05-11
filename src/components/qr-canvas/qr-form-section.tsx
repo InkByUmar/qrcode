@@ -422,7 +422,6 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                       <Slider value={[state.backgroundOpacity * 100]} min={1} max={50} step={1} onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} />
                       <div className="flex justify-between text-[9px] font-black text-primary uppercase">
                         <span>Image Intensity</span>
-                        <span>{(state.backgroundOpacity * 100).toFixed(0)}%</span>
                       </div>
                     </div>
                   )}
