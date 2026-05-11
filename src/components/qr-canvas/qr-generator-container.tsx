@@ -20,7 +20,7 @@ const DEFAULT_STATE: QRState = {
   logo: null,
   logoSize: 0.3,
   backgroundImage: null,
-  backgroundOpacity: 1.0,
+  backgroundOpacity: 0.5,
   fgColor: '#26EA56',
   bgColor: '#ffffff',
   size: 1024,
@@ -68,6 +68,8 @@ export function QrGeneratorContainer({
     if (savedState) {
       try { 
         const parsed = JSON.parse(savedState);
+        // Clamp opacity if needed on load
+        if (parsed.backgroundOpacity > 0.5) parsed.backgroundOpacity = 0.5;
         setState(parsed); 
         setDebouncedState(parsed);
       } catch (e) { 
@@ -94,6 +96,11 @@ export function QrGeneratorContainer({
     setState(prev => {
       const newState = { ...prev, ...updates };
       
+      // Clamp background opacity to 50% max
+      if (newState.backgroundOpacity > 0.5) {
+        newState.backgroundOpacity = 0.5;
+      }
+
       // Sync derived data based on type
       if (newState.type === 'WiFi') {
         newState.data = `WIFI:T:${newState.wifi.encryption};S:${newState.wifi.ssid};P:${newState.wifi.password};;`;

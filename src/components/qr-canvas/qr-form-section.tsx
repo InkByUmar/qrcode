@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -107,7 +106,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
       logo: null,
       logoSize: 0.3,
       backgroundImage: null,
-      backgroundOpacity: 1.0,
+      backgroundOpacity: 0.5,
       fgColor: '#26EA56',
       bgColor: '#ffffff',
       type: 'URL',
@@ -354,7 +353,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                   </div>
                 </div>
                 <p className="text-[9px] text-white/40 font-medium italic leading-relaxed">
-                  Tip: Background Layer handles 0% to 100% density seamlessly. Error correction scales automatically.
+                  Tip: Background Layer is optimized for up to 50% density to ensure peak scannability.
                 </p>
               </div>
 
@@ -420,7 +419,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                   </div>
                   {state.backgroundImage && (
                     <div className="space-y-3">
-                      <Slider value={[state.backgroundOpacity * 100]} min={1} max={100} step={1} onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} />
+                      <Slider value={[state.backgroundOpacity * 100]} min={1} max={50} step={1} onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} />
                       <div className="flex justify-between text-[9px] font-black text-primary uppercase">
                         <span>Image Intensity</span>
                         <span>{(state.backgroundOpacity * 100).toFixed(0)}%</span>
