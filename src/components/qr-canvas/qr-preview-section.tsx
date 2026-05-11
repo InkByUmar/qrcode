@@ -50,6 +50,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const isHighDensity = dataLength > 300;
   const isUltraHighDensity = dataLength > 600;
 
+  // Optimized Background Pre-processor
   useEffect(() => {
     if (!state.backgroundImage) {
       setProcessedBg(null);
@@ -60,15 +61,17 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      // High res for processing
+      // High res for processing to ensure sharp QR background
       canvas.width = 1024;
       canvas.height = 1024;
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Background Opacity Application
         ctx.globalAlpha = state.backgroundOpacity;
         
-        // Center-crop Cover Logic
+        // Professional Center-Crop Cover Logic
         const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
         const x = (canvas.width - img.width * scale) / 2;
         const y = (canvas.height - img.height * scale) / 2;
@@ -81,9 +84,11 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   }, [state.backgroundImage, state.backgroundOpacity]);
 
   const getQrConfig = (size: number = 400) => {
+    // Advanced Scannability Guard: Force High-Level Error Correction if visual complexity is high
     const errorCorrection = (state.logo || state.backgroundImage || isHighDensity) ? 'H' : state.errorLevel;
     
     let dotType = state.dotStyle;
+    // Fallback to more reliable dots if data density is extreme
     if (isHighDensity && (state.dotStyle === 'classy' || state.dotStyle === 'dots')) {
       dotType = 'rounded';
     }
@@ -116,7 +121,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         imageOptions: {
           crossOrigin: 'anonymous',
           margin: 0,
-          imageSize: 1, // Ensure it fills the whole canvas
+          imageSize: 1, // Ensure background fills the entire canvas
         }
       },
       imageOptions: { 
@@ -136,6 +141,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
+      // High-res preview for high-density screens
       const previewSize = 800;
       const config = getQrConfig(previewSize);
 
@@ -146,6 +152,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         qrCodeInstance.current.update(config);
       }
       
+      // Ensure canvas maintains sharp responsiveness
       const canvas = qrRef.current.querySelector('canvas');
       if (canvas) {
         canvas.style.width = '100%';
@@ -163,6 +170,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     if (!qrCodeInstance.current) return;
     setIsGenerating(true);
     try {
+      // Print-quality resolution enforcement for premium branding
       const targetRes = isHighDensity ? Math.max(resolution, 1200) : resolution;
       
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -291,6 +299,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </Card>
       )}
 
+      {/* Adsterra Native Placement */}
       <div className="w-full glass-card rounded-[2.5rem] p-6 text-center border-white/10 overflow-hidden min-h-[200px] flex flex-col items-center justify-center relative">
         <div className="text-[9px] text-white/20 uppercase tracking-[0.3em] mb-4">Sponsored Suggestions</div>
         <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full"></div>
