@@ -46,27 +46,17 @@ export default function Home() {
 
   return (
     <main className="min-h-screen premium-gradient selection:bg-primary/30 selection:text-white">
-      {/* GLOBAL TOP AD BANNER */}
-      <div className="w-full bg-black/40 backdrop-blur-md py-4 border-b border-white/[0.05] flex justify-center">
-        <div className="w-full max-w-[728px] h-[90px] bg-white/[0.04] rounded-2xl border border-dashed border-white/[0.15] flex flex-col items-center justify-center group cursor-help overflow-hidden relative mx-4">
-           <span className="text-[10px] text-white/60 uppercase tracking-[0.6em] font-bold">Premium Global Display Ad</span>
-           <p className="text-[11px] text-white/30 mt-1 italic">Professional Monetization Space • 728x90</p>
-           <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </div>
-      </div>
-
       {/* NAVIGATION */}
       <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/70 backdrop-blur-xl">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
-            <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
-              <QrCode className="text-primary-foreground w-7 h-7" />
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
+              <QrCode className="text-primary-foreground w-6 h-6" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-headline font-bold tracking-tight text-white leading-none">
+              <span className="text-xl font-headline font-bold tracking-tight text-white leading-none">
                 QR <span className="text-primary">Canvas</span>
               </span>
-              <span className="text-[10px] font-black tracking-[0.4em] text-primary/80 uppercase mt-1">SaaS Pro Edition</span>
             </div>
           </div>
           
@@ -84,7 +74,7 @@ export default function Home() {
                     scrollToGenerator('bulk');
                   }
                 }}
-                className="text-xs font-bold uppercase tracking-widest text-white/70 hover:text-primary transition-all duration-300 relative group"
+                className="text-xs font-bold uppercase tracking-widest text-white/60 hover:text-primary transition-all duration-300 relative group"
               >
                 {item}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
@@ -105,7 +95,7 @@ export default function Home() {
         <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
         
         <div className="max-w-5xl mx-auto text-center mb-24 relative z-10">
-          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 animate-in fade-in zoom-in duration-1000 border-primary/30">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 animate-in fade-in zoom-in duration-1000 border-primary/20">
             <Sparkles className="w-3.5 h-3.5 fill-primary/30" />
             <span>THE NEXT GENERATION OF QR BRANDING</span>
           </div>
@@ -118,13 +108,13 @@ export default function Home() {
           </p>
           
           <div className="flex flex-wrap items-center justify-center gap-10">
-            <div className="flex items-center gap-2 text-xs font-bold text-white/60 uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-xs font-bold text-white/70 uppercase tracking-widest">
               <CheckCircle2 className="w-4 h-4 text-primary" /> Instant Bulk Mode
             </div>
-            <div className="flex items-center gap-2 text-xs font-bold text-white/60 uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-xs font-bold text-white/70 uppercase tracking-widest">
               <CheckCircle2 className="w-4 h-4 text-primary" /> Branded Templates
             </div>
-            <div className="flex items-center gap-2 text-xs font-bold text-white/60 uppercase tracking-widest">
+            <div className="flex items-center gap-2 text-xs font-bold text-white/70 uppercase tracking-widest">
               <CheckCircle2 className="w-4 h-4 text-primary" /> Lifetime Free
             </div>
           </div>
@@ -335,7 +325,7 @@ export default function Home() {
           <AccordionItem value="item-1" className="glass-card border-white/10 rounded-2xl px-6">
             <AccordionTrigger className="text-left text-white font-bold hover:text-primary transition-all">Is this QR code generator truly free?</AccordionTrigger>
             <AccordionContent className="text-white/70 leading-relaxed">
-              Yes, QR Canvas is 100% free for both personal and commercial use. You can generate unlimited single or bulk QR codes with no account required and no hidden fees.
+              Yes, QRCanvas is 100% free for both personal and commercial use. You can generate unlimited single or bulk QR codes with no account required and no hidden fees.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2" className="glass-card border-white/10 rounded-2xl px-6">
@@ -374,7 +364,7 @@ export default function Home() {
                 <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary border border-primary/30 shadow-lg">
                   <QrIcon className="w-5 h-5" />
                 </div>
-                <span className="font-headline font-bold text-2xl tracking-tighter text-white">QR Canvas</span>
+                <span className="font-headline font-bold text-2xl tracking-tighter text-white">QRCanvas</span>
               </div>
               <p className="text-sm text-white/50 leading-relaxed font-light">
                 Setting the global standard for <span className="text-white">Professional QR Code Generators</span>. Built with cutting-edge technology for creators, marketing agencies, and enterprise brands.
@@ -396,10 +386,10 @@ export default function Home() {
           </div>
           
           <div className="pt-12 border-t border-white/[0.05] flex flex-col md:flex-row justify-between items-center gap-8">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/40">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/60">
               &copy; <CopyrightYear /> QR CANVAS PRO SUITE. ALL RIGHTS RESERVED.
             </p>
-            <div className="flex items-center gap-6 text-white/40 text-[10px] font-black uppercase tracking-widest">
+            <div className="flex items-center gap-6 text-white/60 text-[10px] font-black uppercase tracking-widest">
               <span>Optimized for Global Brand Excellence</span>
               <div className="w-1.5 h-1.5 rounded-full bg-primary/30" />
               <span>v6.2.0 Enterprise SEO Edition</span>
@@ -453,7 +443,7 @@ function FooterCol({ title, links }: { title: string, links: string[] }) {
       <h4 className="text-[11px] font-black uppercase tracking-[0.5em] text-white/70">{title}</h4>
       <ul className="space-y-5">
         {links.map(l => (
-          <li key={l}><a href="#" className="text-sm text-white/50 hover:text-primary transition-all duration-300 font-light hover:pl-2">{l}</a></li>
+          <li key={l}><a href="#" className="text-sm text-white/60 hover:text-primary transition-all duration-300 font-light hover:pl-2">{l}</a></li>
         ))}
       </ul>
     </div>

@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -140,10 +139,6 @@ export function QrGeneratorContainer({
           ) : (
             <QrBulkSection state={state} updateState={updateState} />
           )}
-          
-          <div className="hidden xl:block w-full h-[150px] bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center group overflow-hidden">
-            <span className="text-[10px] text-muted-foreground/30 uppercase tracking-[0.5em]">Premium Advertisement Banner</span>
-          </div>
         </div>
 
         <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6">
