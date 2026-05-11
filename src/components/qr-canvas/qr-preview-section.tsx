@@ -94,7 +94,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       type: 'canvas' as const,
       data: state.data || ' ',
       image: state.logo || '',
-      margin: 10, // Added margin for scanner focus
+      margin: 20, // Increased margin for scanner focus in preview
       dotsOptions: { 
         color: state.fgColor, 
         type: dotType 
@@ -133,7 +133,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
-      const previewSize = 600; // Consistent high-res preview
+      const previewSize = 800; // Higher internal resolution for sharp scaling
       const config = getQrConfig(previewSize);
 
       if (!qrCodeInstance.current) {
@@ -141,6 +141,15 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         qrCodeInstance.current.append(qrRef.current);
       } else {
         qrCodeInstance.current.update(config);
+      }
+      
+      // Ensure canvas is responsive
+      const canvas = qrRef.current.querySelector('canvas');
+      if (canvas) {
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.maxWidth = '100%';
+        canvas.style.display = 'block';
       }
       
       const timer = setTimeout(() => setIsGenerating(false), 300);
@@ -187,13 +196,13 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           <CardTitle className="text-[11px] font-black text-primary uppercase tracking-[0.6em]">Live Scannability Preview</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-10 px-10 pb-12">
-          <div className="relative p-8 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.02] transition-transform duration-700 ease-out qr-canvas-shadow">
+          <div className="relative p-6 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.02] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
             {isGenerating && (
               <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-[4px] rounded-[2.5rem] flex items-center justify-center">
                 <Loader2 className="w-12 h-12 text-primary animate-spin" />
               </div>
             )}
-            <div ref={qrRef} className="w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] flex items-center justify-center overflow-hidden rounded-xl" />
+            <div ref={qrRef} className="w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] flex items-center justify-center overflow-hidden rounded-xl bg-white" />
           </div>
 
           <div className="w-full space-y-4">
