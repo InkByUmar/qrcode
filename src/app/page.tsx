@@ -1,8 +1,8 @@
-
 "use client"
 
 import React, { useState } from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
+import { QrScannerModal } from '@/components/qr-canvas/qr-scanner-modal';
 import { Toaster } from '@/components/ui/toaster';
 import { 
   QrCode, 
@@ -31,7 +31,8 @@ import {
   Crown,
   BarChart3,
   RefreshCcw,
-  ShieldCheck
+  ShieldCheck,
+  Scan
 } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 import {
@@ -52,6 +53,7 @@ import { cn } from '@/lib/utils';
 export default function Home() {
   const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const scrollTo = (id: string) => {
     setIsMobileMenuOpen(false);
@@ -112,6 +114,13 @@ export default function Home() {
 
           <div className="flex items-center gap-3 md:gap-4">
              <button 
+                onClick={() => setIsScannerOpen(true)}
+                className="hidden md:flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
+             >
+              <Scan className="w-4 h-4 text-primary" />
+              Scan QR
+             </button>
+             <button 
                 onClick={() => scrollTo('pricing')}
                 className="hidden sm:block text-[10px] font-black uppercase tracking-widest px-6 md:px-8 py-3 md:py-4 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
              >
@@ -156,6 +165,16 @@ export default function Home() {
                     </nav>
 
                     <div className="p-6 border-t border-white/5 space-y-4">
+                      <button 
+                        onClick={() => {
+                          setIsScannerOpen(true);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-xs tracking-widest uppercase flex items-center justify-center gap-2"
+                      >
+                        <Scan className="w-4 h-4 text-primary" />
+                        Live QR Scanner
+                      </button>
                       <button 
                         onClick={() => scrollTo('pricing')}
                         className="w-full py-4 rounded-2xl bg-primary text-primary-foreground font-black text-xs tracking-widest uppercase shadow-xl"
@@ -553,6 +572,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      <QrScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
       <Toaster />
     </main>
   );
