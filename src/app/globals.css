@@ -69,3 +69,22 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
+
+@keyframes qr-scan {
+  0%, 100% { transform: translateY(0); opacity: 0.8; }
+  50% { transform: translateY(250px); opacity: 1; }
+}
+
+.scanner-line {
+  animation: qr-scan 2s ease-in-out infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full;
+}

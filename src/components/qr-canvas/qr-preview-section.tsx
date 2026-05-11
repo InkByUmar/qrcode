@@ -42,11 +42,49 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const qrCodeInstance = useRef<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [processedBg, setProcessedBg] = useState<string | null>(null);
   const { toast } = useToast();
 
   const dataLength = state.data?.length || 0;
-  const isHighDensity = dataLength > 300 || state.backgroundImage || state.logo;
+  const isHighDensity = dataLength > 300 || !!state.backgroundImage || !!state.logo;
+
+  const getQrConfig = (size: number = 400) => {
+    const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
+    
+    // Core Engine Config
+    return {
+      width: size,
+      height: size,
+      type: 'canvas' as const,
+      data: state.data || ' ',
+      image: state.logo || '',
+      margin: 20,
+      dotsOptions: { 
+        color: state.fgColor, 
+        type: state.dotStyle 
+      },
+      cornersSquareOptions: { 
+        type: state.cornerStyle, 
+        color: state.fgColor 
+      },
+      cornersDotOptions: { 
+        type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, 
+        color: state.fgColor 
+      },
+      // Integrated Background Engine
+      backgroundOptions: { 
+        color: state.backgroundImage ? 'transparent' : state.bgColor 
+      },
+      imageOptions: { 
+        crossOrigin: 'anonymous', 
+        margin: 15,
+        imageSize: state.logoSize,
+        hideBackgroundDots: true 
+      },
+      qrOptions: { 
+        errorCorrectionLevel: errorCorrection 
+      }
+    };
+  };
 
   const loadImage = (src: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
@@ -58,116 +96,73 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     });
   };
 
-  // Background Processor
-  useEffect(() => {
-    if (!state.backgroundImage) {
-      setProcessedBg(null);
-      return;
+  const compositeCanvas = async (resolution: number): Promise<HTMLCanvasElement> => {
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = resolution;
+    finalCanvas.height = resolution;
+    const ctx = finalCanvas.getContext('2d');
+    if (!ctx) throw new Error("Canvas context failed");
+
+    // 1. Draw Background (Solid or Image)
+    if (state.backgroundImage) {
+      const bgImg = await loadImage(state.backgroundImage);
+      ctx.globalAlpha = state.backgroundOpacity;
+      
+      const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
+      const x = (resolution - bgImg.width * scale) / 2;
+      const y = (resolution - bgImg.height * scale) / 2;
+      ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
+      ctx.globalAlpha = 1.0;
+    } else {
+      ctx.fillStyle = state.bgColor;
+      ctx.fillRect(0, 0, resolution, resolution);
     }
 
-    const process = async () => {
-      try {
-        const img = await loadImage(state.backgroundImage!);
-        const canvas = document.createElement('canvas');
-        canvas.width = 1024;
-        canvas.height = 1024;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-          const x = (canvas.width - img.width * scale) / 2;
-          const y = (canvas.height - img.height * scale) / 2;
-          ctx.globalAlpha = state.backgroundOpacity;
-          ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-          setProcessedBg(canvas.toDataURL('image/png'));
-        }
-      } catch (e) {
-        console.error("Background processing failed", e);
-      }
-    };
-    process();
-  }, [state.backgroundImage, state.backgroundOpacity]);
+    // 2. Draw Pattern (from library)
+    const qrConfig = getQrConfig(resolution);
+    const styling = new window.QRCodeStyling(qrConfig);
+    const qrBlob = await styling.getRawData('png');
+    const qrImg = await loadImage(URL.createObjectURL(qrBlob));
+    ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
-  const getQrConfig = (size: number = 400) => {
-    const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
-    
-    return {
-      width: size,
-      height: size,
-      type: 'canvas' as const,
-      data: state.data || ' ',
-      image: state.logo || '',
-      margin: 20,
-      dotsOptions: { color: state.fgColor, type: state.dotStyle },
-      cornersSquareOptions: { type: state.cornerStyle, color: state.fgColor },
-      cornersDotOptions: { type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, color: state.fgColor },
-      backgroundOptions: { color: 'transparent' },
-      imageOptions: { 
-        crossOrigin: 'anonymous', 
-        margin: 15,
-        imageSize: state.logoSize,
-        hideBackgroundDots: true 
-      },
-      qrOptions: { errorCorrectionLevel: errorCorrection }
-    };
+    return finalCanvas;
   };
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
-      const config = getQrConfig(800);
+      
+      const renderPreview = async () => {
+        try {
+          const finalCanvas = await compositeCanvas(800);
+          if (qrRef.current) {
+            qrRef.current.innerHTML = '';
+            finalCanvas.style.width = '100%';
+            finalCanvas.style.height = '100%';
+            finalCanvas.style.display = 'block';
+            finalCanvas.style.borderRadius = '0.75rem';
+            qrRef.current.appendChild(finalCanvas);
+          }
+        } catch (e) {
+          console.error("Preview render failed", e);
+        } finally {
+          setIsGenerating(false);
+        }
+      };
 
-      if (!qrCodeInstance.current) {
-        qrCodeInstance.current = new window.QRCodeStyling(config);
-        qrCodeInstance.current.append(qrRef.current);
-      } else {
-        qrCodeInstance.current.update(config);
-      }
-      
-      const canvas = qrRef.current.querySelector('canvas');
-      if (canvas) {
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        canvas.style.display = 'block';
-      }
-      
-      const timer = setTimeout(() => setIsGenerating(false), 300);
-      return () => clearTimeout(timer);
+      renderPreview();
     }
-  }, [state, processedBg]);
+  }, [state]);
 
   const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
-    if (!qrCodeInstance.current) return;
     setIsGenerating(true);
-    
     try {
       if (ext === 'svg') {
-        // Native library download for pure SVG
-        await qrCodeInstance.current.download({ name: 'qrcanvas', extension: 'svg' });
+        const qrConfig = getQrConfig(resolution);
+        const styling = new window.QRCodeStyling(qrConfig);
+        await styling.download({ name: 'qrcanvas', extension: 'svg' });
       } else {
-        // High-res manual composite for PNG (handles background correctly)
-        const finalCanvas = document.createElement('canvas');
-        finalCanvas.width = resolution;
-        finalCanvas.height = resolution;
-        const ctx = finalCanvas.getContext('2d');
-        
-        if (!ctx) throw new Error("Canvas context failed");
-
-        // 1. Draw Background
-        if (processedBg) {
-          const bgImg = await loadImage(processedBg);
-          ctx.drawImage(bgImg, 0, 0, resolution, resolution);
-        } else {
-          ctx.fillStyle = state.bgColor;
-          ctx.fillRect(0, 0, resolution, resolution);
-        }
-
-        // 2. Draw Pattern
-        const qrBlob = await qrCodeInstance.current.getRawData('png');
-        const qrImg = await loadImage(URL.createObjectURL(qrBlob));
-        ctx.drawImage(qrImg, 0, 0, resolution, resolution);
-
-        // 3. Export
+        const finalCanvas = await compositeCanvas(resolution);
         const link = document.createElement('a');
         link.download = `qrcanvas-${Date.now()}.png`;
         link.href = finalCanvas.toDataURL('image/png', 1.0);
@@ -204,25 +199,12 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 px-8 pb-10">
           <div className="relative p-5 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.01] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
-            {processedBg ? (
-              <div 
-                className="absolute inset-5 z-0 rounded-xl bg-cover bg-center overflow-hidden transition-all duration-500"
-                style={{ backgroundImage: `url(${processedBg})` }}
-              />
-            ) : (
-              <div 
-                className="absolute inset-5 z-0 rounded-xl transition-all duration-500"
-                style={{ backgroundColor: state.bgColor }}
-              />
-            )}
-            
             {isGenerating && (
               <div className="absolute inset-0 z-20 bg-black/10 backdrop-blur-[1px] rounded-[2.5rem] flex items-center justify-center">
                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
               </div>
             )}
-            
-            <div ref={qrRef} className="relative z-10 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl" />
+            <div ref={qrRef} className="relative z-10 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl bg-transparent" />
           </div>
 
           <div className="w-full space-y-4">

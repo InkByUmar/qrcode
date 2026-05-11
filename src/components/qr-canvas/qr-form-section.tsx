@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -32,7 +31,8 @@ import {
   Star,
   Youtube,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  Trash2
 } from 'lucide-react';
 import { qrContentRefiner } from '@/ai/flows/qr-content-refiner-flow';
 import { useToast } from '@/hooks/use-toast';
@@ -349,10 +349,10 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-6 w-6 text-white/40 hover:text-destructive"
+                        className="h-8 w-8 text-white/40 hover:text-destructive hover:bg-destructive/10 rounded-full"
                         onClick={() => updateState({ logo: null })}
                       >
-                        <X className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     )}
                   </div>
@@ -385,10 +385,10 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-6 w-6 text-white/40 hover:text-destructive"
+                        className="h-8 w-8 text-white/40 hover:text-destructive hover:bg-destructive/10 rounded-full"
                         onClick={() => updateState({ backgroundImage: null })}
                       >
-                        <X className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </Button>
                     )}
                   </div>

@@ -26,14 +26,12 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const scannerContainerId = "qr-reader-container";
 
-  // Handle Camera List Fetching
   useEffect(() => {
     if (isOpen && !scanResult) {
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length > 0) {
           const formattedCameras = devices.map(d => ({ id: d.id, label: d.label || `Camera ${devices.indexOf(d) + 1}` }));
           setCameras(formattedCameras);
-          // Auto-select back camera if possible, otherwise first one
           const backCamera = formattedCameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('rear'));
           setSelectedCameraId(backCamera ? backCamera.id : formattedCameras[0].id);
         } else {
@@ -46,7 +44,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     }
   }, [isOpen, scanResult]);
 
-  // Handle Scanner Start/Stop
   useEffect(() => {
     let isMounted = true;
 
@@ -56,8 +53,8 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       setIsInitializing(true);
       setError(null);
 
-      // Give Radix a moment to mount the reader element
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // DOM mount check delay
+      await new Promise(resolve => setTimeout(resolve, 800));
       
       const element = document.getElementById(scannerContainerId);
       if (!element) {
@@ -82,11 +79,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           },
           (decodedText) => {
             setScanResult(decodedText);
-            scanner.stop().catch(err => console.debug("Scanner stop on success failed", err));
+            scanner.stop().catch(err => console.debug("Scanner stop success failed", err));
           },
-          (errorMessage) => {
-            // Ignore standard scanning errors
-          }
+          () => {}
         );
         setIsInitializing(false);
       } catch (err) {
@@ -142,7 +137,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         <div className="flex flex-col items-center gap-6 p-6">
           {!scanResult ? (
             <div className="w-full space-y-6">
-              {/* Camera Selection */}
               {cameras.length > 1 && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
@@ -161,11 +155,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 </div>
               )}
 
-              {/* Scanning Area */}
               <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary/20 bg-black/40 group shadow-2xl">
                 <div id={scannerContainerId} className="w-full h-full"></div>
                 
-                {/* Visual Tracker Overlay */}
                 {!isInitializing && !error && (
                   <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
                     <div className="w-64 h-64 border-2 border-primary/30 rounded-3xl relative">
@@ -173,9 +165,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                       <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-xl" />
                       <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-xl" />
                       <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-xl" />
-                      
-                      {/* Scanning Line Animation */}
-                      <div className="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_rgba(16,185,129,0.8)] animate-[scan_2s_ease-in-out_infinite]" />
+                      <div className="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_rgba(16,185,129,0.8)] scanner-line" />
                     </div>
                   </div>
                 )}
@@ -192,7 +182,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                     <AlertCircle className="w-12 h-12 text-destructive" />
                     <div className="space-y-2">
                        <p className="text-sm font-bold text-white">{error}</p>
-                       <p className="text-[10px] text-white/40 uppercase font-medium">Please check your permissions in browser settings.</p>
+                       <p className="text-[10px] text-white/40 uppercase font-medium">Please check permissions in browser settings.</p>
                     </div>
                     <Button variant="outline" onClick={() => window.location.reload()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
                       Retry Permissions
@@ -201,7 +191,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 )}
               </div>
 
-              {/* Navigation Footer */}
               <div className="flex flex-col gap-3">
                 <Button 
                   onClick={handleClose} 
@@ -259,21 +248,11 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               Safe & Secure Scanning
             </p>
             <p className="text-[9px] text-white/10 uppercase font-bold max-w-[200px] mx-auto leading-relaxed">
-              No data is ever stored on our servers. Processing occurs entirely in your browser.
+              No data is stored on our servers. Processing occurs entirely in your browser.
             </p>
           </div>
         </div>
       </DialogContent>
-      <style jsx global>{`
-        @keyframes scan {
-          0%, 100% { transform: translateY(0); opacity: 0.8; }
-          50% { transform: translateY(250px); opacity: 1; }
-        }
-        #qr-reader-container video {
-          border-radius: 2rem;
-          object-fit: cover;
-        }
-      `}</style>
     </Dialog>
   );
 }
