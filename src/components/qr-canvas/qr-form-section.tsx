@@ -28,7 +28,6 @@ import {
   MousePointer2,
   Info,
   AlertTriangle,
-  Layers,
   Star,
   Youtube,
   CreditCard,
@@ -123,33 +122,46 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
 
   return (
     <div className="space-y-10">
-      {/* TEMPLATE SECTION */}
-      <Card className="glass-card border-white/10 overflow-hidden shadow-xl">
+      {/* PREMIUM TEMPLATE SECTION - REFINED FOR PRO LOOK */}
+      <Card className="glass-card border-white/10 overflow-hidden shadow-2xl relative">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         <CardHeader className="py-6 border-b border-white/[0.05] bg-white/[0.02]">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] flex items-center gap-4 text-white">
-              <Star className="w-5 h-5 text-primary" /> Premium Ready Templates
-            </CardTitle>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
+                <Star className="w-4 h-4 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-white">
+                  Premium Ready Templates
+                </CardTitle>
+                <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest mt-0.5">Instant Brand Presets</span>
+              </div>
+            </div>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={handleReset}
-              className="h-8 text-[10px] uppercase font-black tracking-[0.2em] text-white/70 hover:text-white hover:bg-white/10 transition-all border border-white/10 rounded-xl"
+              className="h-8 text-[9px] uppercase font-black tracking-[0.2em] text-white/50 hover:text-white hover:bg-white/5 transition-all border border-white/10 rounded-lg px-4"
             >
-              <RotateCcw className="w-3.5 h-3.5 mr-2" />
+              <RotateCcw className="w-3 h-3 mr-2" />
               Reset All
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="pt-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+        <CardContent className="pt-8 px-8 pb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-5">
             {TEMPLATES.map((t) => (
               <button
                 key={t.id}
                 onClick={() => applyTemplate(t)}
-                className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all group"
+                className="flex flex-col items-center gap-3.5 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all group relative overflow-hidden"
               >
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-lg" style={{ color: t.color }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div 
+                  className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-lg border border-white/10 group-hover:border-primary/30"
+                  style={{ color: t.color }}
+                >
                   {t.id === 'youtube' ? <Youtube className="w-5 h-5" /> : 
                    t.id === 'upi' ? <CreditCard className="w-5 h-5" /> :
                    t.type === 'URL' ? <Link2 className="w-5 h-5" /> : 
@@ -157,7 +169,9 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                    t.type === 'WhatsApp' ? <MessageSquare className="w-5 h-5" /> :
                    <Contact className="w-5 h-5" />}
                 </div>
-                <span className="text-[10px] font-bold text-center leading-tight text-white/80 group-hover:text-white">{t.label}</span>
+                <span className="text-[10px] font-bold text-center leading-tight text-white/60 group-hover:text-white transition-colors relative z-10">
+                  {t.label}
+                </span>
               </button>
             ))}
           </div>
@@ -545,3 +559,4 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
     </div>
   );
 }
+
