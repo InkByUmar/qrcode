@@ -117,24 +117,6 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
   );
 };
 
-/**
- * Adsterra Native Banner Integration
- */
-const AdsterraNativeBanner = ({ className }: { className?: string }) => (
-  <div className={cn("container mx-auto px-6 py-12 flex flex-col items-center animate-reveal", className)}>
-    <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3">Recommendations</div>
-    <div className="w-full max-w-5xl bg-white/[0.03] border border-white/5 rounded-3xl p-4 md:p-8">
-      <div id="container-8a0d2340102217c81755459d2df8b6d0"></div>
-      <Script 
-        async 
-        data-cfasync="false" 
-        src="https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js" 
-        strategy="afterInteractive"
-      />
-    </div>
-  </div>
-);
-
 export default function Home() {
   const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -265,9 +247,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Top Native Banner Integrated Here */}
-        <AdsterraNativeBanner className="mb-20" />
-
         <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
         </div>
@@ -305,9 +284,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Adsterra Native Banner Integration */}
-      <AdsterraNativeBanner />
 
       {/* PWA INSTALLATION SECTION */}
       <section id="pwa-features" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24 bg-primary/[0.01]">
