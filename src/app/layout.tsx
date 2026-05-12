@@ -6,7 +6,7 @@ import Script from 'next/script';
 export const metadata: Metadata = {
   title: 'Free QR Code Generator with Logo & Bulk Support | QR Canvas Studio',
   description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, backgrounds, and bulk processing. 100% free, no sign-up required. Export SVG and PNG for marketing campaigns.',
-  keywords: 'free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code, batch qr code generation, marketing qr tools, branded qr codes, high res qr export',
+  keywords: 'free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code, batch qr code generation, marketing qr tools, branded qr codes, high res qr export, how to generate qr code, scan qr code online',
   authors: [{ name: 'QR Canvas Studio Team' }],
   viewport: 'width=device-width, initial-scale=1',
   robots: {
@@ -94,7 +94,12 @@ export default function RootLayout({
             "@type": "Organization",
             "name": "QR Canvas Studio",
             "url": "https://qrcanvas.online",
-            "logo": "https://qrcanvas.online/logo.png",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://qrcanvas.online/logo.png",
+              "width": "512",
+              "height": "512"
+            },
             "description": "Professional QR code generation studio for brands and marketing agencies.",
             "sameAs": [
               "https://twitter.com/qrcanvas",
@@ -146,6 +151,49 @@ export default function RootLayout({
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "USD"
+            },
+            "screenshot": "https://picsum.photos/seed/qr-app-preview/1200/800"
+          })}
+        </Script>
+        {/* HowTo Structured Data for Rich Results */}
+        <Script id="schema-howto" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": "How to Create a Branded QR Code",
+            "description": "Learn how to generate professional QR codes with logos and custom styles for your business.",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "name": "Choose Content Type",
+                "text": "Select your QR code type like URL, WiFi, or vCard from the dashboard."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Input Data",
+                "text": "Enter the URL or data you want to encode into the QR pattern."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Add Branding",
+                "text": "Upload your company logo and choose a background image for artistic styling."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Customize Style",
+                "text": "Select from dot engines like Lux Rounded or Soft Flow and pick your brand colors."
+              },
+              {
+                "@type": "HowToStep",
+                "name": "Export High-Res",
+                "text": "Download your QR code as a 1024px PNG or vector SVG file."
+              }
+            ],
+            "totalTime": "PT1M",
+            "estimatedCost": {
+              "@type": "MonetaryAmount",
+              "currency": "USD",
+              "value": "0"
             }
           })}
         </Script>
