@@ -25,7 +25,7 @@ interface QrScannerModalProps {
   onClose: () => void;
 }
 
-// Explicitly define a broad range of formats for the Multi-Format Reader
+// Comprehensive Multi-Format Support to resolve detection failures
 const SUPPORTED_FORMATS = [
   Html5QrcodeSupportedFormats.QR_CODE,
   Html5QrcodeSupportedFormats.AZTEC,
@@ -60,7 +60,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scannerContainerId = "qr-reader-container";
 
-  // Cleanup function to stop the scanner safely
+  // Robust cleanup to ensure hardware release
   const stopScanner = async () => {
     if (html5QrCodeRef.current) {
       try {
@@ -68,7 +68,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           await html5QrCodeRef.current.stop();
         }
       } catch (e) {
-        console.warn("Scanner stop error:", e);
+        console.warn("Hardware release warning:", e);
       } finally {
         html5QrCodeRef.current = null;
       }
@@ -86,10 +86,10 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           const backCamera = formattedCameras.find(c => c.label.toLowerCase().includes('back') || c.label.toLowerCase().includes('rear'));
           setSelectedCameraId(backCamera ? backCamera.id : formattedCameras[0].id);
         } else {
-          setError("No cameras found on this device.");
+          setError("No hardware cameras identified.");
         }
       }).catch(err => {
-        setError("Please allow camera permissions to use the scanner.");
+        setError("Camera permissions required for live scanning.");
       });
     }
   }, [isOpen, cameras.length]);
@@ -106,7 +106,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       await stopScanner();
       
       try {
-        // Initialize with Multi-Format support
         const scanner = new Html5Qrcode(scannerContainerId, {
           formatsToSupport: SUPPORTED_FORMATS
         });
@@ -115,8 +114,8 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         await scanner.start(
           selectedCameraId,
           {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
+            fps: 12,
+            qrbox: { width: 260, height: 260 },
             aspectRatio: 1.0
           },
           (decodedText) => {
@@ -131,7 +130,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         if (isMounted) setIsInitializing(false);
       } catch (err) {
         if (isMounted) {
-          setError("Failed to start camera. Hardware may be busy.");
+          setError("Hardware busy or unavailable. Check other apps using camera.");
           setIsInitializing(false);
         }
       }
@@ -154,30 +153,32 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     setIsProcessingFile(true);
     setError(null);
 
-    // 1. Force hardware release
+    // 1. Strict Hardware Release sequence
     await stopScanner();
-    await new Promise(r => setTimeout(r, 400));
+    // Allow DOM and hardware state to settle
+    await new Promise(r => setTimeout(r, 500));
 
     try {
-      // 2. Create isolated Multi-Format instance for file analysis
+      // 2. Fresh Isolated Instance for deep file analysis
       const html5QrCode = new Html5Qrcode(scannerContainerId, {
-        formatsToSupport: SUPPORTED_FORMATS
+        formatsToSupport: SUPPORTED_FORMATS,
+        verbose: false
       });
       
-      // 3. Robust scan pass
+      // 3. High-Precision Scan Pass
       const decodedText = await html5QrCode.scanFile(file, true);
       
       setScanResult(decodedText);
-      toast({ title: "Import Successful", description: "Multi-Format code decoded." });
-    } catch (err) {
-      console.error("File Analysis Error:", err);
-      const errStr = String(err).toLowerCase();
+      toast({ title: "Analysis Success", description: "QR Canvas successfully decoded." });
+    } catch (err: any) {
+      console.error("Deep Scan Failure:", err);
+      const errorMessage = typeof err === 'string' ? err : err.message || '';
       
-      // Gracefully handle standard detection failures
-      if (errStr.includes("not found") || errStr.includes("multiformat") || errStr.includes("no code")) {
-        setError("Pattern not recognized. Ensure the bits are high-contrast and the image is sharp.");
+      // Handle MultiFormat Reader failures gracefully
+      if (errorMessage.includes("NotFound") || errorMessage.includes("no code")) {
+        setError("Pattern not recognized. Ensure the QR bits have high contrast against the background.");
       } else {
-        setError("Technical analysis error. Try a higher resolution image.");
+        setError("Technical detection error. Try a sharper or higher-resolution image.");
       }
     } finally {
       setIsProcessingFile(false);
@@ -189,7 +190,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     if (scanResult) {
       navigator.clipboard.writeText(scanResult);
       setIsCopied(true);
-      toast({ title: "Copied!", description: "Result copied to clipboard." });
+      toast({ title: "Copied!", description: "Decoded payload copied." });
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
@@ -212,7 +213,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between">
           <DialogTitle className="text-white font-headline flex items-center gap-3 text-lg">
             <Scan className="w-5 h-5 text-primary" />
-            Studio Multi-Scanner
+            Studio Scanner Pro
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={handleClose} className="rounded-full text-white/50 hover:text-white hover:bg-white/5">
             <X className="w-5 h-5" />
@@ -275,7 +276,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4 z-20">
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                      {isProcessingFile ? "Analyzing Bits..." : "Initializing Engine..."}
+                      {isProcessingFile ? "Analyzing Pattern..." : "Initializing Hardware..."}
                     </p>
                   </div>
                 )}
@@ -284,14 +285,14 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                   <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-6 p-10 text-center z-30">
                     <AlertCircle className="w-12 h-12 text-destructive" />
                     <div className="space-y-2">
-                       <p className="text-sm font-bold text-white">{error}</p>
+                       <p className="text-sm font-bold text-white leading-relaxed">{error}</p>
                     </div>
                     <div className="flex flex-col gap-3 w-full">
                       <Button variant="outline" onClick={handleReset} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Restart
+                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Restart Scanner
                       </Button>
                       <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <ImageIcon className="w-3.5 h-3.5 mr-2" /> New Image
+                        <ImageIcon className="w-3.5 h-3.5 mr-2" /> Select New Image
                       </Button>
                     </div>
                   </div>
@@ -301,7 +302,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   PRO TIP: This scanner uses a Multi-Format Reader. For imported images, ensure high contrast between the pattern bits and the background for optimal detection.
+                   PRO TIP: For artistic codes with background imagery, ensure the pattern bits have high color contrast and the image is sharp for the Multi-Format Reader to succeed.
                  </p>
               </div>
 
@@ -320,7 +321,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 
                 <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Decoded Data</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Decoded Payload</p>
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
                     <CheckCircle2 className="w-5 h-5" />
@@ -328,7 +329,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 </div>
 
                 <div className="p-6 bg-black/40 rounded-2xl border border-white/5 max-h-[180px] overflow-auto custom-scrollbar relative z-10 shadow-inner">
-                  <p className="text-base font-mono text-white break-all">{scanResult}</p>
+                  <p className="text-base font-mono text-white break-all leading-relaxed">{scanResult}</p>
                 </div>
 
                 <div className="flex flex-col gap-3 pt-2 relative z-10">
@@ -337,12 +338,12 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                     className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-primary/20"
                   >
                     {isCopied ? <CheckCircle2 className="w-5 h-5 mr-3" /> : <Copy className="w-5 h-5 mr-3" />}
-                    {isCopied ? 'Copied' : 'Copy Result'}
+                    {isCopied ? 'Copied to Clipboard' : 'Copy Result'}
                   </Button>
                   <div className="grid grid-cols-2 gap-3">
                     <Button variant="outline" onClick={handleReset} className="h-14 border-white/10 hover:bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/70">
                       <RefreshCcw className="w-4 h-4 mr-2 text-primary" />
-                      Scan Again
+                      Scan New
                     </Button>
                     <Button variant="outline" onClick={handleClose} className="h-14 border-white/10 hover:bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/70">
                       <ArrowLeft className="w-4 h-4 mr-2" />
