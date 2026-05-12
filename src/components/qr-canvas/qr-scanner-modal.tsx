@@ -25,25 +25,12 @@ interface QrScannerModalProps {
   onClose: () => void;
 }
 
-// Comprehensive Multi-Format Support to resolve detection failures
 const SUPPORTED_FORMATS = [
   Html5QrcodeSupportedFormats.QR_CODE,
-  Html5QrcodeSupportedFormats.AZTEC,
-  Html5QrcodeSupportedFormats.CODABAR,
-  Html5QrcodeSupportedFormats.CODE_39,
-  Html5QrcodeSupportedFormats.CODE_93,
-  Html5QrcodeSupportedFormats.CODE_128,
   Html5QrcodeSupportedFormats.DATA_MATRIX,
-  Html5QrcodeSupportedFormats.EAN_8,
-  Html5QrcodeSupportedFormats.EAN_13,
-  Html5QrcodeSupportedFormats.ITF,
-  Html5QrcodeSupportedFormats.MAXICODE,
-  Html5QrcodeSupportedFormats.PDF_417,
-  Html5QrcodeSupportedFormats.RSS_14,
-  Html5QrcodeSupportedFormats.RSS_EXPANDED,
-  Html5QrcodeSupportedFormats.UPC_A,
-  Html5QrcodeSupportedFormats.UPC_E,
-  Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION
+  Html5QrcodeSupportedFormats.AZTEC,
+  Html5QrcodeSupportedFormats.CODE_128,
+  Html5QrcodeSupportedFormats.CODE_39,
 ];
 
 export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
@@ -60,7 +47,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scannerContainerId = "qr-reader-container";
 
-  // Robust cleanup to ensure hardware release
   const stopScanner = async () => {
     if (html5QrCodeRef.current) {
       try {
@@ -68,7 +54,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           await html5QrCodeRef.current.stop();
         }
       } catch (e) {
-        console.warn("Hardware release warning:", e);
+        // Hardware release warnings are suppressed
       } finally {
         html5QrCodeRef.current = null;
       }
@@ -98,16 +84,16 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     let isMounted = true;
 
     const startScanner = async () => {
-      if (!isOpen || !selectedCameraId || scanResult || isProcessingFile || !isMounted) return;
+      // Don't start if: closed, no camera, already have result/error, or processing file
+      if (!isOpen || !selectedCameraId || scanResult || error || isProcessingFile || !isMounted) return;
       
       setIsInitializing(true);
-      setError(null);
-
       await stopScanner();
       
       try {
         const scanner = new Html5Qrcode(scannerContainerId, {
-          formatsToSupport: SUPPORTED_FORMATS
+          formatsToSupport: SUPPORTED_FORMATS,
+          verbose: false
         });
         html5QrCodeRef.current = scanner;
 
@@ -130,13 +116,13 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         if (isMounted) setIsInitializing(false);
       } catch (err) {
         if (isMounted) {
-          setError("Hardware busy or unavailable. Check other apps using camera.");
+          setError("Camera busy or unavailable.");
           setIsInitializing(false);
         }
       }
     };
 
-    if (isOpen && !scanResult && !isProcessingFile) {
+    if (isOpen && !scanResult && !error && !isProcessingFile) {
       startScanner();
     }
 
@@ -144,7 +130,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       isMounted = false;
       stopScanner();
     };
-  }, [isOpen, selectedCameraId, !!scanResult, isProcessingFile]);
+  }, [isOpen, selectedCameraId, !!scanResult, !!error, isProcessingFile]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -152,39 +138,55 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
 
     setIsProcessingFile(true);
     setError(null);
+    setScanResult(null);
 
-    // 1. Force hardware release first to avoid processing conflicts
+    // 1. Total hardware release
     await stopScanner();
     
     // 2. 500ms Hardware Cool-down: Allow the OS to fully release camera locks
     await new Promise(r => setTimeout(r, 500));
 
+    // 3. Create isolated temp container for file analysis
+    const tempId = "qr-file-scan-temp";
+    let tempDiv = document.getElementById(tempId);
+    if (!tempDiv) {
+      tempDiv = document.createElement('div');
+      tempDiv.id = tempId;
+      tempDiv.style.display = 'none';
+      document.body.appendChild(tempDiv);
+    }
+
+    // 4. Temporary Console Guard: Suppress library errors from triggering dev overlays
+    const originalError = console.error;
+    console.error = (...args: any[]) => {
+      const msg = String(args[0] || "");
+      if (msg.includes("NotFoundException") || msg.includes("No MultiFormat Readers")) {
+        return; // Suppress noise
+      }
+      originalError.apply(console, args);
+    };
+
     try {
-      // 3. Fresh Isolated Instance for pure file analysis (container-less)
-      const html5QrCode = new Html5Qrcode(scannerContainerId, {
+      const fileScanner = new Html5Qrcode(tempId, {
         formatsToSupport: SUPPORTED_FORMATS,
         verbose: false
       });
       
-      // 4. High-Precision Scan: Use 'false' for showImage for better reliability with complex patterns
-      const decodedText = await html5QrCode.scanFile(file, false);
+      const decodedText = await fileScanner.scanFile(file, false);
       
       if (decodedText) {
         setScanResult(decodedText);
         toast({ title: "Analysis Success", description: "QR Canvas successfully decoded." });
-      } else {
-        throw new Error("Decoding completed but returned no result.");
       }
     } catch (err: any) {
-      console.error("Deep Scan Failure:", err);
-      const errorMessage = typeof err === 'string' ? err : err.message || '';
-      
-      if (errorMessage.includes("NotFound") || errorMessage.includes("no code")) {
+      const errStr = String(err);
+      if (errStr.includes("NotFound") || errStr.includes("no code")) {
         setError("Pattern not recognized. Ensure the QR bits have high contrast and the image is sharp.");
       } else {
-        setError("Technical detection error. The image may be too large or the format is unsupported.");
+        setError("Technical detection error. The image may be too complex or corrupted.");
       }
     } finally {
+      console.error = originalError; // Restore original error logging
       setIsProcessingFile(false);
       if (event.target) event.target.value = '';
     }
