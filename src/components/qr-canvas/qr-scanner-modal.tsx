@@ -5,7 +5,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Html5Qrcode } from 'html5-qrcode';
-import { Copy, CheckCircle2, X, RefreshCcw, Scan, Camera, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+import { 
+  Copy, 
+  CheckCircle2, 
+  X, 
+  RefreshCcw, 
+  Scan, 
+  Camera, 
+  ArrowLeft, 
+  Loader2, 
+  AlertCircle,
+  Image as ImageIcon,
+  Upload
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +36,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   
   const { toast } = useToast();
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const scannerContainerId = "qr-reader-container";
 
   // Get available cameras
@@ -65,13 +78,10 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       }
 
       try {
-        // Clean up any existing instance
         if (html5QrCodeRef.current) {
           try {
             await html5QrCodeRef.current.stop();
-          } catch (e) {
-            // Ignore stop errors
-          }
+          } catch (e) {}
         }
 
         const scanner = new Html5Qrcode(scannerContainerId);
@@ -85,26 +95,19 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
             aspectRatio: 1.0
           },
           (decodedText) => {
-            // SUCCESS CALLBACK
             if (isMounted) {
-              // We stop the scanner first, then show the result
-              // Use a small timeout to ensure the library's internal state is ready for stop
               setTimeout(async () => {
                 if (html5QrCodeRef.current) {
                   try {
                     await html5QrCodeRef.current.stop();
                     html5QrCodeRef.current = null;
-                  } catch (e) {
-                    console.error("Error stopping scanner", e);
-                  }
+                  } catch (e) {}
                 }
                 setScanResult(decodedText);
               }, 100);
             }
           },
-          () => {
-            // Frame error callback - silent
-          }
+          () => {}
         );
         
         if (isMounted) setIsInitializing(false);
@@ -129,6 +132,33 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       }
     };
   }, [isOpen, selectedCameraId, !!scanResult]);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsInitializing(true);
+    setError(null);
+
+    // Stop camera if running
+    if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
+      try {
+        await html5QrCodeRef.current.stop();
+      } catch (e) {}
+    }
+
+    try {
+      const scanner = new Html5Qrcode(scannerContainerId);
+      const decodedText = await scanner.scanFile(file, true);
+      setScanResult(decodedText);
+      setIsInitializing(false);
+      toast({ title: "Import Successful", description: "QR code decoded from image." });
+    } catch (err) {
+      console.error("File scan error", err);
+      setError("No valid QR code detected in this image. Please ensure the code is clear and well-lit.");
+      setIsInitializing(false);
+    }
+  };
 
   const handleCopy = () => {
     if (scanResult) {
@@ -166,7 +196,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="glass-card max-w-md border-white/10 p-0 overflow-hidden outline-none">
         <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between">
-          <DialogTitle className="text-white font-headline flex items-center gap-3">
+          <DialogTitle className="text-white font-headline flex items-center gap-3 text-lg">
             <Scan className="w-5 h-5 text-primary" />
             QR Studio Scanner
           </DialogTitle>
@@ -178,23 +208,38 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         <div className="flex flex-col items-center gap-6 p-6">
           {!scanResult ? (
             <div className="w-full space-y-6">
-              {cameras.length > 1 && (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40 mb-2">
-                    <Camera className="w-3 h-3" /> Select Camera
+              <div className="flex items-center gap-3">
+                {cameras.length > 1 && (
+                  <div className="flex-1 space-y-2">
+                    <Select value={selectedCameraId} onValueChange={setSelectedCameraId}>
+                      <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 rounded-xl text-[10px] uppercase font-black tracking-widest">
+                        <Camera className="w-3.5 h-3.5 mr-2 text-primary" />
+                        <SelectValue placeholder="Choose camera" />
+                      </SelectTrigger>
+                      <SelectContent className="glass-card">
+                        {cameras.map(cam => (
+                          <SelectItem key={cam.id} value={cam.id} className="text-[10px] uppercase font-black">{cam.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <Select value={selectedCameraId} onValueChange={setSelectedCameraId}>
-                    <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 rounded-xl">
-                      <SelectValue placeholder="Choose camera" />
-                    </SelectTrigger>
-                    <SelectContent className="glass-card">
-                      {cameras.map(cam => (
-                        <SelectItem key={cam.id} value={cam.id}>{cam.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+                )}
+                <Button 
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex-1 h-12 border-white/10 bg-white/5 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 gap-2"
+                >
+                  <ImageIcon className="w-3.5 h-3.5 text-primary" />
+                  Import Image
+                </Button>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+              </div>
 
               <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary/20 bg-black/40 group shadow-2xl">
                 <div id={scannerContainerId} className="w-full h-full"></div>
@@ -214,7 +259,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 {isInitializing && (
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4 z-20">
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Accessing Camera...</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Processing...</p>
                   </div>
                 )}
 
@@ -223,11 +268,16 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                     <AlertCircle className="w-12 h-12 text-destructive" />
                     <div className="space-y-2">
                        <p className="text-sm font-bold text-white">{error}</p>
-                       <p className="text-[10px] text-white/40 uppercase font-medium">Please check permissions in browser settings.</p>
+                       <p className="text-[10px] text-white/40 uppercase font-medium">Try another image or ensure camera access.</p>
                     </div>
-                    <Button variant="outline" onClick={() => window.location.reload()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
-                      Retry Permissions
-                    </Button>
+                    <div className="flex gap-3">
+                      <Button variant="outline" onClick={() => window.location.reload()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
+                        Retry
+                      </Button>
+                      <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
+                        Upload New
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
