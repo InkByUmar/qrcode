@@ -240,7 +240,10 @@ export default function Home() {
         </div>
 
         {/* Adsterra Header Banner */}
-        <AdsterraBanner className="mb-20" />
+        <AdsterraBanner className="mb-10" />
+        
+        {/* Top Native Banner Integrated Here */}
+        <AdsterraNativeBanner className="mb-20" />
 
         <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
