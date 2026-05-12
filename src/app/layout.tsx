@@ -16,11 +16,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'QR Canvas Studio Team' }],
   icons: {
     icon: [
-      { url: 'https://picsum.photos/seed/qrc-logo/32/32', sizes: '32x32' },
-      { url: 'https://picsum.photos/seed/qrc-logo/192/192', sizes: '192x192' },
+      { url: 'https://picsum.photos/seed/qr-brand-logo/32/32', sizes: '32x32' },
+      { url: 'https://picsum.photos/seed/qr-brand-logo/192/192', sizes: '192x192' },
     ],
     apple: [
-      { url: 'https://picsum.photos/seed/qrc-logo/180/180', sizes: '180x180' },
+      { url: 'https://picsum.photos/seed/qr-brand-logo/180/180', sizes: '180x180' },
     ],
   },
   robots: {
@@ -88,19 +88,6 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js" 
           strategy="afterInteractive"
         />
-        {/* Adsterra Social Bar */}
-        <Script 
-          src="https://archaicmsflip.com/f8/d2/33/f8d2333ae12f97dc648dbb943b8bf90d.js" 
-          strategy="afterInteractive"
-        />
-        {/* Adsterra Native Banner Script */}
-        <Script 
-          async
-          src="https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js" 
-          strategy="afterInteractive"
-          {...({ 'data-cfasync': 'false' } as any)}
-        />
-        
         {/* JSON-LD Structured Data - Site & Organization */}
         <Script id="schema-website" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({

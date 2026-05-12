@@ -51,25 +51,29 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 
+/**
+ * Premium Text-Based 'QR' Logo
+ * Simply displays "QR" in a high-contrast container.
+ */
 const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
+    viewBox="0 0 100 100" 
     className={className}
     aria-hidden="true"
   >
-    <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-    <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-    <rect x="7" y="7" width="3" height="3" fill="currentColor" stroke="none" />
-    <rect x="14" y="7" width="3" height="3" fill="currentColor" stroke="none" />
-    <rect x="7" y="14" width="3" height="3" fill="currentColor" stroke="none" />
-    <path d="M14 14h3v3h-3z" />
+    <rect width="100" height="100" rx="24" fill="currentColor" />
+    <text 
+      x="50%" 
+      y="54%" 
+      dominantBaseline="middle" 
+      textAnchor="middle" 
+      fill="black" 
+      fontSize="52" 
+      fontWeight="900" 
+      fontFamily="system-ui, sans-serif"
+    >
+      QR
+    </text>
   </svg>
 );
 
@@ -140,13 +144,13 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
             <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
-              <CustomScannerLogo className="text-primary-foreground w-6 h-6 md:w-7 md:h-7" />
+              <CustomScannerLogo className="w-6 h-6 md:w-7 md:h-7" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-headline font-bold tracking-tight text-white leading-none">
+              <span className="text-lg md:text-xl font-headline font-bold tracking-tight text-white leading-none uppercase">
                 QR <span className="text-primary">Canvas</span>
               </span>
-              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30 leading-none mt-1">Studio Pro</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30 leading-none mt-1">Premium Studio</span>
             </div>
           </div>
           
@@ -195,9 +199,9 @@ export default function Home() {
                     <SheetHeader className="p-6 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                          <CustomScannerLogo className="text-primary-foreground w-5 h-5" />
+                          <CustomScannerLogo className="w-5 h-5" />
                         </div>
-                        <SheetTitle className="text-white font-headline font-bold text-xl text-left">QR Canvas Studio</SheetTitle>
+                        <SheetTitle className="text-white font-headline font-bold text-xl text-left uppercase">QR Canvas</SheetTitle>
                       </div>
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
@@ -282,10 +286,10 @@ export default function Home() {
             <div className="relative glass-card rounded-[3rem] p-4 border-white/10 shadow-2xl overflow-hidden aspect-[9/16] max-w-[320px] mx-auto animate-float">
                <div className="h-full w-full bg-[#060907] rounded-[2.5rem] p-6 flex flex-col items-center justify-center text-center space-y-6">
                  <div className="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/40">
-                   <CustomScannerLogo className="text-primary-foreground w-12 h-12" />
+                   <CustomScannerLogo className="w-12 h-12" />
                  </div>
                  <div className="space-y-2">
-                    <p className="font-headline font-bold text-xl text-white">QR Canvas</p>
+                    <p className="font-headline font-bold text-xl text-white uppercase tracking-tighter">QR Canvas</p>
                     <p className="text-[10px] font-black uppercase tracking-widest text-primary">Studio Edition</p>
                  </div>
                  <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
@@ -421,7 +425,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
             <div className="flex items-center gap-3">
                <CustomScannerLogo className="text-primary w-6 h-6" />
-               <span className="font-headline font-bold text-xl text-white">QRCanvas Studio</span>
+               <span className="font-headline font-bold text-xl text-white uppercase tracking-tighter">QRCanvas Studio</span>
             </div>
             <div className="flex items-center gap-8">
                <a href="#how-to-use" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">How it Works</a>
