@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,18 +16,16 @@ import {
   Loader2, 
   AlertCircle,
   Image as ImageIcon,
-  Upload,
   Info
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 
 interface QrScannerModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
+export function QrScannerModal({ isOpen, onClose }) {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [cameras, setCameras] = useState<{ id: string, label: string }[]>([]);
@@ -41,6 +38,24 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scannerContainerId = "qr-reader-container";
+
+  // Cleanup function to stop the scanner safely
+  const stopScanner = async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        if (html5QrCodeRef.current.isScanning) {
+          await html5QrCodeRef.current.stop();
+        }
+      } catch (e) {
+        console.warn("Scanner stop error:", e);
+      } finally {
+        html5QrCodeRef.current = null;
+      }
+    }
+    // Manually clear container
+    const container = document.getElementById(scannerContainerId);
+    if (container) container.innerHTML = "";
+  };
 
   // Get available cameras
   useEffect(() => {
@@ -65,29 +80,16 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     let isMounted = true;
 
     const startScanner = async () => {
-      // Don't start if we are processing a file, already have a result, or not open
+      // Don't start if we have a result, are processing a file, or not open
       if (!isOpen || !selectedCameraId || scanResult || isProcessingFile || !isMounted) return;
       
       setIsInitializing(true);
       setError(null);
 
-      // Give the DOM a moment to mount the container
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Ensure container is empty and ready
+      await stopScanner();
       
-      const element = document.getElementById(scannerContainerId);
-      if (!element || !isMounted) {
-        setIsInitializing(false);
-        return;
-      }
-
       try {
-        if (html5QrCodeRef.current) {
-          try {
-            await html5QrCodeRef.current.stop();
-          } catch (e) {}
-          html5QrCodeRef.current = null;
-        }
-
         const scanner = new Html5Qrcode(scannerContainerId);
         html5QrCodeRef.current = scanner;
 
@@ -100,25 +102,17 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           },
           (decodedText) => {
             if (isMounted) {
-              if (html5QrCodeRef.current) {
-                html5QrCodeRef.current.stop().then(() => {
-                  html5QrCodeRef.current = null;
-                  setScanResult(decodedText);
-                }).catch(() => {
-                  setScanResult(decodedText);
-                });
-              } else {
-                setScanResult(decodedText);
-              }
+              setScanResult(decodedText);
+              stopScanner();
             }
           },
-          () => {}
+          () => {} // Ignored error callback for live scanning
         );
         
         if (isMounted) setIsInitializing(false);
       } catch (err) {
         if (isMounted) {
-          setError("Failed to start camera. It may be used by another app.");
+          setError("Failed to start camera. It may be in use by another application.");
           setIsInitializing(false);
         }
       }
@@ -130,10 +124,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
 
     return () => {
       isMounted = false;
-      if (html5QrCodeRef.current) {
-        html5QrCodeRef.current.stop().catch(() => {});
-        html5QrCodeRef.current = null;
-      }
+      stopScanner();
     };
   }, [isOpen, selectedCameraId, !!scanResult, isProcessingFile]);
 
@@ -142,43 +133,31 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     if (!file) return;
 
     setIsProcessingFile(true);
-    setIsInitializing(true);
     setError(null);
 
-    // 1. Force stop and clear existing scanner completely
-    if (html5QrCodeRef.current) {
-      try {
-        await html5QrCodeRef.current.stop();
-      } catch (e) {}
-      html5QrCodeRef.current = null;
-    }
+    // 1. Force stop all current activities
+    await stopScanner();
 
-    // 2. Clear the container DOM manually to prevent conflicts
-    const container = document.getElementById(scannerContainerId);
-    if (container) container.innerHTML = "";
-
-    // 3. Small delay to ensure resources are released
-    await new Promise(r => setTimeout(r, 200));
+    // 2. Small delay to ensure hardware release
+    await new Promise(r => setTimeout(r, 300));
 
     try {
-      // Create a fresh instance for the file scan
+      // 3. Create fresh instance for file analysis
       const html5QrCode = new Html5Qrcode(scannerContainerId);
-      // scanFile(file, showImage) - setting showImage to false is often more robust
-      const decodedText = await html5QrCode.scanFile(file, false);
+      // scanFile(file, showImage) - showImage: true helps internal scaling
+      const decodedText = await html5QrCode.scanFile(file, true);
       
       setScanResult(decodedText);
-      toast({ title: "Import Successful", description: "QR code decoded from image." });
+      toast({ title: "Import Successful", description: "QR code decoded successfully." });
     } catch (err) {
+      console.error("Scan error:", err);
       const errStr = String(err);
-      // Catch "NotFound" specifically to avoid unhandled rejection screens in NextJS
       if (errStr.includes("No MultiFormat Readers") || errStr.includes("NotFoundException")) {
-        setError("No valid QR code detected. Please ensure the code is clear and fills the frame.");
+        setError("No valid QR code detected. Ensure the image is sharp and contrast is high.");
       } else {
-        console.error("Critical scan failure:", err);
-        setError("Technical error during image analysis. Please try another file.");
+        setError("Technical error during analysis. Please try a different image.");
       }
     } finally {
-      setIsInitializing(false);
       setIsProcessingFile(false);
       if (event.target) event.target.value = '';
     }
@@ -193,29 +172,16 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     }
   };
 
-  const handleReset = async () => {
-    if (html5QrCodeRef.current) {
-      try {
-        await html5QrCodeRef.current.stop();
-      } catch (e) {}
-      html5QrCodeRef.current = null;
-    }
+  const handleReset = () => {
     setScanResult(null);
     setError(null);
     setIsProcessingFile(false);
   };
 
   const handleClose = async () => {
-    if (html5QrCodeRef.current) {
-      try {
-        await html5QrCodeRef.current.stop();
-      } catch (e) {}
-      html5QrCodeRef.current = null;
-    }
+    await stopScanner();
     onClose();
-    setScanResult(null);
-    setError(null);
-    setIsProcessingFile(false);
+    handleReset();
   };
 
   return (
@@ -236,11 +202,11 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
             <div className="w-full space-y-6">
               <div className="flex items-center gap-3">
                 {cameras.length > 1 && (
-                  <div className="flex-1 space-y-2">
+                  <div className="flex-1">
                     <Select value={selectedCameraId} onValueChange={setSelectedCameraId}>
                       <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 rounded-xl text-[10px] uppercase font-black tracking-widest">
                         <Camera className="w-3.5 h-3.5 mr-2 text-primary" />
-                        <SelectValue placeholder="Choose camera" />
+                        <SelectValue placeholder="Camera" />
                       </SelectTrigger>
                       <SelectContent className="glass-card">
                         {cameras.map(cam => (
@@ -297,14 +263,13 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                     <AlertCircle className="w-12 h-12 text-destructive" />
                     <div className="space-y-2">
                        <p className="text-sm font-bold text-white">{error}</p>
-                       <p className="text-[10px] text-white/40 uppercase font-medium">Try another image or check contrast levels.</p>
                     </div>
                     <div className="flex flex-col gap-3 w-full">
-                      <Button variant="outline" onClick={() => handleReset()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Retry Scanner
+                      <Button variant="outline" onClick={handleReset} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
+                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Retry
                       </Button>
                       <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <ImageIcon className="w-3.5 h-3.5 mr-2" /> Try New File
+                        <ImageIcon className="w-3.5 h-3.5 mr-2" /> New Image
                       </Button>
                     </div>
                   </div>
@@ -314,19 +279,17 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   PRO TIP: For imported images, ensure the QR code is centered and the "bits" are sharp. Avoid extreme angles or heavy shadows.
+                   PRO TIP: Ensure the QR code is centered and not at an extreme angle. High contrast between the bits and background is essential for file imports.
                  </p>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <Button 
-                  onClick={handleClose} 
-                  className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black text-xs uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Generator
-                </Button>
-              </div>
+              <Button 
+                onClick={handleClose} 
+                className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black text-xs uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Return to Studio
+              </Button>
             </div>
           ) : (
             <div className="w-full space-y-6 animate-in fade-in zoom-in duration-500">
@@ -335,8 +298,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 
                 <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Decoded Insight</p>
-                    <p className="text-[9px] text-white/30 uppercase font-bold tracking-widest">Success</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Decoded Data</p>
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
                     <CheckCircle2 className="w-5 h-5" />
