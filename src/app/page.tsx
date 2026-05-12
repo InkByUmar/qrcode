@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -5,7 +6,6 @@ import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-contai
 import { QrScannerModal } from '@/components/qr-canvas/qr-scanner-modal';
 import { Toaster } from '@/components/ui/toaster';
 import { 
-  QrCode, 
   Shield, 
   Zap, 
   Palette, 
@@ -43,6 +43,27 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
 
+const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+    <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+    <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+    <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+    <rect x="7" y="7" width="3" height="3" fill="currentColor" stroke="none" />
+    <rect x="14" y="7" width="3" height="3" fill="currentColor" stroke="none" />
+    <rect x="7" y="14" width="3" height="3" fill="currentColor" stroke="none" />
+    <path d="M14 14h3v3h-3z" />
+  </svg>
+);
+
 export default function Home() {
   const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -76,13 +97,14 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/70 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
-            <div className="w-9 h-9 md:w-10 md:h-10 bg-primary rounded-xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
-              <QrCode className="text-primary-foreground w-5 h-5 md:w-6 md:h-6" />
+            <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
+              <CustomScannerLogo className="text-primary-foreground w-6 h-6 md:w-7 md:h-7" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg md:text-xl font-headline font-bold tracking-tight text-white leading-none">
                 QR <span className="text-primary">Canvas</span>
               </span>
+              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30 leading-none mt-1">Studio Pro</span>
             </div>
           </div>
           
@@ -135,7 +157,7 @@ export default function Home() {
                     <SheetHeader className="p-6 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                          <QrCode className="text-primary-foreground w-4 h-4" />
+                          <CustomScannerLogo className="text-primary-foreground w-5 h-5" />
                         </div>
                         <SheetTitle className="text-white font-headline font-bold text-xl">QR Canvas Studio</SheetTitle>
                       </div>
@@ -472,7 +494,7 @@ export default function Home() {
             <div className="lg:col-span-1 space-y-6 md:space-y-8 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3">
                 <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary border border-primary/30 shadow-lg">
-                  <QrIcon className="w-5 h-5" />
+                  <CustomScannerLogo className="w-5 h-5" />
                 </div>
                 <span className="font-headline font-bold text-2xl tracking-tighter text-white">QRCanvas</span>
               </div>
