@@ -54,9 +54,13 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         aria-hidden="true"
         fill="currentColor"
       >
+        {/* Finder Pattern: Top Left */}
         <path d="M0 5C0 2.23858 2.23858 0 5 0H30C32.7614 0 35 2.23858 35 5V30C35 32.7614 32.7614 35 30 35H5C2.23858 35 0 32.7614 0 30V5ZM28 28V7H7v21h21ZM11 11h13v13h-13z" />
+        {/* Finder Pattern: Top Right */}
         <path d="M65 5C65 2.23858 67.2386 0 70 0H95C97.7614 0 100 5V30C100 32.7614 97.7614 35 95 35H70C67.2386 35 65 32.7614 65 30V5ZM93 28V7H72v21h21ZM76 11h13v13H76z" />
+        {/* Finder Pattern: Bottom Left */}
         <path d="M0 70C0 67.2386 2.23858 65 5 65H30C32.7614 65 35 67.2386 35 70V95C35 97.7614 32.7614 100 30 100H5C2.23858 100 0 95V70ZM28 93V72H7v21h21ZM11 76h13v13h-13z" />
+        {/* Mini QR Integrated branding */}
         <rect x="45" y="45" width="10" height="10" rx="2" />
         <text x="66" y="94" fontSize="28" fontWeight="900" fill="white" style={{ fontFamily: 'sans-serif' }}>QR</text>
       </svg>
