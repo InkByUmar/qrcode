@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -117,9 +118,12 @@ export function QrGeneratorContainer({
         newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
       }
 
-      // Reliability logic
+      // Reliability logic: Force Level H for any stylization or complexity
       const dataLen = newState.data?.length || 0;
-      if ((newState.logo || newState.backgroundImage || dataLen > 300) && newState.errorLevel !== 'H') {
+      const isStylized = newState.dotStyle !== 'square' || newState.cornerStyle !== 'square';
+      const needsHighDensity = newState.logo || newState.backgroundImage || dataLen > 200 || isStylized;
+
+      if (needsHighDensity && newState.errorLevel !== 'H') {
         newState.errorLevel = 'H';
       }
       

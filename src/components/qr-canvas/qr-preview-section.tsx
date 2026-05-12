@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -44,7 +45,8 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const { toast } = useToast();
 
   const dataLength = state.data?.length || 0;
-  const isHighDensity = dataLength > 300 || !!state.backgroundImage || !!state.logo;
+  // High density logic extended to any stylization to ensure scannability
+  const isHighDensity = dataLength > 200 || !!state.backgroundImage || !!state.logo || state.dotStyle !== 'square';
 
   const getQrConfig = (size: number, forceTransparent: boolean = false) => {
     const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
@@ -109,7 +111,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       try {
         const bgImg = await loadImage(state.backgroundImage);
         ctx.save();
-        // Use the opacity from state (Auto mode sets this to 0.25 in container)
         ctx.globalAlpha = state.backgroundOpacity;
         const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
         const x = (resolution - bgImg.width * scale) / 2;
@@ -122,7 +123,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     }
 
     // 3. Layer 3: Pattern & Identity (QR Matrix + Logo)
-    // Always force transparent for the QR library's internal background to show Layer 1 & 2
     const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');
@@ -162,7 +162,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     setIsGenerating(true);
     try {
       if (ext === 'svg') {
-        // SVG export relies on the library's internal handling
         const qrConfig = getQrConfig(resolution, !!state.backgroundImage);
         const styling = new window.QRCodeStyling(qrConfig);
         await styling.download({ name: 'qrcanvas-pro', extension: 'svg' });

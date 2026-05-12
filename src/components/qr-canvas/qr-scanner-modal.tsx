@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -90,15 +91,22 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       try {
         const scanner = new Html5Qrcode(scannerContainerId, {
           formatsToSupport: SUPPORTED_FORMATS,
-          verbose: false
+          verbose: false,
+          // Experimental feature to use native barcode detector if available
+          experimentalFeatures: {
+            useBarCodeDetectorIfSupported: true
+          }
         });
         html5QrCodeRef.current = scanner;
 
         await scanner.start(
           selectedCameraId,
           {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
+            fps: 15, // Higher FPS for better tracking
+            qrbox: (viewWidth, viewHeight) => {
+              const minDim = Math.min(viewWidth, viewHeight);
+              return { width: minDim * 0.7, height: minDim * 0.7 }; // Dynamic responsive qrbox
+            },
             aspectRatio: 1.0
           },
           (decodedText) => {
@@ -137,11 +145,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     setError(null);
     setScanResult(null);
 
-    // Explicit hardware release
     await stopScanner();
-    await new Promise(r => setTimeout(r, 500)); // OS hardware cool-down
+    await new Promise(r => setTimeout(r, 500)); 
 
-    // Isolated temp container for analysis
     const tempId = "qr-file-scan-temp";
     let tempDiv = document.getElementById(tempId);
     if (!tempDiv) {
@@ -151,7 +157,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       document.body.appendChild(tempDiv);
     }
 
-    // Console Guard: Stop ZXing exceptions from triggering Next.js crash overlays
     const originalError = console.error;
     console.error = (...args: any[]) => {
       const msg = String(args[0] || "");
@@ -164,10 +169,13 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     try {
       const fileScanner = new Html5Qrcode(tempId, {
         formatsToSupport: SUPPORTED_FORMATS,
-        verbose: false
+        verbose: false,
+        experimentalFeatures: {
+          useBarCodeDetectorIfSupported: true
+        }
       });
       
-      const decodedText = await fileScanner.scanFile(file, false);
+      const decodedText = await fileScanner.scanFile(file, true); // true for better performance
       
       if (decodedText) {
         setScanResult(decodedText);
@@ -176,9 +184,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     } catch (err: any) {
       const errStr = String(err);
       if (errStr.includes("NotFound") || errStr.includes("no code")) {
-        setError("No valid QR pattern detected. Ensure the 'bits' have high contrast.");
+        setError("Pattern not recognized. Stylized dots require high contrast and sharp focus.");
       } else {
-        setError("Technical detection error. The image may be too complex.");
+        setError("Technical detection error. The image may be too complex for static analysis.");
       }
     } finally {
       console.error = originalError; 
@@ -301,7 +309,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   IMAGE SCANNING: High contrast between dots and background is required for successful decoding of branded QR codes.
+                   STYLING OPTIMIZATION: Artistic dot engines (Lux, Soft Flow, Classy) require high-contrast foreground colors for 100% scanning reliability.
                  </p>
               </div>
 

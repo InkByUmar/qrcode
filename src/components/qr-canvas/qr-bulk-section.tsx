@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -73,7 +74,10 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     }
 
     // 3. Layer 3: Pattern & Identity (QR dots + Logo)
-    const errorLevel = (state.logo || state.backgroundImage) ? 'H' : 'Q';
+    // Stylized dots require Level H for scannability
+    const isStylized = state.dotStyle !== 'square' || state.cornerStyle !== 'square';
+    const errorLevel = (state.logo || state.backgroundImage || isStylized) ? 'H' : 'Q';
+    
     const config = {
       width: resolution,
       height: resolution,
@@ -166,7 +170,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
         </div>
       </div>
 
-      {/* SHARED STUDIO CONTROLS FOR BULK */}
       <QrPresetsControls state={state} updateState={updateState} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
