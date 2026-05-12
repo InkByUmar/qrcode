@@ -88,7 +88,6 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js" 
           strategy="afterInteractive"
         />
-        {/* JSON-LD Structured Data - Site & Organization */}
         <Script id="schema-website" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -114,7 +113,6 @@ export default function RootLayout({
           })}
         </Script>
 
-        {/* JSON-LD Structured Data - Breadcrumbs */}
         <Script id="schema-breadcrumbs" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -136,7 +134,6 @@ export default function RootLayout({
           })}
         </Script>
 
-        {/* JSON-LD Structured Data - Software Application */}
         <Script id="schema-software" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -157,7 +154,6 @@ export default function RootLayout({
           })}
         </Script>
 
-        {/* JSON-LD Structured Data - HowTo */}
         <Script id="schema-howto" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -185,7 +181,6 @@ export default function RootLayout({
           })}
         </Script>
 
-        {/* JSON-LD Structured Data - FAQ */}
         <Script id="schema-faq" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",

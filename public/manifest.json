@@ -1,24 +1,25 @@
 
 {
-  "name": "QR Canvas Premium Studio",
+  "name": "QR Canvas Studio - Branded QR Generator",
   "short_name": "QR Canvas",
-  "description": "Professional branded QR code generation studio with bulk export support.",
+  "description": "Professional branded QR code generation studio with bulk support.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#060907",
   "theme_color": "#26EA56",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://picsum.photos/seed/qr-brand-logo/192/192",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "https://picsum.photos/seed/qr-brand-logo/512/512",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ]
 }
