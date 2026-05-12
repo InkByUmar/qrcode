@@ -53,7 +53,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Premium Text-Based 'QR' Logo
- * Simply displays "QR" in a high-contrast container.
+ * Simply displays "QR" text. Intended to be used within a colored container.
  */
 const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg 
@@ -61,14 +61,13 @@ const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) =>
     className={className}
     aria-hidden="true"
   >
-    <rect width="100" height="100" rx="24" fill="currentColor" />
     <text 
       x="50%" 
       y="54%" 
       dominantBaseline="middle" 
       textAnchor="middle" 
-      fill="black" 
-      fontSize="52" 
+      fill="currentColor" 
+      fontSize="70" 
       fontWeight="900" 
       fontFamily="system-ui, sans-serif"
     >
@@ -144,7 +143,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
             <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
-              <CustomScannerLogo className="w-6 h-6 md:w-7 md:h-7" />
+              <CustomScannerLogo className="w-6 h-6 md:w-7 md:h-7 text-black" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg md:text-xl font-headline font-bold tracking-tight text-white leading-none uppercase">
@@ -167,7 +166,7 @@ export default function Home() {
                 }}
                 className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-primary transition-all duration-300 relative group"
               >
-                {item.label}
+                {navItems.find(n => n.label === item.label)?.label}
               </a>
             ))}
           </nav>
@@ -199,7 +198,7 @@ export default function Home() {
                     <SheetHeader className="p-6 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                          <CustomScannerLogo className="w-5 h-5" />
+                          <CustomScannerLogo className="w-5 h-5 text-black" />
                         </div>
                         <SheetTitle className="text-white font-headline font-bold text-xl text-left uppercase">QR Canvas</SheetTitle>
                       </div>
@@ -286,7 +285,7 @@ export default function Home() {
             <div className="relative glass-card rounded-[3rem] p-4 border-white/10 shadow-2xl overflow-hidden aspect-[9/16] max-w-[320px] mx-auto animate-float">
                <div className="h-full w-full bg-[#060907] rounded-[2.5rem] p-6 flex flex-col items-center justify-center text-center space-y-6">
                  <div className="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/40">
-                   <CustomScannerLogo className="w-12 h-12" />
+                   <CustomScannerLogo className="w-12 h-12 text-black" />
                  </div>
                  <div className="space-y-2">
                     <p className="font-headline font-bold text-xl text-white uppercase tracking-tighter">QR Canvas</p>
@@ -424,7 +423,9 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
             <div className="flex items-center gap-3">
-               <CustomScannerLogo className="text-primary w-6 h-6" />
+               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                 <CustomScannerLogo className="w-5 h-5 text-black" />
+               </div>
                <span className="font-headline font-bold text-xl text-white uppercase tracking-tighter">QRCanvas Studio</span>
             </div>
             <div className="flex items-center gap-8">
