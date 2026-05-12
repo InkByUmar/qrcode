@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Html5Qrcode } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { 
   Copy, 
   CheckCircle2, 
@@ -25,7 +25,28 @@ interface QrScannerModalProps {
   onClose: () => void;
 }
 
-export function QrScannerModal({ isOpen, onClose }) {
+// Explicitly define a broad range of formats for the Multi-Format Reader
+const SUPPORTED_FORMATS = [
+  Html5QrcodeSupportedFormats.QR_CODE,
+  Html5QrcodeSupportedFormats.AZTEC,
+  Html5QrcodeSupportedFormats.CODABAR,
+  Html5QrcodeSupportedFormats.CODE_39,
+  Html5QrcodeSupportedFormats.CODE_93,
+  Html5QrcodeSupportedFormats.CODE_128,
+  Html5QrcodeSupportedFormats.DATA_MATRIX,
+  Html5QrcodeSupportedFormats.EAN_8,
+  Html5QrcodeSupportedFormats.EAN_13,
+  Html5QrcodeSupportedFormats.ITF,
+  Html5QrcodeSupportedFormats.MAXICODE,
+  Html5QrcodeSupportedFormats.PDF_417,
+  Html5QrcodeSupportedFormats.RSS_14,
+  Html5QrcodeSupportedFormats.RSS_EXPANDED,
+  Html5QrcodeSupportedFormats.UPC_A,
+  Html5QrcodeSupportedFormats.UPC_E,
+  Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION
+];
+
+export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const [cameras, setCameras] = useState<{ id: string, label: string }[]>([]);
@@ -52,12 +73,10 @@ export function QrScannerModal({ isOpen, onClose }) {
         html5QrCodeRef.current = null;
       }
     }
-    // Manually clear container
     const container = document.getElementById(scannerContainerId);
     if (container) container.innerHTML = "";
   };
 
-  // Get available cameras
   useEffect(() => {
     if (isOpen && cameras.length === 0) {
       Html5Qrcode.getCameras().then(devices => {
@@ -75,22 +94,22 @@ export function QrScannerModal({ isOpen, onClose }) {
     }
   }, [isOpen, cameras.length]);
 
-  // Handle scanner lifecycle
   useEffect(() => {
     let isMounted = true;
 
     const startScanner = async () => {
-      // Don't start if we have a result, are processing a file, or not open
       if (!isOpen || !selectedCameraId || scanResult || isProcessingFile || !isMounted) return;
       
       setIsInitializing(true);
       setError(null);
 
-      // Ensure container is empty and ready
       await stopScanner();
       
       try {
-        const scanner = new Html5Qrcode(scannerContainerId);
+        // Initialize with Multi-Format support
+        const scanner = new Html5Qrcode(scannerContainerId, {
+          formatsToSupport: SUPPORTED_FORMATS
+        });
         html5QrCodeRef.current = scanner;
 
         await scanner.start(
@@ -106,13 +125,13 @@ export function QrScannerModal({ isOpen, onClose }) {
               stopScanner();
             }
           },
-          () => {} // Ignored error callback for live scanning
+          () => {} 
         );
         
         if (isMounted) setIsInitializing(false);
       } catch (err) {
         if (isMounted) {
-          setError("Failed to start camera. It may be in use by another application.");
+          setError("Failed to start camera. Hardware may be busy.");
           setIsInitializing(false);
         }
       }
@@ -135,27 +154,30 @@ export function QrScannerModal({ isOpen, onClose }) {
     setIsProcessingFile(true);
     setError(null);
 
-    // 1. Force stop all current activities
+    // 1. Force hardware release
     await stopScanner();
-
-    // 2. Small delay to ensure hardware release
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 400));
 
     try {
-      // 3. Create fresh instance for file analysis
-      const html5QrCode = new Html5Qrcode(scannerContainerId);
-      // scanFile(file, showImage) - showImage: true helps internal scaling
+      // 2. Create isolated Multi-Format instance for file analysis
+      const html5QrCode = new Html5Qrcode(scannerContainerId, {
+        formatsToSupport: SUPPORTED_FORMATS
+      });
+      
+      // 3. Robust scan pass
       const decodedText = await html5QrCode.scanFile(file, true);
       
       setScanResult(decodedText);
-      toast({ title: "Import Successful", description: "QR code decoded successfully." });
+      toast({ title: "Import Successful", description: "Multi-Format code decoded." });
     } catch (err) {
-      console.error("Scan error:", err);
-      const errStr = String(err);
-      if (errStr.includes("No MultiFormat Readers") || errStr.includes("NotFoundException")) {
-        setError("No valid QR code detected. Ensure the image is sharp and contrast is high.");
+      console.error("File Analysis Error:", err);
+      const errStr = String(err).toLowerCase();
+      
+      // Gracefully handle standard detection failures
+      if (errStr.includes("not found") || errStr.includes("multiformat") || errStr.includes("no code")) {
+        setError("Pattern not recognized. Ensure the bits are high-contrast and the image is sharp.");
       } else {
-        setError("Technical error during analysis. Please try a different image.");
+        setError("Technical analysis error. Try a higher resolution image.");
       }
     } finally {
       setIsProcessingFile(false);
@@ -190,7 +212,7 @@ export function QrScannerModal({ isOpen, onClose }) {
         <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between">
           <DialogTitle className="text-white font-headline flex items-center gap-3 text-lg">
             <Scan className="w-5 h-5 text-primary" />
-            QR Studio Scanner
+            Studio Multi-Scanner
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={handleClose} className="rounded-full text-white/50 hover:text-white hover:bg-white/5">
             <X className="w-5 h-5" />
@@ -223,7 +245,7 @@ export function QrScannerModal({ isOpen, onClose }) {
                   className="flex-1 h-12 border-white/10 bg-white/5 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 gap-2"
                 >
                   {isProcessingFile ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageIcon className="w-3.5 h-3.5 text-primary" />}
-                  Import Image
+                  Import Scan
                 </Button>
                 <input 
                   type="file" 
@@ -253,7 +275,7 @@ export function QrScannerModal({ isOpen, onClose }) {
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4 z-20">
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
-                      {isProcessingFile ? "Analyzing Bits..." : "Initializing..."}
+                      {isProcessingFile ? "Analyzing Bits..." : "Initializing Engine..."}
                     </p>
                   </div>
                 )}
@@ -266,7 +288,7 @@ export function QrScannerModal({ isOpen, onClose }) {
                     </div>
                     <div className="flex flex-col gap-3 w-full">
                       <Button variant="outline" onClick={handleReset} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Retry
+                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Restart
                       </Button>
                       <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
                         <ImageIcon className="w-3.5 h-3.5 mr-2" /> New Image
@@ -279,7 +301,7 @@ export function QrScannerModal({ isOpen, onClose }) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   PRO TIP: Ensure the QR code is centered and not at an extreme angle. High contrast between the bits and background is essential for file imports.
+                   PRO TIP: This scanner uses a Multi-Format Reader. For imported images, ensure high contrast between the pattern bits and the background for optimal detection.
                  </p>
               </div>
 
