@@ -26,8 +26,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const scannerContainerId = "qr-reader-container";
 
+  // Get available cameras
   useEffect(() => {
-    if (isOpen && !scanResult) {
+    if (isOpen && cameras.length === 0) {
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length > 0) {
           const formattedCameras = devices.map(d => ({ id: d.id, label: d.label || `Camera ${devices.indexOf(d) + 1}` }));
@@ -42,8 +43,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         setError("Please allow camera permissions to use the scanner.");
       });
     }
-  }, [isOpen, scanResult]);
+  }, [isOpen, cameras.length]);
 
+  // Handle scanner lifecycle
   useEffect(() => {
     let isMounted = true;
 
@@ -53,18 +55,23 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       setIsInitializing(true);
       setError(null);
 
-      // DOM mount check delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Give the DOM a moment to mount the container
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       const element = document.getElementById(scannerContainerId);
-      if (!element) {
+      if (!element || !isMounted) {
         setIsInitializing(false);
         return;
       }
 
       try {
+        // Clean up any existing instance
         if (html5QrCodeRef.current) {
-          await html5QrCodeRef.current.stop().catch(() => {});
+          try {
+            await html5QrCodeRef.current.stop();
+          } catch (e) {
+            // Ignore stop errors on non-running scanner
+          }
         }
 
         const scanner = new Html5Qrcode(scannerContainerId);
@@ -73,34 +80,50 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         await scanner.start(
           selectedCameraId,
           {
-            fps: 15,
+            fps: 10,
             qrbox: { width: 250, height: 250 },
             aspectRatio: 1.0
           },
-          (decodedText) => {
-            setScanResult(decodedText);
-            scanner.stop().catch(err => console.debug("Scanner stop success failed", err));
+          async (decodedText) => {
+            // SUCCESS CALLBACK
+            if (isMounted) {
+              // Stop first, then update state to avoid DOM removal issues
+              try {
+                await scanner.stop();
+                html5QrCodeRef.current = null;
+              } catch (e) {
+                console.error("Stop error during success", e);
+              }
+              setScanResult(decodedText);
+            }
           },
-          () => {}
+          () => {
+            // Frame error callback - silent
+          }
         );
-        setIsInitializing(false);
+        
+        if (isMounted) setIsInitializing(false);
       } catch (err) {
         console.error("Scanner failed to start", err);
-        setError("Failed to start camera. It may be used by another app.");
-        setIsInitializing(false);
+        if (isMounted) {
+          setError("Failed to start camera. It may be used by another app or permissions were denied.");
+          setIsInitializing(false);
+        }
       }
     };
 
-    startScanner();
+    if (isOpen && !scanResult) {
+      startScanner();
+    }
 
     return () => {
       isMounted = false;
       if (html5QrCodeRef.current) {
-        html5QrCodeRef.current.stop().catch(err => console.debug("Cleanup stop failed", err));
+        html5QrCodeRef.current.stop().catch(() => {});
         html5QrCodeRef.current = null;
       }
     };
-  }, [isOpen, selectedCameraId, scanResult]);
+  }, [isOpen, selectedCameraId, !!scanResult]);
 
   const handleCopy = () => {
     if (scanResult) {
@@ -111,14 +134,28 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     }
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
+    // Reset scanner first
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop();
+      } catch (e) {}
+      html5QrCodeRef.current = null;
+    }
     setScanResult(null);
     setError(null);
   };
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop();
+      } catch (e) {}
+      html5QrCodeRef.current = null;
+    }
     onClose();
-    handleReset();
+    setScanResult(null);
+    setError(null);
   };
 
   return (
@@ -156,6 +193,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               )}
 
               <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary/20 bg-black/40 group shadow-2xl">
+                {/* Fixed ID container that remains as long as scanResult is null */}
                 <div id={scannerContainerId} className="w-full h-full"></div>
                 
                 {!isInitializing && !error && (
