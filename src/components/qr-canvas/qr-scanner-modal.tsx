@@ -9,7 +9,6 @@ import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { 
   Copy, 
   CheckCircle2, 
-  X, 
   RefreshCcw, 
   Scan, 
   Camera, 
@@ -156,6 +155,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       document.body.appendChild(tempDiv);
     }
 
+    // Suppress console library noise during scan phase
     const originalError = console.error;
     console.error = (...args: any[]) => {
       const msg = String(args[0] || "");
@@ -223,9 +223,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
             <Scan className="w-5 h-5 text-primary" />
             Studio Scanner Pro
           </DialogTitle>
-          <Button variant="ghost" size="icon" onClick={handleClose} className="rounded-full text-white/50 hover:text-white hover:bg-white/5">
-            <X className="w-5 h-5" />
-          </Button>
+          {/* Manual close button removed as DialogContent provides one absolute positioned at top-right */}
         </DialogHeader>
         
         <div className="flex flex-col items-center gap-6 p-6">
