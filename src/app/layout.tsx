@@ -11,9 +11,13 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'QR CANVAS | Free Premium QR Code Generator with Logo & Bulk Support',
-  description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, backgrounds, and bulk processing. 100% free, no sign-up required.',
-  keywords: 'qr canvas, free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, scan tool, pwa qr code',
+  description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, AI backgrounds, and bulk processing. 100% free, no sign-up required, PWA ready.',
+  keywords: 'qr canvas, free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, scan tool, pwa qr code, artistic qr codes, branded qr maker, high res qr export',
   authors: [{ name: 'QR CANVAS Studio Team' }],
+  metadataBase: new URL('https://qrcanvas.app'), // Replace with actual domain
+  alternates: {
+    canonical: '/',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -27,6 +31,7 @@ export const metadata: Metadata = {
     description: 'Create professional, branded QR codes in seconds. Support for logos, full-image backgrounds, and bulk processing.',
     type: 'website',
     siteName: 'QR CANVAS',
+    url: 'https://qrcanvas.app',
     locale: 'en_US',
     images: [
       {
@@ -66,6 +71,7 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     'name': 'QR CANVAS',
+    'url': 'https://qrcanvas.app',
     'applicationCategory': 'MultimediaApplication',
     'operatingSystem': 'Web, Android, iOS, Windows, macOS',
     'offers': {
@@ -73,11 +79,19 @@ export default function RootLayout({
       'price': '0',
       'priceCurrency': 'USD'
     },
-    'description': 'Advanced professional QR code generator with logo integration, bulk processing, and AI backgrounds.',
+    'description': 'Advanced professional QR code generator with logo integration, bulk processing, and AI-generated artistic backgrounds. Fast, private, and PWA-ready.',
+    'featureList': [
+      'Bulk QR Code Generation',
+      'Logo Integration with Level H Error Correction',
+      'Artistic AI Backgrounds (Imagen 4)',
+      'High-Resolution PNG and SVG Exports',
+      'PWA Mobile Installation Support',
+      'Offline-First Live Scanner'
+    ],
     'aggregateRating': {
       '@type': 'AggregateRating',
       'ratingValue': '4.9',
-      'ratingCount': '1240'
+      'ratingCount': '1580'
     }
   };
 

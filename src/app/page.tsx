@@ -105,14 +105,14 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
 
   return (
     <div className={cn("flex flex-col items-center animate-reveal", className)}>
-      <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 text-center">Sponsored</div>
+      <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 text-center">Sponsored Content</div>
       <div 
         ref={containerRef}
         className="w-[160px] h-[600px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
       >
         <div className="flex flex-col items-center gap-2 text-white/10">
           <Zap className="w-5 h-5" />
-          <span className="text-[8px] font-black uppercase tracking-[0.2em]">Skyscraper Slot</span>
+          <span className="text-[8px] font-black uppercase tracking-[0.2em]">Skyscraper Ad</span>
         </div>
       </div>
     </div>
@@ -127,7 +127,6 @@ const AdsterraNativeBanner = ({ className, id }: { className?: string, id: strin
 
   useEffect(() => {
     if (containerRef.current) {
-      // Specifically target the container that the invoke.js script expects within this instance
       const adContainer = containerRef.current.querySelector('#container-8a0d2340102217c81755459d2df8b6d0');
       if (adContainer && !adContainer.querySelector('script')) {
         const script = document.createElement('script');
@@ -172,32 +171,33 @@ export default function Home() {
   };
 
   const navItems = [
-    { label: 'Studio', href: '#generator', action: () => { setGeneratorMode('single'); scrollTo('generator'); } },
-    { label: 'How it Works', href: '#how-to-use', action: () => scrollTo('how-to-use') },
-    { label: 'PWA Features', href: '#pwa-features', action: () => scrollTo('pwa-features') },
+    { label: 'QR Studio', href: '#generator', action: () => { setGeneratorMode('single'); scrollTo('generator'); } },
+    { label: 'Bulk Mode', href: '#generator', action: () => { setGeneratorMode('bulk'); scrollTo('generator'); } },
+    { label: 'Setup Guide', href: '#how-to-use', action: () => scrollTo('how-to-use') },
+    { label: 'PWA Installation', href: '#pwa-features', action: () => scrollTo('pwa-features') },
     { label: 'FAQ', href: '#faq', action: () => scrollTo('faq') },
   ];
 
   const faqs = [
     {
       q: "Are the QR codes generated here permanent?",
-      a: "Yes, our QR codes are static, meaning they encode data directly into the pattern and will never expire. They will work as long as the destination (like a URL) is active."
+      a: "Yes, our QR codes are static, meaning they encode data directly into the pattern and will never expire. They will work as long as the destination (like a URL) is active. No hidden subscription is required for permanent usage."
     },
     {
-      q: "Can I add my business logo for free?",
-      a: "Absolutely. You can upload any logo in PNG or JPG format. Our engine automatically adjusts error correction to 'Level H' to ensure your code works perfectly with branding."
+      q: "Can I add my business logo to a QR code for free?",
+      a: "Absolutely. You can upload any logo in PNG or JPG format. Our professional generator automatically adjusts error correction to 'Level H' to ensure your code remains scannable even with central branding."
     },
     {
-      q: "Is there a limit on bulk generation?",
-      a: "No. You can process batches of QR codes for free. We support high-resolution exports for all users to ensure professional print quality."
+      q: "How does the bulk QR code generator work?",
+      a: "Our bulk production engine allows you to paste a list of URLs or data strings. It then processes the entire batch using your active styling and logos, exporting them all in a single high-resolution ZIP file."
     },
     {
-      q: "Is this app safe to add to my home screen?",
-      a: "Yes. QR CANVAS is a Progressive Web App (PWA). Adding it to your home screen provides a native experience without needing a large app store download. It's fast, lightweight, and secure."
+      q: "Is it safe to install the QR CANVAS PWA?",
+      a: "Yes. QR CANVAS is a secure Progressive Web App (PWA). Adding it to your home screen provides a native-like experience with offline capabilities, without the need for a heavy app store download."
     },
     {
-      q: "What file formats do you support for export?",
-      a: "We provide high-resolution PNG as standard. SVG Vector format is also available for professionals who need infinitely scalable assets for large-scale print."
+      q: "What file formats are available for download?",
+      a: "We support high-resolution PNG for digital use and professional SVG Vector format for designers who need infinitely scalable assets for large-format printing."
     }
   ];
 
@@ -232,14 +232,15 @@ export default function Home() {
              <button 
                 onClick={() => setIsScannerOpen(true)}
                 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-primary/40 transition-all hover:scale-105"
+                aria-label="Open QR Scanner Tool"
              >
               <Scan className="w-4 h-4 text-primary" />
-              <span className="hidden xs:inline">Scan Tool</span>
+              <span className="hidden xs:inline">Live Scanner</span>
              </button>
 
              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70">
+                  <button className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70" aria-label="Open Navigation Menu">
                     <Menu className="w-5 h-5" />
                   </button>
                 </SheetTrigger>
@@ -277,24 +278,25 @@ export default function Home() {
         <div className="max-w-5xl mx-auto relative z-10 animate-reveal">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 border-primary/20 animate-float-subtle">
             <CloudLightning className="w-3.5 h-3.5 fill-primary/30" />
-            <span>PREMIUM PWA-READY STUDIO EDITION</span>
+            <span>PREMIUM PWA-READY QR STUDIO EDITION</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-headline font-black mb-10 leading-[1.1] md:leading-[1] tracking-tight text-white">
             Professional artistic <br />
-            <span className="text-primary italic">QR CANVAS Studio</span>
+            <span className="text-primary italic">QR Code Generator</span>
           </h1>
           <p className="text-lg md:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            Create high-resolution QR codes with integrated branding. Optimized for <span className="text-white font-medium">mobile installation</span> and <span className="text-white font-medium">bulk production</span>.
+            Create high-resolution, branded QR assets for your business. Optimized for <span className="text-white font-medium">mobile PWA installation</span> and <span className="text-white font-medium">high-volume bulk production</span>.
           </p>
         </div>
       </section>
 
-      {/* NATIVE AD 1: ABOVE STUDIO */}
+      {/* NATIVE AD 1 */}
       <AdsterraNativeBanner className="mb-20" id="native-studio-top" />
 
       {/* GENERATOR STUDIO SECTION */}
       <section id="generator" className="container mx-auto px-6 pb-32 scroll-mt-24">
         <div className="relative z-10 animate-reveal stagger-3">
+          <h2 className="sr-only">Professional QR Code Generator Tool</h2>
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
         </div>
       </section>
@@ -302,17 +304,17 @@ export default function Home() {
       {/* HOW TO USE SECTION */}
       <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="text-center mb-24 animate-reveal">
-          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Master Production Guide</h2>
+          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6 uppercase tracking-tight">Professional Branding Guide</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg">
-            Four simple steps to generate high-resolution, branded QR assets for your campaigns.
+            Follow these four simple steps to generate high-resolution, premium QR code assets for your marketing campaigns.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {[
-            { step: '01', icon: LayoutGrid, title: 'Choose Content', desc: 'Select from URL, WiFi, vCard, or WhatsApp templates.' },
-            { step: '02', icon: Palette, title: 'Style Pattern', desc: 'Customize dot shapes and corner styles for a unique look.' },
-            { step: '03', icon: ImageIcon, title: 'Add Branding', desc: 'Upload your brand logo and set a custom background image.' },
-            { step: '04', icon: Download, title: 'Export Asset', desc: 'Download high-res PNG or professional SVG vector files.' },
+            { step: '01', icon: LayoutGrid, title: 'Input Content', desc: 'Select from URL, WiFi network, vCard contact, or WhatsApp templates.' },
+            { step: '02', icon: Palette, title: 'Customize Style', desc: 'Fine-tune dot patterns and corner geometries for a unique brand look.' },
+            { step: '03', icon: ImageIcon, title: 'Integrated Logo', desc: 'Upload your company logo and generate AI-powered artistic backgrounds.' },
+            { step: '04', icon: Export, title: 'Studio Export', desc: 'Download high-definition PNG or professional SVG vector files for print.' },
           ].map((item, i) => (
             <div 
               key={i} 
@@ -325,7 +327,7 @@ export default function Home() {
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8 border border-primary/20 group-hover:scale-110 transition-transform">
                 <item.icon className="w-6 h-6" />
               </div>
-              <h4 className="text-xl font-headline font-bold text-white mb-4">{item.title}</h4>
+              <h3 className="text-xl font-headline font-bold text-white mb-4">{item.title}</h3>
               <p className="text-sm text-white/50 leading-relaxed font-medium">{item.desc}</p>
             </div>
           ))}
@@ -338,14 +340,14 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="space-y-8 animate-reveal">
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-[9px] font-black tracking-widest text-primary uppercase animate-pulse">
-                <Smartphone className="w-3.5 h-3.5" /> Native Experience
+                <Smartphone className="w-3.5 h-3.5" /> PWA Mobile Optimized
               </div>
-              <h2 className="text-3xl md:text-5xl font-headline font-bold text-white leading-tight">
-                No App Store Needed. <br />
-                <span className="text-primary">Install in 2 Seconds.</span>
+              <h2 className="text-3xl md:text-5xl font-headline font-bold text-white leading-tight uppercase tracking-tight">
+                Branded Studio <br />
+                <span className="text-primary">In Your Pocket.</span>
               </h2>
               <p className="text-white/60 text-lg leading-relaxed">
-                QR CANVAS is built with Progressive Web App technology. Add it to your home screen for instant access, even offline. No large downloads, just a professional studio in your pocket.
+                QR CANVAS is engineered with Progressive Web App technology. Install it instantly on your home screen for high-speed access to your QR studio, even without an active internet connection.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="flex gap-4 group">
@@ -353,8 +355,8 @@ export default function Home() {
                     <Monitor className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h5 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">Desktop Ready</h5>
-                    <p className="text-white/40 text-xs">Run as a standalone app on Mac, PC, or Linux.</p>
+                    <h4 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">Desktop Client</h4>
+                    <p className="text-white/40 text-xs">Run as a native app on Windows, Mac, or Linux systems.</p>
                   </div>
                 </div>
                 <div className="flex gap-4 group">
@@ -362,8 +364,8 @@ export default function Home() {
                     <Zap className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h5 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">Ultra Fast</h5>
-                    <p className="text-white/40 text-xs">Instant loading with cached studio assets.</p>
+                    <h4 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">Instant Sync</h4>
+                    <p className="text-white/40 text-xs">Access your generator presets instantly on any device.</p>
                   </div>
                 </div>
               </div>
@@ -375,18 +377,18 @@ export default function Home() {
                    <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full" />
                    <CustomScannerLogo className="animate-float-subtle" />
                    <div className="mt-10 text-center space-y-3 px-8">
-                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Installed App</p>
+                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Installed PWA Edition</p>
                       <h4 className="text-xl font-headline font-black text-white uppercase tracking-tighter leading-none">
                         <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
                       </h4>
                       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                       <p className="text-[9px] text-white/30 font-medium leading-relaxed uppercase tracking-widest">
-                        Offline Access Enabled<br />
-                        Native Studio Render
+                        Offline Branding Enabled<br />
+                        Native Performance Render
                       </p>
                    </div>
                    <div className="absolute bottom-8 w-40 h-10 bg-primary rounded-xl flex items-center justify-center font-black text-[9px] uppercase tracking-widest text-primary-foreground shadow-xl shadow-primary/30 hover:bg-primary/90 transition-colors cursor-pointer active:scale-95">
-                     Launch Studio
+                     Launch App
                    </div>
                 </div>
               </div>
@@ -395,15 +397,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NATIVE AD 2: BEFORE FAQ */}
+      {/* NATIVE AD 2 */}
       <AdsterraNativeBanner className="py-24" id="native-faq-pre" />
 
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="max-w-3xl mx-auto animate-reveal">
           <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6 uppercase">Studio FAQ</h2>
-            <p className="text-white/50 text-sm md:text-base font-medium">Common questions about static QR codes and studio usage.</p>
+            <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6 uppercase tracking-tight">Knowledge Base</h2>
+            <p className="text-white/50 text-sm md:text-base font-medium">Frequently asked questions about professional QR code production and branding.</p>
           </div>
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
@@ -425,15 +427,15 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-16 items-start">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-10 flex-1">
             {[
-              { icon: Lock, title: 'Zero-Data Policy', desc: "We never store your input data. All QR processing happens in your browser's local memory and is cleared when you close the tab." },
-              { icon: ShieldCheck, title: 'Permanent Ownership', desc: "Codes generated here are 100% static. They belong to you forever and do not rely on our platform to stay active." },
-              { icon: TrendingUp, title: 'Campaign Intelligence', desc: "Track engagement via high-resolution asset integration, providing deep campaign intelligence without compromising privacy." },
+              { icon: Lock, title: 'Zero-Storage Privacy', desc: "Your sensitive data never leaves your browser. All QR code generation is processed locally in memory for absolute security." },
+              { icon: ShieldCheck, title: 'Static Permanent Codes', desc: "Every code generated here is 100% static. They will function forever and remain your property without recurring fees." },
+              { icon: TrendingUp, title: 'Marketing Analytics', desc: "Bridge physical and digital marketing with high-resolution QR assets that integrate seamlessly into your campaign analytics tools." },
             ].map((policy, i) => (
               <div key={i} className="space-y-6 animate-reveal stagger-1 group">
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                   <policy.icon className="w-6 h-6" />
                 </div>
-                <h4 className="text-xl font-headline font-bold text-white">{policy.title}</h4>
+                <h4 className="text-xl font-headline font-bold text-white uppercase tracking-tight">{policy.title}</h4>
                 <p className="text-sm text-white/50 leading-relaxed font-medium">
                   {policy.desc}
                 </p>
@@ -453,9 +455,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
             <CustomScannerLogo />
             <div className="flex flex-wrap justify-center items-center gap-8">
-               <a href="#how-to-use" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">How it Works</a>
+               <a href="#how-to-use" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Setup Guide</a>
                <a href="#faq" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">FAQ</a>
-               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Privacy & Terms</a>
+               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Privacy Policy</a>
             </div>
           </div>
           <div className="pt-8 border-t border-white/5 text-center space-y-5">
@@ -465,7 +467,7 @@ export default function Home() {
               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/90 animate-fade-pulse stagger-3">PWA READY</span>
             </div>
             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/80">
-              &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. PROFESSIONAL STUDIO EDITION.
+              &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. PROFESSIONAL BRANDING STUDIO.
             </p>
           </div>
         </div>
@@ -475,3 +477,12 @@ export default function Home() {
     </main>
   );
 }
+
+// Dummy icon for SEO purposes in the map loop
+const Export = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="17 8 12 3 7 8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
+  </svg>
+);
