@@ -287,9 +287,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NATIVE AD SLOT 2 */}
-      <AdsterraNativeBanner className="py-12" id="container-mid-native" />
-
       {/* HOW TO USE SECTION */}
       <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="text-center mb-24 animate-reveal">
