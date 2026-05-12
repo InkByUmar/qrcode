@@ -75,49 +75,6 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
 );
 
 /**
- * Adsterra Vertical Banner 160x300
- */
-const AdsterraVerticalBanner = ({ className }: { className?: string }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current && !containerRef.current.querySelector('iframe')) {
-      const scriptConfig = document.createElement('script');
-      scriptConfig.innerHTML = `
-        atOptions = {
-          'key' : '17f93d85425d7946b948d2a346d50b02',
-          'format' : 'iframe',
-          'height' : 300,
-          'width' : 160,
-          'params' : {}
-        };
-      `;
-      containerRef.current.appendChild(scriptConfig);
-
-      const scriptInvoke = document.createElement('script');
-      scriptInvoke.src = "https://archaicmsflip.com/17f93d85425d7946b948d2a346d50b02/invoke.js";
-      scriptInvoke.async = true;
-      containerRef.current.appendChild(scriptInvoke);
-    }
-  }, []);
-
-  return (
-    <div className={cn("flex flex-col items-center animate-reveal", className)}>
-      <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 text-center">Sponsored</div>
-      <div 
-        ref={containerRef}
-        className="w-[160px] h-[300px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
-      >
-        <div className="flex flex-col items-center gap-2 text-white/10">
-          <Zap className="w-5 h-5" />
-          <span className="text-[8px] font-black uppercase tracking-[0.2em]">Vertical Slot</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/**
  * Adsterra Skyscraper Banner 160x600
  */
 const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
@@ -459,7 +416,6 @@ export default function Home() {
           </div>
           {/* Adsterra Vertical Banners Column */}
           <div className="shrink-0 flex flex-col gap-8 sticky top-24">
-            <AdsterraVerticalBanner />
             <AdsterraSkyscraperBanner />
           </div>
         </div>
