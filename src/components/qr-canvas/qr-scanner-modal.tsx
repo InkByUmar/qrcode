@@ -204,7 +204,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="glass-card max-w-md border-white/10 p-0 overflow-hidden outline-none">
+      <DialogContent className="glass-card max-w-md border-white/10 p-0 overflow-hidden outline-none text-white">
         <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between">
           <DialogTitle className="text-white font-headline flex items-center gap-3 text-lg">
             <Scan className="w-5 h-5 text-primary" />
@@ -223,7 +223,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                         <Camera className="w-3.5 h-3.5 mr-2 text-primary" />
                         <SelectValue placeholder="Camera" />
                       </SelectTrigger>
-                      <SelectContent className="glass-card">
+                      <SelectContent className="glass-card bg-black border-white/10 text-white">
                         {cameras.map(cam => (
                           <SelectItem key={cam.id} value={cam.id} className="text-[10px] uppercase font-black">{cam.label}</SelectItem>
                         ))}
