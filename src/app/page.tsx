@@ -83,6 +83,7 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
   useEffect(() => {
     if (containerRef.current && !containerRef.current.querySelector('iframe')) {
       const scriptConfig = document.createElement('script');
+      scriptConfig.type = 'text/javascript';
       scriptConfig.innerHTML = `
         atOptions = {
           'key' : 'ae8d80b67ecd20f2553ebdb46506c737',
@@ -95,6 +96,7 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
       containerRef.current.appendChild(scriptConfig);
 
       const scriptInvoke = document.createElement('script');
+      scriptInvoke.type = 'text/javascript';
       scriptInvoke.src = "https://archaicmsflip.com/ae8d80b67ecd20f2553ebdb46506c737/invoke.js";
       scriptInvoke.async = true;
       containerRef.current.appendChild(scriptInvoke);
@@ -120,7 +122,7 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
 /**
  * Adsterra Native Banner Component
  */
-const AdsterraNativeBanner = ({ className }: { className?: string }) => {
+const AdsterraNativeBanner = ({ className, id = "container-8a0d2340102217c81755459d2df8b6d0" }: { className?: string, id?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -137,7 +139,8 @@ const AdsterraNativeBanner = ({ className }: { className?: string }) => {
     <div className={cn("container mx-auto px-6 py-12 animate-reveal", className)}>
       <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 text-center">Recommendations</div>
       <div 
-        id="container-8a0d2340102217c81755459d2df8b6d0" 
+        ref={containerRef}
+        id={id}
         className="min-h-[200px] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
       >
         <div className="flex flex-col items-center gap-3 text-white/10">
@@ -280,7 +283,7 @@ export default function Home() {
         </div>
 
         {/* NATIVE AD SLOT 1 */}
-        <AdsterraNativeBanner className="mb-20" />
+        <AdsterraNativeBanner className="mb-20" id="container-hero-native" />
 
         <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
@@ -288,7 +291,7 @@ export default function Home() {
       </section>
 
       {/* NATIVE AD SLOT 2 */}
-      <AdsterraNativeBanner />
+      <AdsterraNativeBanner className="py-12" id="container-mid-native" />
 
       {/* HOW TO USE SECTION */}
       <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
@@ -387,7 +390,7 @@ export default function Home() {
       </section>
 
       {/* NATIVE AD SLOT 3 */}
-      <AdsterraNativeBanner />
+      <AdsterraNativeBanner className="py-12" id="container-pwa-native" />
 
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
