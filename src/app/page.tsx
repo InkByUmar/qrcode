@@ -43,7 +43,7 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Official Brand Logo: QR Structure (Green) + Text on Right (White)
+ * Official Brand Logo: QR Structure (Green) + Dual-tone Text (White QR + Green CANVAS)
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-2", className)}>
@@ -53,22 +53,22 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
       aria-hidden="true"
       fill="currentColor"
     >
-      {/* Finder Pattern: Top Left (Green) */}
+      {/* Finder Pattern: Top Left */}
       <path d="M0 0h35v35H0V0zm28 28V7H7v21h21zM11 11h13v13h-13z" />
-      {/* Finder Pattern: Top Right (Green) */}
+      {/* Finder Pattern: Top Right */}
       <path d="M65 0h35v35H65V0zm28 28V7h-21v21h21zM76 11h13v13H76z" />
-      {/* Finder Pattern: Bottom Left (Green) */}
+      {/* Finder Pattern: Bottom Left */}
       <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
-      {/* Stylized Data Bits (Green) */}
+      {/* Stylized Data Bits */}
       <rect x="45" y="0" width="10" height="10" />
       <rect x="45" y="25" width="10" height="10" />
       <rect x="65" y="45" width="10" height="10" />
       <rect x="0" y="45" width="10" height="10" />
       <rect x="25" y="45" width="10" height="10" />
     </svg>
-    <span className="font-headline font-black text-2xl tracking-tighter text-white uppercase">
-      QR CANVAS
-    </span>
+    <div className="font-headline font-black text-2xl tracking-tighter uppercase leading-none">
+      <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
+    </div>
   </div>
 );
 
@@ -187,7 +187,9 @@ export default function Home() {
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-6 border-b border-white/5 text-left">
                       <CustomScannerLogo className="h-8" />
-                      <SheetTitle className="text-white font-headline font-bold text-xl uppercase mt-2">QR CANVAS</SheetTitle>
+                      <SheetTitle className="text-white font-headline font-bold text-xl uppercase mt-2">
+                        QR <span className="text-primary">CANVAS</span>
+                      </SheetTitle>
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
                       {navItems.map((item) => (

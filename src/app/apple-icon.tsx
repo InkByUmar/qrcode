@@ -14,7 +14,6 @@ export default function AppleIcon() {
     (
       <div
         style={{
-          fontSize: 80,
           background: '#060907',
           width: '100%',
           height: '100%',
@@ -38,7 +37,7 @@ export default function AppleIcon() {
         <div style={{ position: 'absolute', bottom: 20, left: 20, width: 40, height: 40, border: '6px solid #26EA56', borderRadius: '6px' }}>
           <div style={{ position: 'absolute', top: 7, left: 7, width: 14, height: 14, background: '#26EA56', borderRadius: '2px' }} />
         </div>
-        <div style={{ position: 'absolute', bottom: 12, right: 18, color: 'white' }}>
+        <div style={{ position: 'absolute', bottom: 12, right: 18, fontSize: 80, color: 'white' }}>
           QR
         </div>
       </div>

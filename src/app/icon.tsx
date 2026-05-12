@@ -14,7 +14,6 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 240,
           background: '#060907',
           width: '100%',
           height: '100%',
@@ -45,7 +44,7 @@ export default function Icon() {
         </div>
 
         {/* Integrated QR Text Branding (White) */}
-        <div style={{ position: 'absolute', bottom: 60, right: 65, display: 'flex', letterSpacing: '-12px', color: 'white' }}>
+        <div style={{ position: 'absolute', bottom: 60, right: 65, display: 'flex', letterSpacing: '-12px', fontSize: 240, color: 'white' }}>
           QR
         </div>
       </div>
