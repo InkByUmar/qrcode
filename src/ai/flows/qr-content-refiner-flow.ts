@@ -1,10 +1,6 @@
 'use server';
 /**
  * @fileOverview An AI tool that suggests more concise or impactful wording for text embedded in a QR code.
- *
- * - qrContentRefiner - A function that refines the input text for QR code content.
- * - QrContentRefinerInput - The input type for the qrContentRefiner function.
- * - QrContentRefinerOutput - The return type for the qrContentRefiner function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -26,12 +22,13 @@ const qrContentRefinerPrompt = ai.definePrompt({
   name: 'qrContentRefinerPrompt',
   input: {schema: QrContentRefinerInputSchema},
   output: {schema: QrContentRefinerOutputSchema},
-  prompt: `You are an AI assistant specialized in creating concise and impactful text, particularly for QR code content. Your goal is to take the provided text and refine it to be as clear, brief, and effective as possible, suitable for a QR code where every character counts. Focus on enhancing clarity and call-to-action effectiveness.
+  prompt: `You are an AI assistant specialized in creating concise and impactful text for QR codes.
+Refine the following text to be brief, clear, and effective. Focus on call-to-action effectiveness.
 
-Here is the text to refine:
+Text to refine:
 """{{{text}}}"""
 
-Provide only the refined text, without any additional commentary or explanation.`,
+Provide only the refined text without commentary.`,
 });
 
 const qrContentRefinerFlow = ai.defineFlow(
@@ -42,6 +39,7 @@ const qrContentRefinerFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await qrContentRefinerPrompt(input);
-    return output!;
+    if (!output) throw new Error('Refinement failed');
+    return output;
   }
 );

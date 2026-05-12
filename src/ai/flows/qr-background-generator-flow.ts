@@ -11,11 +11,27 @@ const BackgroundGeneratorInputSchema = z.object({
 });
 
 export async function generateQrBackground(prompt: string): Promise<string> {
-  const { media } = await ai.generate({
-    model: 'googleai/imagen-4.0-fast-generate-001',
-    prompt: `A professional, high-contrast, minimalist artistic background for a QR code. Theme: ${prompt}. Ensure the center is relatively clear and the edges are stylized. Dark aesthetic with vibrant accents.`,
-  });
-  
-  if (!media) throw new Error('Generation failed');
-  return media.url;
+  return qrBackgroundGeneratorFlow({ prompt });
 }
+
+const qrBackgroundGeneratorFlow = ai.defineFlow(
+  {
+    name: 'qrBackgroundGeneratorFlow',
+    inputSchema: BackgroundGeneratorInputSchema,
+    outputSchema: z.string(),
+  },
+  async input => {
+    try {
+      const { media } = await ai.generate({
+        model: 'googleai/imagen-3-fast-generate-001',
+        prompt: `A high-contrast, minimalist artistic background for a QR code. Theme: ${input.prompt}. Dark aesthetic with vibrant neon accents. Ensure the center is relatively clear for QR scannability. Minimal noise, professional graphic design style.`,
+      });
+      
+      if (!media) throw new Error('Generation failed: No media returned');
+      return media.url;
+    } catch (error: any) {
+      console.error('Imagen generation error:', error);
+      throw new Error(`AI Background generation failed: ${error.message || 'Unknown error'}`);
+    }
+  }
+);
