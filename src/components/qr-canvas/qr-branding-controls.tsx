@@ -150,13 +150,13 @@ export function QrBrandingControls({ state, updateState }: QrBrandingControlsPro
                 <div className="flex gap-2">
                    <button 
                     onClick={() => updateState({ backgroundMode: 'auto' })}
-                    className={cn("flex-1 h-10 rounded-xl border flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all", state.backgroundMode === 'auto' ? "bg-primary text-primary-foreground border-primary" : "bg-white/5 border-white/10 text-white/40 hover:text-white")}
+                    className={cn("flex-1 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-[8px] font-black uppercase tracking-wider transition-all px-2", state.backgroundMode === 'auto' ? "bg-primary text-primary-foreground border-primary" : "bg-white/5 border-white/10 text-white/40 hover:text-white")}
                    >
-                     <Cpu className="w-3.5 h-3.5" /> Automatic
+                     <Cpu className="w-3.5 h-3.5" /> Auto
                    </button>
                    <button 
                     onClick={() => updateState({ backgroundMode: 'manual' })}
-                    className={cn("flex-1 h-10 rounded-xl border flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest transition-all", state.backgroundMode === 'manual' ? "bg-primary text-primary-foreground border-primary" : "bg-white/5 border-white/10 text-white/40 hover:text-white")}
+                    className={cn("flex-1 h-10 rounded-xl border flex items-center justify-center gap-1.5 text-[8px] font-black uppercase tracking-wider transition-all px-2", state.backgroundMode === 'manual' ? "bg-primary text-primary-foreground border-primary" : "bg-white/5 border-white/10 text-white/40 hover:text-white")}
                    >
                      <MousePointer2 className="w-3.5 h-3.5" /> Manual
                    </button>
