@@ -92,7 +92,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           formatsToSupport: SUPPORTED_FORMATS,
           verbose: false,
           experimentalFeatures: {
-            useBarCodeDetectorIfSupported: true // Native hardware acceleration for stylized codes
+            useBarCodeDetectorIfSupported: true
           }
         });
         html5QrCodeRef.current = scanner;
@@ -143,52 +143,36 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     setError(null);
     setScanResult(null);
 
+    // Stop current camera before file analysis to prevent hardware lock
     await stopScanner();
-    await new Promise(r => setTimeout(r, 500)); 
+    await new Promise(r => setTimeout(r, 300)); 
 
     const tempId = "qr-file-scan-temp";
     let tempDiv = document.getElementById(tempId);
     if (!tempDiv) {
       tempDiv = document.createElement('div');
       tempDiv.id = tempId;
-      tempDiv.style.display = 'none';
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '-9999px';
       document.body.appendChild(tempDiv);
     }
-
-    // Suppress console library noise during scan phase
-    const originalError = console.error;
-    console.error = (...args: any[]) => {
-      const msg = String(args[0] || "");
-      if (msg.includes("NotFoundException") || msg.includes("No MultiFormat Readers")) {
-        return; 
-      }
-      originalError.apply(console, args);
-    };
 
     try {
       const fileScanner = new Html5Qrcode(tempId, {
         formatsToSupport: SUPPORTED_FORMATS,
-        verbose: false,
-        experimentalFeatures: {
-          useBarCodeDetectorIfSupported: true
-        }
+        verbose: false
       });
       
       const decodedText = await fileScanner.scanFile(file, true);
       
       if (decodedText) {
         setScanResult(decodedText);
-        toast({ title: "Analysis Success", description: "QR Canvas successfully decoded." });
+        toast({ title: "Import Successful", description: "Matrix decoded successfully." });
       }
     } catch (err: any) {
-      const errStr = String(err);
-      if (errStr.includes("NotFound") || errStr.includes("no code")) {
-        setError("Pattern not recognized. Stylized dots require high contrast and sharp focus.");
-      } else {
-        setError("Technical detection error. The image may be too complex for static analysis.");
-      }
+      setError("Analysis failed: Pattern not detected. Ensure high contrast and sharp focus.");
     } finally {
-      console.error = originalError; 
       setIsProcessingFile(false);
       if (event.target) event.target.value = '';
     }
@@ -223,7 +207,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
             <Scan className="w-5 h-5 text-primary" />
             Studio Scanner Pro
           </DialogTitle>
-          {/* Manual close button removed as DialogContent provides one absolute positioned at top-right */}
         </DialogHeader>
         
         <div className="flex flex-col items-center gap-6 p-6">
@@ -306,7 +289,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   STYLING OPTIMIZATION: Artistic dot engines (Lux, Soft Flow, Classy) are now optimized with Native Hardware Acceleration for 100% detection accuracy.
+                   PRO TIP: For stylized artistic codes, ensure the image is well-lit and the QR pattern occupies at least 70% of the frame.
                  </p>
               </div>
 
