@@ -15,9 +15,7 @@ import {
   Contact, 
   Link2,
   Copy,
-  CheckCircle2,
   Phone,
-  MonitorSmartphone,
   ChevronRight,
   Trash2,
   MessageSquare,
@@ -46,7 +44,6 @@ declare global {
 export function QrPreviewSection({ state, history, onDownload, onClearHistory }: QrPreviewSectionProps) {
   const qrRef = useRef<HTMLDivElement>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
   const dataLength = state.data?.length || 0;
@@ -110,11 +107,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     }
 
     // 2. Layer 2: QR Code Matrix + Logo (Integrated)
-    // We create the styling instance with pre-validated data to ensure sync
     const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
     
-    // Explicitly wait for internal asset processing
     const qrBlob = await styling.getRawData('png');
     const qrImg = await loadImage(URL.createObjectURL(qrBlob));
     
@@ -153,7 +148,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       if (ext === 'svg') {
         const qrConfig = getQrConfig(resolution, !!state.backgroundImage);
         const styling = new window.QRCodeStyling(qrConfig);
-        await styling.download({ name: 'qrcanvas-pro', extension: 'svg' });
+        await styling.download({ name: 'qrcanvas-export', extension: 'svg' });
       } else {
         const finalCanvas = await compositeCanvas(resolution);
         const link = document.createElement('a');
@@ -162,9 +157,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         link.click();
       }
       onDownload();
-      toast({ title: "Premium Export Ready", description: "Your branded asset has been saved." });
+      toast({ title: "Branded Asset Ready", description: "Your QR asset has been saved." });
     } catch (err) {
-      toast({ variant: "destructive", title: "Export Failed", description: "An error occurred during high-res rendering." });
+      toast({ variant: "destructive", title: "Export Failed", description: "An error occurred during rendering." });
     } finally {
       setIsGenerating(false);
     }
@@ -234,7 +229,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         <CardHeader className="py-6 px-8 border-b border-white/[0.05] bg-white/[0.02]">
            <div className="flex items-center justify-between">
               <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
-                <BarChart3 className="w-4 h-4 text-primary" /> Campaign Intelligence
+                <BarChart3 className="w-4 h-4 text-primary" /> Campaign Analytics
               </CardTitle>
               <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
            </div>
@@ -256,9 +251,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
                  </div>
               </div>
            </div>
-           <Button variant="ghost" className="w-full h-12 border border-primary/20 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/10">
-             Unlock Full Dashboard
-           </Button>
+           <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 text-center">
+              <p className="text-[10px] font-black text-primary uppercase tracking-widest">Real-time stats enabled</p>
+           </div>
         </CardContent>
       </Card>
       

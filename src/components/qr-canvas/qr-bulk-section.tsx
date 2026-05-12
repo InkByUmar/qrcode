@@ -74,7 +74,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     }
 
     // 3. Layer 3: Pattern & Identity (QR dots + Logo)
-    // Stylized dots require Level H for scannability
     const isStylized = state.dotStyle !== 'square' || state.cornerStyle !== 'square';
     const errorLevel = (state.logo || state.backgroundImage || isStylized) ? 'H' : 'Q';
     
@@ -104,11 +103,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const lines = bulkData.split('\n').map(l => l.trim()).filter(l => l.length > 0);
     if (lines.length === 0) {
       toast({ variant: "destructive", title: "Empty Payload", description: "Please enter at least one URL or text line." });
-      return;
-    }
-
-    if (lines.length > 50) {
-      toast({ variant: "destructive", title: "Batch Limit", description: "Standard processing is limited to 50 items." });
       return;
     }
 
@@ -219,9 +213,9 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                 <Settings2 className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Enterprise Asset Sync</h4>
+                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Studio Asset Sync</h4>
                 <p className="text-xs text-white/70 leading-relaxed font-medium">
-                  Applying high-res chromatic matrix and active brand imagery to the entire batch.
+                  Applying chromatic matrix and active brand imagery to the entire batch.
                 </p>
               </div>
             </div>
@@ -249,7 +243,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
               ) : (
                 <>
                   <Download className="w-6 h-6" />
-                  Export Premium ZIP
+                  Export Bundle ZIP
                 </>
               )}
             </Button>
