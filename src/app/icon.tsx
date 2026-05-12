@@ -1,10 +1,7 @@
 
 import { ImageResponse } from 'next/og';
 
-// Route segment config
 export const runtime = 'edge';
-
-// Image metadata
 export const alt = 'QR Canvas Official Logo';
 export const size = {
   width: 512,
@@ -12,10 +9,6 @@ export const size = {
 };
 export const contentType = 'image/png';
 
-/**
- * Generates the official branded icon for the PWA and Favicon.
- * Features a technical QR structure with "QR" text.
- */
 export default function Icon() {
   return new ImageResponse(
     (
@@ -36,23 +29,23 @@ export default function Icon() {
           fontFamily: 'sans-serif',
         }}
       >
-        {/* Top Left Finder Pattern */}
+        {/* Finder Pattern: Top Left */}
         <div style={{ position: 'absolute', top: 60, left: 60, width: 100, height: 100, border: '15px solid #26EA56', borderRadius: '15px' }}>
           <div style={{ position: 'absolute', top: 18, left: 18, width: 34, height: 34, background: '#26EA56', borderRadius: '4px' }} />
         </div>
         
-        {/* Top Right Finder Pattern */}
+        {/* Finder Pattern: Top Right */}
         <div style={{ position: 'absolute', top: 60, right: 60, width: 100, height: 100, border: '15px solid #26EA56', borderRadius: '15px' }}>
           <div style={{ position: 'absolute', top: 18, left: 18, width: 34, height: 34, background: '#26EA56', borderRadius: '4px' }} />
         </div>
 
-        {/* Bottom Left Finder Pattern */}
+        {/* Finder Pattern: Bottom Left */}
         <div style={{ position: 'absolute', bottom: 60, left: 60, width: 100, height: 100, border: '15px solid #26EA56', borderRadius: '15px' }}>
           <div style={{ position: 'absolute', top: 18, left: 18, width: 34, height: 34, background: '#26EA56', borderRadius: '4px' }} />
         </div>
 
-        {/* Brand Text */}
-        <div style={{ position: 'absolute', bottom: 40, right: 50, display: 'flex' }}>
+        {/* Integrated QR Text Branding */}
+        <div style={{ position: 'absolute', bottom: 60, right: 65, display: 'flex', letterSpacing: '-12px' }}>
           QR
         </div>
       </div>

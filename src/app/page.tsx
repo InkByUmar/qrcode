@@ -12,28 +12,19 @@ import {
   Palette, 
   Layers, 
   Sparkles, 
-  ArrowRight, 
   CheckCircle2, 
   Download,
   LayoutGrid,
-  HelpCircle,
-  BookOpen,
-  Image as ImageIcon,
-  QrCode as QrIcon,
+  ImageIcon,
   Menu,
   Crown,
-  BarChart3,
-  RefreshCcw,
-  ShieldCheck,
   Scan,
-  Maximize,
-  Smartphone,
-  AppWindow,
-  Share,
-  FileCode,
-  ShieldAlert,
-  Gavel,
-  History
+  TrendingUp,
+  ShieldCheck,
+  Lock,
+  Globe,
+  Star,
+  ArrowRight
 } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 import {
@@ -52,45 +43,44 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Official 'QR' Studio Logo
- * This matches the generated PWA icons exactly for total brand consistency.
+ * Official Brand Logo: QR Structure + Text on Right
  */
-const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
-  <svg 
-    viewBox="0 0 100 100" 
-    className={className}
-    aria-hidden="true"
-    fill="currentColor"
-  >
-    {/* Finder Pattern: Top Left */}
-    <path d="M0 0h35v35H0V0zm28 28V7H7v21h21zM11 11h13v13h-13z" />
-    {/* Finder Pattern: Top Right */}
-    <path d="M65 0h35v35H65V0zm28 28V7h-21v21h21zM76 11h13v13H76z" />
-    {/* Finder Pattern: Bottom Left */}
-    <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
-    
-    {/* Integrated "QR" Typography in Bottom Right */}
-    <text 
-      x="100" 
-      y="98" 
-      textAnchor="end" 
-      fontSize="52" 
-      fontWeight="950" 
-      letterSpacing="-4"
-      className="font-headline"
+const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
+  <div className={cn("flex items-center gap-2", className)}>
+    <svg 
+      viewBox="0 0 100 100" 
+      className="w-8 h-8"
+      aria-hidden="true"
+      fill="currentColor"
     >
+      {/* Finder Pattern: Top Left */}
+      <path d="M0 0h35v35H0V0zm28 28V7H7v21h21zM11 11h13v13h-13z" />
+      {/* Finder Pattern: Top Right */}
+      <path d="M65 0h35v35H65V0zm28 28V7h-21v21h21zM76 11h13v13H76z" />
+      {/* Finder Pattern: Bottom Left */}
+      <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
+      {/* Stylized Data Bits */}
+      <rect x="45" y="0" width="10" height="10" />
+      <rect x="45" y="25" width="10" height="10" />
+      <rect x="65" y="45" width="10" height="10" />
+      <rect x="0" y="45" width="10" height="10" />
+      <rect x="25" y="45" width="10" height="10" />
+    </svg>
+    <span className="font-headline font-black text-2xl tracking-tighter text-white uppercase">
       QR
-    </text>
-  </svg>
+    </span>
+  </div>
 );
 
 const NativeAdBanner = () => (
   <div className="container mx-auto px-6 py-12 flex justify-center">
     <div 
-      id="container-8a0d2340102217c81755459d2df8b6d0" 
       className="w-full max-w-5xl min-h-[100px] bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
     >
-      {/* Adsterra Native Banner Placeholder */}
+      <div className="flex items-center gap-4 text-white/20">
+        <Globe className="w-5 h-5" />
+        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Official Ad Placement Area</span>
+      </div>
     </div>
   </div>
 );
@@ -116,23 +106,23 @@ export default function Home() {
   const navItems = [
     { label: 'Studio', href: '#generator', action: () => scrollToGenerator('single') },
     { label: 'How it Works', href: '#how-to-use', action: () => scrollTo('how-to-use') },
-    { label: 'Bulk Export', href: '#bulk-info', action: () => scrollToGenerator('bulk') },
+    { label: 'Bulk Mode', href: '#bulk-info', action: () => scrollToGenerator('bulk') },
+    { label: 'Pricing', href: '#pricing', action: () => scrollTo('pricing') },
     { label: 'FAQ', href: '#faq', action: () => scrollTo('faq') },
-    { label: 'Pro Suite', href: '#pricing', action: () => scrollTo('pricing') },
   ];
 
   const faqs = [
     {
       q: "Are the QR codes generated here permanent?",
-      a: "Yes, our QR codes are static, meaning they encode data directly into the pattern and will never expire. They will work as long as the content (like a URL) is active."
+      a: "Yes, our QR codes are static, meaning they encode data directly into the pattern and will never expire. They will work as long as the destination (like a URL) is active."
     },
     {
       q: "Can I add my business logo for free?",
-      a: "Absolutely. You can upload any logo in PNG or JPG format. Our engine automatically adjusts scannability settings to ensure your code works perfectly with branding."
+      a: "Absolutely. You can upload any logo in PNG or JPG format. Our engine automatically adjusts error correction to 'Level H' to ensure your code works perfectly with branding."
     },
     {
       q: "How many QR codes can I generate in Bulk Mode?",
-      a: "Our free tier allows up to 50 QR codes per batch. Agency Pro users have unlimited batch processing and higher resolution master exports."
+      a: "The free tier allows up to 50 QR codes per batch. Agency Pro users have unlimited batch processing and higher resolution master exports."
     },
     {
       q: "What file formats do you support for export?",
@@ -140,7 +130,7 @@ export default function Home() {
     },
     {
       q: "Is my data stored on your servers?",
-      a: "No. We prioritize privacy. All QR generation happens locally in your browser, and we do not store the data you input into your QR codes."
+      a: "No. We prioritize privacy. All QR generation happens locally in your browser (Client-Side), and we do not store the data you input."
     }
   ];
 
@@ -150,14 +140,9 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/70 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
-            <div className="w-10 h-10 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
-              <CustomScannerLogo className="w-6 h-6 md:w-7 md:h-7 text-black" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-headline font-bold tracking-tight text-white leading-none uppercase">
-                QR <span className="text-primary">Canvas</span>
-              </span>
-              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30 leading-none mt-1">Premium Studio</span>
+            <CustomScannerLogo className="h-10" />
+            <div className="hidden xs:flex flex-col">
+              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30 leading-none">Premium Studio</span>
             </div>
           </div>
           
@@ -172,7 +157,7 @@ export default function Home() {
                     item.action();
                   }
                 }}
-                className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-primary transition-all duration-300 relative group"
+                className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-primary transition-all duration-300"
               >
                 {item.label}
               </a>
@@ -203,13 +188,9 @@ export default function Home() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[300px] bg-black/95 border-white/10 p-0 overflow-hidden text-white">
                   <div className="h-full flex flex-col">
-                    <SheetHeader className="p-6 border-b border-white/5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                          <CustomScannerLogo className="w-5 h-5 text-black" />
-                        </div>
-                        <SheetTitle className="text-white font-headline font-bold text-xl text-left uppercase">QR Canvas</SheetTitle>
-                      </div>
+                    <SheetHeader className="p-6 border-b border-white/5 text-left">
+                      <CustomScannerLogo className="h-8" />
+                      <SheetTitle className="text-white font-headline font-bold text-xl uppercase mt-2">QR Canvas</SheetTitle>
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
                       {navItems.map((item) => (
@@ -261,9 +242,9 @@ export default function Home() {
       {/* HOW TO USE SECTION */}
       <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="text-center mb-24">
-          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">How to Create Professional QR Codes</h2>
+          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Master Production Guide</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg">
-            Follow these four simple steps to generate high-resolution, branded QR assets for your campaigns.
+            Four simple steps to generate high-resolution, branded QR assets for your campaigns.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -279,9 +260,137 @@ export default function Home() {
                 <item.icon className="w-6 h-6" />
               </div>
               <h4 className="text-xl font-headline font-bold text-white mb-4">{item.title}</h4>
-              <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
+              <p className="text-sm text-white/50 leading-relaxed font-medium">{item.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* PRICING SECTION */}
+      <section id="pricing" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+        <div className="text-center mb-24">
+          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Choose Your Studio Tier</h2>
+          <p className="text-white/70 max-w-2xl mx-auto">Professional tools for individuals and high-volume agencies.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+          {/* FREE TIER */}
+          <div className="glass-card p-10 rounded-[2.5rem] border-white/5 space-y-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-6">
+              <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Active Plan</span>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-3xl font-headline font-bold text-white uppercase">Studio Lite</h3>
+              <p className="text-6xl font-headline font-black text-white">FREE</p>
+              <p className="text-xs text-white/40 font-bold uppercase tracking-widest">No credit card required</p>
+            </div>
+            <div className="space-y-4 pt-6 border-t border-white/5">
+              {[
+                'Standard Single QR Generation',
+                'Up to 50 Bulk Batches',
+                'Custom Logos & Colors',
+                'High-Res PNG Exports',
+                'Static Non-Expiring Codes'
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-3 text-sm text-white/70">
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+            <Button className="w-full h-14 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-black uppercase tracking-widest rounded-2xl">
+              Currently Active
+            </Button>
+          </div>
+
+          {/* PRO TIER */}
+          <div className="p-10 rounded-[2.5rem] bg-primary/10 border border-primary/30 space-y-8 relative overflow-hidden group shadow-2xl shadow-primary/20">
+            <div className="absolute top-0 right-0 p-6">
+              <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+                Recommended
+              </div>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-3xl font-headline font-bold text-white uppercase">Agency Pro</h3>
+              <div className="flex items-baseline gap-2">
+                <span className="text-6xl font-headline font-black text-white">$19</span>
+                <span className="text-white/40 font-bold uppercase tracking-widest">/month</span>
+              </div>
+              <p className="text-xs text-primary font-black uppercase tracking-widest">Enterprise production suite</p>
+            </div>
+            <div className="space-y-4 pt-6 border-t border-white/10">
+              {[
+                'Unlimited Bulk Batching',
+                'SVG Vector Exports (Master Quality)',
+                'Priority AI Background Generation',
+                'Advanced Campaign Analytics',
+                'White-Label (No Studio Branding)',
+                'Dedicated 24/7 Support'
+              ].map((feature, i) => (
+                <div key={i} className="flex items-center gap-3 text-sm text-white">
+                  <Star className="w-4 h-4 text-primary shrink-0 fill-primary/20" />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+            <Button className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20">
+              Unlock Agency Suite
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6 uppercase">Studio FAQ</h2>
+            <p className="text-white/50 text-sm md:text-base font-medium">Common questions about static QR codes and studio usage.</p>
+          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            {faqs.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`} className="border-white/5 bg-white/[0.02] rounded-3xl px-8 transition-all hover:bg-white/[0.04]">
+                <AccordionTrigger className="text-left text-white hover:no-underline py-6">
+                  <span className="text-base md:text-lg font-bold">{faq.q}</span>
+                </AccordionTrigger>
+                <AccordionContent className="text-white/60 pb-8 text-sm md:text-base leading-relaxed">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+
+      {/* SECURITY & PRIVACY SECTION */}
+      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+          <div className="space-y-6">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h4 className="text-xl font-headline font-bold text-white">Zero-Data Policy</h4>
+            <p className="text-sm text-white/50 leading-relaxed font-medium">
+              We never store your input data. All QR processing happens in your browser's local memory and is cleared when you close the tab.
+            </p>
+          </div>
+          <div className="space-y-6">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <h4 className="text-xl font-headline font-bold text-white">Permanent Ownership</h4>
+            <p className="text-sm text-white/50 leading-relaxed font-medium">
+              Codes generated here are 100% static. They belong to you forever and do not rely on our platform to stay active.
+            </p>
+          </div>
+          <div className="space-y-6">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <h4 className="text-xl font-headline font-bold text-white">Marketing Analytics</h4>
+            <p className="text-sm text-white/50 leading-relaxed font-medium">
+              Agency Pro users can track engagement via server-side redirects, providing deep campaign intelligence without compromising privacy.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -289,21 +398,21 @@ export default function Home() {
       <footer className="border-t border-white/[0.05] bg-black/50 py-20">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-            <div className="flex items-center gap-3">
-               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                 <CustomScannerLogo className="w-5 h-5 text-black" />
-               </div>
-               <span className="font-headline font-bold text-xl text-white uppercase tracking-tighter">QRCanvas Studio</span>
-            </div>
-            <div className="flex items-center gap-8">
+            <CustomScannerLogo className="h-10" />
+            <div className="flex flex-wrap justify-center items-center gap-8">
                <a href="#how-to-use" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">How it Works</a>
                <a href="#faq" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">FAQ</a>
-               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Privacy</a>
-               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Terms</a>
+               <a href="#pricing" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Pricing</a>
+               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Privacy & Terms</a>
             </div>
           </div>
-          <div className="pt-8 border-t border-white/5 text-center">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
+          <div className="pt-8 border-t border-white/5 text-center space-y-4">
+            <div className="flex justify-center gap-6">
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">SSL SECURE</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">GDPR COMPLIANT</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">PWA READY</span>
+            </div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/10">
               &copy; <CopyrightYear /> QR CANVAS STUDIO. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
             </p>
           </div>
