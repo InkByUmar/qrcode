@@ -14,16 +14,6 @@ export const metadata: Metadata = {
   description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, backgrounds, and bulk processing. 100% free, no sign-up required. Export SVG and PNG for marketing campaigns.',
   keywords: 'free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code, batch qr code generation, marketing qr tools, branded qr codes, high res qr export, how to generate qr code, scan qr code online, download qr app, best free qr generator 2025, no expiry qr code, secure wifi qr maker',
   authors: [{ name: 'QR Canvas Studio Team' }],
-  icons: {
-    icon: [
-      { url: 'https://picsum.photos/seed/qr-brand-logo/32/32', sizes: '32x32' },
-      { url: 'https://picsum.photos/seed/qr-brand-logo/192/192', sizes: '192x192' },
-    ],
-    apple: [
-      { url: 'https://picsum.photos/seed/qr-brand-logo/180/180', sizes: '180x180' },
-    ],
-  },
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -73,12 +63,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-        {/* Apple PWA Support */}
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="QR Canvas" />
-        <link rel="apple-touch-icon" href="https://picsum.photos/seed/qr-brand-logo/180/180" />
-        
         <Script 
           src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js" 
           strategy="afterInteractive"

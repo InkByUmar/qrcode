@@ -52,9 +52,8 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Premium 'QR' Logo
- * Features a detailed QR code marker structure with "QR" text in the bottom right corner.
- * Optimized for high-end studio branding.
+ * Official 'QR' Studio Logo
+ * This matches the generated PWA icons exactly for total brand consistency.
  */
 const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg 
@@ -70,15 +69,6 @@ const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) =>
     {/* Finder Pattern: Bottom Left */}
     <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
     
-    {/* Stylized Data Bits for 'Structure' feel */}
-    <rect x="44" y="0" width="9" height="9" />
-    <rect x="44" y="15" width="9" height="9" />
-    <rect x="44" y="30" width="9" height="9" />
-    <rect x="0" y="44" width="9" height="9" />
-    <rect x="15" y="44" width="9" height="9" />
-    <rect x="30" y="44" width="9" height="9" />
-    <rect x="44" y="44" width="9" height="9" />
-
     {/* Integrated "QR" Typography in Bottom Right */}
     <text 
       x="100" 
@@ -88,7 +78,6 @@ const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) =>
       fontWeight="950" 
       letterSpacing="-4"
       className="font-headline"
-      style={{ fontFamily: 'inherit' }}
     >
       QR
     </text>
@@ -293,147 +282,6 @@ export default function Home() {
               <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* MOBILE APP (PWA) INFO SECTION */}
-      <section id="pwa-info" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative overflow-hidden scroll-mt-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center max-w-6xl mx-auto">
-          <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-primary/20 rounded-[3rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-            <div className="relative glass-card rounded-[3rem] p-4 border-white/10 shadow-2xl overflow-hidden aspect-[9/16] max-w-[320px] mx-auto animate-float">
-               <div className="h-full w-full bg-[#060907] rounded-[2.5rem] p-6 flex flex-col items-center justify-center text-center space-y-6">
-                 <div className="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/40">
-                   <CustomScannerLogo className="w-12 h-12 text-black" />
-                 </div>
-                 <div className="space-y-2">
-                    <p className="font-headline font-bold text-xl text-white uppercase tracking-tighter">QR Canvas</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-primary">Studio Edition</p>
-                 </div>
-                 <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                    <div className="w-3/4 h-full bg-primary animate-pulse" />
-                 </div>
-                 <p className="text-[11px] text-white/40 leading-relaxed uppercase font-bold tracking-tighter">
-                   Stand-alone Studio Ready
-                 </p>
-               </div>
-            </div>
-          </div>
-          
-          <div className="space-y-10">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
-                <Smartphone className="w-4 h-4" /> Professional PWA Suite
-              </div>
-              <h2 className="text-3xl md:text-5xl font-headline font-bold text-white leading-tight">
-                Install the QR Studio <br /><span className="text-primary">Directly to Your Home Screen</span>
-              </h2>
-              <p className="text-base md:text-lg text-white/60 leading-relaxed">
-                Experience full-screen branded generation without the browser interface. Our PWA technology delivers 100% of the studio features in a fast, standalone mobile app.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
-                <AppWindow className="w-6 h-6 text-primary" />
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">App-Like Interface</h4>
-                <p className="text-xs text-white/40 leading-relaxed">No address bar. Just your premium QR studio tools optimized for vertical mobile screens.</p>
-              </div>
-              <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
-                <Share className="w-6 h-6 text-primary" />
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">One-Click Install</h4>
-                <p className="text-xs text-white/40 leading-relaxed">Open in Safari or Chrome, tap Share, and select "Add to Home Screen" to download.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ SECTION */}
-      <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Common Questions</h2>
-            <p className="text-white/50 text-base md:text-lg">Everything you need to know about professional QR generation and branding.</p>
-          </div>
-          <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`} className="border-white/5 bg-white/[0.02] rounded-2xl px-6 border overflow-hidden">
-                <AccordionTrigger className="text-white hover:text-primary font-bold text-left py-6 hover:no-underline">
-                  {faq.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-white/50 pb-6 leading-relaxed">
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
-
-      {/* PRICING SECTION */}
-      <section id="pricing" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative scroll-mt-24">
-        <div className="text-center mb-24">
-          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Professional Generation Plans</h2>
-          <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg">
-            Independent creators and global agencies use our professional QR suite for high-end marketing campaigns.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          <div className="glass-card p-10 rounded-[3rem] border-white/5">
-            <h3 className="text-2xl font-headline font-bold text-white mb-2">Basic Creator</h3>
-            <div className="flex items-end gap-2 mb-10"><span className="text-5xl font-headline font-black text-white">$0</span><span className="text-white/40 font-bold mb-2">/FREE</span></div>
-            <ul className="space-y-6 mb-12">
-              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Unlimited Static Branded QR</li>
-              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Batch Processing (50 items)</li>
-              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Custom Logos & Backgrounds</li>
-              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> High-Res PNG Exports</li>
-            </ul>
-            <Button variant="outline" className="w-full h-14 rounded-2xl border-white/10 text-white font-bold" onClick={() => scrollTo('generator')}>Get Started Free</Button>
-          </div>
-          <div className="p-[2px] rounded-[3rem] bg-primary/50 shadow-2xl">
-            <div className="bg-[#060907] p-10 rounded-[3rem] h-full flex flex-col">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-2xl font-headline font-bold text-white">Agency Pro</h3>
-                <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/30">Most Popular</span>
-              </div>
-              <div className="flex items-end gap-2 mb-10"><span className="text-5xl font-headline font-black text-white">$19</span><span className="text-white/40 font-bold mb-2">/ONE-TIME</span></div>
-              <ul className="space-y-6 mb-12 flex-1">
-                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Unlimited Bulk Processing</li>
-                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Master SVG Vector Exports</li>
-                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Priority Processing Engine</li>
-                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Full Commercial Rights</li>
-                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> White-label Bulk ZIP Naming</li>
-              </ul>
-              <Button className="w-full h-14 rounded-2xl bg-primary text-primary-foreground font-black shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Upgrade to Pro</Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* POLICIES SECTION */}
-      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-6xl mx-auto">
-          <div className="space-y-8">
-            <div className="flex items-center gap-3 text-primary">
-              <ShieldAlert className="w-6 h-6" />
-              <h3 className="text-2xl font-headline font-bold text-white">Privacy Policy</h3>
-            </div>
-            <div className="text-white/50 text-sm leading-relaxed space-y-4">
-              <p>At QR Canvas Studio, we prioritize your data privacy. All QR code generation processing occurs locally within your browser. We do not store, track, or share the information you input into your QR codes.</p>
-              <p>We use local storage only to maintain your session history and preferences locally on your device. No personal data is transmitted to our servers during the generation process.</p>
-            </div>
-          </div>
-          <div className="space-y-8">
-            <div className="flex items-center gap-3 text-primary">
-              <Gavel className="w-6 h-6" />
-              <h3 className="text-2xl font-headline font-bold text-white">Terms of Service</h3>
-            </div>
-            <div className="text-white/50 text-sm leading-relaxed space-y-4">
-              <p>By using QR Canvas Studio, you agree to generate QR codes that comply with local and international laws. We prohibit the use of our services to create malicious links or deceptive content.</p>
-              <p>Free tier users are permitted for personal and non-commercial use. Commercial use and mass-marketing campaigns require an Agency Pro license.</p>
-            </div>
-          </div>
         </div>
       </section>
 
