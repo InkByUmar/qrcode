@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Free QR Code Generator with Logo & Bulk Support | QR Canvas Studio',
   description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, backgrounds, and bulk processing. 100% free, no sign-up required. Export SVG and PNG for marketing campaigns.',
-  keywords: 'free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code, batch qr code generation, marketing qr tools, branded qr codes, high res qr export, how to generate qr code, scan qr code online, download qr app',
+  keywords: 'free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code, batch qr code generation, marketing qr tools, branded qr codes, high res qr export, how to generate qr code, scan qr code online, download qr app, best free qr generator 2025, no expiry qr code, secure wifi qr maker',
   authors: [{ name: 'QR Canvas Studio Team' }],
   robots: {
     index: true,
@@ -92,7 +92,7 @@ export default function RootLayout({
           {...({ 'data-cfasync': 'false' } as any)}
         />
         
-        {/* JSON-LD Structured Data */}
+        {/* JSON-LD Structured Data - Site & Organization */}
         <Script id="schema-website" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -117,6 +117,30 @@ export default function RootLayout({
             "description": "Professional QR code generation studio for brands and marketing agencies."
           })}
         </Script>
+
+        {/* JSON-LD Structured Data - Breadcrumbs */}
+        <Script id="schema-breadcrumbs" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://qrcanvas.online"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "QR Studio",
+                "item": "https://qrcanvas.online#generator"
+              }
+            ]
+          })}
+        </Script>
+
+        {/* JSON-LD Structured Data - Software Application */}
         <Script id="schema-software" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -136,6 +160,8 @@ export default function RootLayout({
             }
           })}
         </Script>
+
+        {/* JSON-LD Structured Data - HowTo */}
         <Script id="schema-howto" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -162,6 +188,8 @@ export default function RootLayout({
             ]
           })}
         </Script>
+
+        {/* JSON-LD Structured Data - FAQ */}
         <Script id="schema-faq" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",

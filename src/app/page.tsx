@@ -250,9 +250,9 @@ export default function Home() {
       {/* HOW TO USE SECTION */}
       <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="text-center mb-24">
-          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">How to Use QR Canvas</h2>
+          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">How to Create Professional QR Codes</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg">
-            Create professional, branded QR assets in four simple steps.
+            Follow these four simple steps to generate high-resolution, branded QR assets for your campaigns.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -304,7 +304,7 @@ export default function Home() {
                 <Smartphone className="w-4 h-4" /> Professional PWA Suite
               </div>
               <h2 className="text-3xl md:text-5xl font-headline font-bold text-white leading-tight">
-                Install the Studio <br /><span className="text-primary">Directly to Home Screen</span>
+                Install the QR Studio <br /><span className="text-primary">Directly to Your Home Screen</span>
               </h2>
               <p className="text-base md:text-lg text-white/60 leading-relaxed">
                 Experience full-screen branded generation without the browser interface. Our PWA technology delivers 100% of the studio features in a fast, standalone mobile app.
@@ -332,7 +332,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Common Questions</h2>
-            <p className="text-white/50 text-base md:text-lg">Everything you need to know about professional QR generation.</p>
+            <p className="text-white/50 text-base md:text-lg">Everything you need to know about professional QR generation and branding.</p>
           </div>
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, index) => (
@@ -390,7 +390,7 @@ export default function Home() {
       </section>
 
       {/* POLICIES SECTION */}
-      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05]">
+      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-6xl mx-auto">
           <div className="space-y-8">
             <div className="flex items-center gap-3 text-primary">
