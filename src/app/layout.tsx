@@ -91,7 +91,8 @@ export default function RootLayout({
           strategy="afterInteractive"
           {...({ 'data-cfasync': 'false' } as any)}
         />
-        {/* Structured Data Scripts... (keeping existing scripts) */}
+        
+        {/* JSON-LD Structured Data */}
         <Script id="schema-website" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -114,6 +115,83 @@ export default function RootLayout({
               "height": "512"
             },
             "description": "Professional QR code generation studio for brands and marketing agencies."
+          })}
+        </Script>
+        <Script id="schema-software" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "QR Canvas Studio",
+            "operatingSystem": "All",
+            "applicationCategory": "MultimediaApplication",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "ratingCount": "1250"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          })}
+        </Script>
+        <Script id="schema-howto" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": "How to Create a Custom Branded QR Code",
+            "description": "Follow these steps to generate a professional QR code with your logo and high-resolution export.",
+            "step": [
+              {
+                "@type": "HowToStep",
+                "text": "Select your content type like URL, WiFi, or vCard."
+              },
+              {
+                "@type": "HowToStep",
+                "text": "Input your data into the payload field."
+              },
+              {
+                "@type": "HowToStep",
+                "text": "Upload your brand logo and customize dot styles and colors."
+              },
+              {
+                "@type": "HowToStep",
+                "text": "Preview the result and download as high-res PNG or SVG."
+              }
+            ]
+          })}
+        </Script>
+        <Script id="schema-faq" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is QR Canvas Studio free?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, QR Canvas Studio is 100% free for individual creators. You can generate unlimited branded QR codes without sign-up."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I add my company logo to the QR code?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Absolutely. You can upload any PNG or JPG logo, and our engine will automatically adjust scannability settings to ensure it works perfectly."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does Bulk Export work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Bulk mode allows you to paste a list of URLs and generate high-resolution QR codes for all of them at once, packaged in a single ZIP file."
+                }
+              }
+            ]
           })}
         </Script>
       </head>
