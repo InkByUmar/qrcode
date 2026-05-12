@@ -153,32 +153,36 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     setIsProcessingFile(true);
     setError(null);
 
-    // 1. Strict Hardware Release sequence
+    // 1. Force hardware release first to avoid processing conflicts
     await stopScanner();
-    // Allow DOM and hardware state to settle
+    
+    // 2. 500ms Hardware Cool-down: Allow the OS to fully release camera locks
     await new Promise(r => setTimeout(r, 500));
 
     try {
-      // 2. Fresh Isolated Instance for deep file analysis
+      // 3. Fresh Isolated Instance for pure file analysis (container-less)
       const html5QrCode = new Html5Qrcode(scannerContainerId, {
         formatsToSupport: SUPPORTED_FORMATS,
         verbose: false
       });
       
-      // 3. High-Precision Scan Pass
-      const decodedText = await html5QrCode.scanFile(file, true);
+      // 4. High-Precision Scan: Use 'false' for showImage for better reliability with complex patterns
+      const decodedText = await html5QrCode.scanFile(file, false);
       
-      setScanResult(decodedText);
-      toast({ title: "Analysis Success", description: "QR Canvas successfully decoded." });
+      if (decodedText) {
+        setScanResult(decodedText);
+        toast({ title: "Analysis Success", description: "QR Canvas successfully decoded." });
+      } else {
+        throw new Error("Decoding completed but returned no result.");
+      }
     } catch (err: any) {
       console.error("Deep Scan Failure:", err);
       const errorMessage = typeof err === 'string' ? err : err.message || '';
       
-      // Handle MultiFormat Reader failures gracefully
       if (errorMessage.includes("NotFound") || errorMessage.includes("no code")) {
-        setError("Pattern not recognized. Ensure the QR bits have high contrast against the background.");
+        setError("Pattern not recognized. Ensure the QR bits have high contrast and the image is sharp.");
       } else {
-        setError("Technical detection error. Try a sharper or higher-resolution image.");
+        setError("Technical detection error. The image may be too large or the format is unsupported.");
       }
     } finally {
       setIsProcessingFile(false);
@@ -302,7 +306,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   PRO TIP: For artistic codes with background imagery, ensure the pattern bits have high color contrast and the image is sharp for the Multi-Format Reader to succeed.
+                   PRO TIP: For artistic codes with background imagery, ensure the pattern bits have high color contrast. Use 'Import Scan' for saved screenshots.
                  </p>
               </div>
 
