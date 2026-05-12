@@ -57,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        <meta name="google-site-verification" content="ehD2Cnt6BXzxvDqIbX7bSo1vDFlICggBRQB2Jb_i-YE" />
+        <meta name="google-site-verification" content="ehD2Cnt6BXzxvDFlICggBRQB2Jb_i-YE" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -77,6 +77,17 @@ export default function RootLayout({
           strategy="afterInteractive"
           {...({ 'data-cfasync': 'false' } as any)}
         />
+        {/* Site Name Structured Data */}
+        <Script id="schema-website" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "QR Canvas Studio",
+            "alternateName": ["QRCanvas", "QR Canvas Professional"],
+            "url": "https://qrcanvas.online"
+          })}
+        </Script>
+        {/* Organization Structured Data */}
         <Script id="schema-organization" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -91,6 +102,34 @@ export default function RootLayout({
             ]
           })}
         </Script>
+        {/* Breadcrumb Structured Data */}
+        <Script id="schema-breadcrumbs" type="application/ld+json" strategy="afterInteractive">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://qrcanvas.online"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "QR Generator",
+                "item": "https://qrcanvas.online/#generator"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Bulk Export",
+                "item": "https://qrcanvas.online/#bulk-mode-info"
+              }
+            ]
+          })}
+        </Script>
+        {/* Software Application Structured Data */}
         <Script id="schema-software" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -110,26 +149,7 @@ export default function RootLayout({
             }
           })}
         </Script>
-        <Script id="schema-product" type="application/ld+json" strategy="afterInteractive">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": "QR Canvas Professional Plan",
-            "description": "Enterprise-grade QR code generation including unlimited bulk processing, high-res SVG exports, and advanced analytics.",
-            "brand": {
-              "@type": "Brand",
-              "name": "QR Canvas"
-            },
-            "offers": {
-              "@type": "Offer",
-              "url": "https://qrcanvas.online/#pricing",
-              "priceCurrency": "USD",
-              "price": "19.00",
-              "itemCondition": "https://schema.org/NewCondition",
-              "availability": "https://schema.org/InStock"
-            }
-          })}
-        </Script>
+        {/* FAQ Structured Data */}
         <Script id="schema-faq" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",

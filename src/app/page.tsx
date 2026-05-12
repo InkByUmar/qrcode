@@ -52,6 +52,7 @@ const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) =>
     strokeLinecap="round" 
     strokeLinejoin="round" 
     className={className}
+    aria-hidden="true"
   >
     <path d="M3 7V5a2 2 0 0 1 2-2h2" />
     <path d="M17 3h2a2 2 0 0 1 2 2v2" />
@@ -143,7 +144,7 @@ export default function Home() {
              <button 
                 onClick={() => setIsScannerOpen(true)}
                 className="flex items-center gap-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest px-3 md:px-5 py-2.5 md:py-3 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all"
-                aria-label="Open QR Scanner"
+                aria-label="Open QR Scanner Tool"
              >
               <Scan className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
               <span className="hidden xs:inline">Scan Tool</span>
@@ -151,6 +152,7 @@ export default function Home() {
              <button 
                 onClick={() => scrollTo('pricing')}
                 className="flex items-center gap-2 text-[9px] md:text-[10px] font-black uppercase tracking-widest px-4 md:px-6 py-2.5 md:py-3 rounded-xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                title="Upgrade to Pro Plan"
              >
               <Crown className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Upgrade Pro</span>
@@ -159,7 +161,7 @@ export default function Home() {
              {/* MOBILE NAV TOGGLE */}
              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-primary transition-colors shrink-0" aria-label="Toggle Menu">
+                  <button className="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-primary transition-colors shrink-0" aria-label="Toggle Navigation Menu">
                     <Menu className="w-5 h-5" />
                   </button>
                 </SheetTrigger>
@@ -336,7 +338,7 @@ export default function Home() {
       </section>
 
       {/* GUIDE SECTION */}
-      <section id="guide" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative">
+      <section id="guide" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative scroll-mt-24">
         <div className="text-center mb-24">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-[10px] font-black tracking-[0.3em] text-primary mb-6">
             <BookOpen className="w-3.5 h-3.5" />
