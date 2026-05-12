@@ -70,6 +70,13 @@ export default function RootLayout({
           src="https://archaicmsflip.com/f8/d2/33/f8d2333ae12f97dc648dbb943b8bf90d.js" 
           strategy="afterInteractive"
         />
+        {/* Adsterra Native Banner Script */}
+        <Script 
+          async
+          src="https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js" 
+          strategy="afterInteractive"
+          {...({ 'data-cfasync': 'false' } as any)}
+        />
         <Script id="schema-organization" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",

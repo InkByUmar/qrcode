@@ -64,6 +64,17 @@ const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) =>
   </svg>
 );
 
+const NativeAdBanner = () => (
+  <div className="container mx-auto px-6 py-12 flex justify-center">
+    <div 
+      id="container-8a0d2340102217c81755459d2df8b6d0" 
+      className="w-full max-w-5xl min-h-[100px] bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
+    >
+      {/* Adsterra Native Banner Container */}
+    </div>
+  </div>
+);
+
 export default function Home() {
   const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -214,7 +225,7 @@ export default function Home() {
       <section className="container mx-auto px-6 py-20 md:py-32 relative">
         <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
         
-        <div className="max-w-5xl mx-auto text-center mb-24 relative z-10">
+        <div className="max-w-5xl mx-auto text-center mb-12 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 animate-in fade-in zoom-in duration-1000 border-primary/20">
             <Sparkles className="w-3.5 h-3.5 fill-primary/30" />
             <span>THE INDUSTRY STANDARD FOR BRANDED QR CODES</span>
@@ -240,10 +251,16 @@ export default function Home() {
           </div>
         </div>
 
+        {/* TOP AD PLACEMENT */}
+        <NativeAdBanner />
+
         <div id="generator" className="relative z-10 scroll-mt-24">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
         </div>
       </section>
+
+      {/* MID-PAGE AD PLACEMENT */}
+      <NativeAdBanner />
 
       {/* PRICING SECTION */}
       <section id="pricing" className="container mx-auto px-6 py-32 border-t border-white/[0.05] relative scroll-mt-24 overflow-hidden">
@@ -413,6 +430,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* PRE-FAQ AD PLACEMENT */}
+      <NativeAdBanner />
 
       {/* FEATURES SECTION */}
       <section id="features" className="container mx-auto px-6 py-32 relative overflow-hidden bg-white/[0.01] scroll-mt-24">
