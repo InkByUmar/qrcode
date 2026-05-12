@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -8,8 +7,8 @@ import { QrPreviewSection } from './qr-preview-section';
 import { QrBulkSection } from './qr-bulk-section';
 import { QrCode, Layers } from 'lucide-react';
 
-const HISTORY_KEY = 'qr_canvas_history_v4';
-const STATE_KEY = 'qr_canvas_current_state_v4';
+const HISTORY_KEY = 'qr_canvas_history_v5';
+const STATE_KEY = 'qr_canvas_current_state_v5';
 
 const DEFAULT_STATE: QRState = {
   data: 'https://google.com',
@@ -25,18 +24,11 @@ const DEFAULT_STATE: QRState = {
   type: 'URL',
   dotStyle: 'extra-rounded',
   cornerStyle: 'rounded',
+  scannabilityScore: 100,
   wifi: { ssid: '', password: '', encryption: 'WPA' },
   email: { address: '', subject: '', body: '' },
   whatsapp: { phone: '', message: '' },
-  vCard: {
-    firstName: '',
-    lastName: '',
-    mobile: '',
-    email: '',
-    organization: '',
-    jobTitle: '',
-    website: ''
-  }
+  vCard: { firstName: '', lastName: '', mobile: '', email: '', organization: '', jobTitle: '', website: '' }
 };
 
 export function QrGeneratorContainer({ 
@@ -53,31 +45,20 @@ export function QrGeneratorContainer({
   const activeMode = controlledMode ?? uncontrolledMode;
   const setActiveMode = onModeChange ?? setUncontrolledMode;
 
-  // Initial Load
   useEffect(() => {
     const savedHistory = localStorage.getItem(HISTORY_KEY);
     const savedState = localStorage.getItem(STATE_KEY);
-    
-    if (savedHistory) {
-      try { setHistory(JSON.parse(savedHistory)); } catch (e) { console.error(e); }
-    }
-    
+    if (savedHistory) try { setHistory(JSON.parse(savedHistory)); } catch (e) {}
     if (savedState) {
       try { 
         const parsed = JSON.parse(savedState);
-        // Ensure legacy states migrate correctly
-        if (!parsed.backgroundMode) parsed.backgroundMode = 'auto';
-        if (parsed.backgroundOpacity > 0.5) parsed.backgroundOpacity = 0.5;
-        setState(parsed); 
-        setDebouncedState(parsed);
-      } catch (e) { 
-        console.error(e); 
-      }
+        setState({ ...DEFAULT_STATE, ...parsed }); 
+        setDebouncedState({ ...DEFAULT_STATE, ...parsed });
+      } catch (e) {}
     }
     setIsLoaded(true);
   }, []);
 
-  // Save State on Change
   useEffect(() => {
     if (!isLoaded) return;
     localStorage.setItem(STATE_KEY, JSON.stringify(state));
@@ -94,37 +75,32 @@ export function QrGeneratorContainer({
     setState(prev => {
       const newState = { ...prev, ...updates };
       
-      // Automatic Density Logic
-      if (newState.backgroundMode === 'auto' && newState.backgroundImage) {
-        newState.backgroundOpacity = 0.25; 
-      }
-
-      // Clamp background opacity to 50% max for manual mode
-      if (newState.backgroundOpacity > 0.5) {
-        newState.backgroundOpacity = 0.5;
-      }
-
       // Sync derived data based on type
       if (newState.type === 'WiFi') {
         newState.data = `WIFI:T:${newState.wifi.encryption};S:${newState.wifi.ssid};P:${newState.wifi.password};;`;
-      } else if (newState.type === 'Email') {
-        newState.data = `mailto:${newState.email.address}?subject=${encodeURIComponent(newState.email.subject)}&body=${encodeURIComponent(newState.email.body)}`;
       } else if (newState.type === 'WhatsApp') {
         const cleanPhone = newState.whatsapp.phone.replace(/[^0-9]/g, '');
         newState.data = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(newState.whatsapp.message)}`;
-      } else if (newState.type === 'Phone') {
-        newState.data = newState.data.startsWith('tel:') ? newState.data : `tel:${newState.data}`;
-      } else if (newState.type === 'vCard') {
-        newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
+      } else if (newState.type === 'Email') {
+        newState.data = `mailto:${newState.email.address}?subject=${encodeURIComponent(newState.email.subject)}&body=${encodeURIComponent(newState.email.body)}`;
       }
 
-      // PATTERN INTEGRITY GUARD: Force Level H for any stylization or complexity
+      // SCANNABILITY CALCULATOR
+      let score = 100;
       const dataLen = newState.data?.length || 0;
-      const isStylized = newState.dotStyle !== 'square' || newState.cornerStyle !== 'square';
-      const needsHighDensity = newState.logo || newState.backgroundImage || dataLen > 150 || isStylized;
+      if (dataLen > 200) score -= 15;
+      if (newState.logo) score -= 10;
+      if (newState.backgroundImage) score -= 15;
+      if (newState.backgroundOpacity > 0.3) score -= 20;
+      if (newState.dotStyle !== 'square') score -= 5;
+      if (newState.cornerStyle !== 'square') score -= 5;
+      newState.scannabilityScore = Math.max(40, score);
 
-      if (needsHighDensity) {
-        newState.errorLevel = 'H'; // Force max redundancy for stylized modules
+      // Error Level Guard
+      if (newState.scannabilityScore < 85 || newState.logo || newState.backgroundImage) {
+        newState.errorLevel = 'H';
+      } else {
+        newState.errorLevel = 'Q';
       }
       
       return newState;

@@ -1,11 +1,12 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { QRState } from '@/lib/qr-types';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { 
   Upload, 
   Trash2, 
@@ -16,10 +17,13 @@ import {
   Shield, 
   Cpu, 
   MousePointer2, 
-  CheckCircle2 
+  CheckCircle2,
+  Sparkles,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { generateQrBackground } from '@/ai/flows/qr-background-generator-flow';
 
 interface QrBrandingControlsProps {
   state: QRState;
@@ -28,6 +32,8 @@ interface QrBrandingControlsProps {
 
 export function QrBrandingControls({ state, updateState }: QrBrandingControlsProps) {
   const { toast } = useToast();
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'backgroundImage') => {
     const file = e.target.files?.[0];
@@ -45,6 +51,20 @@ export function QrBrandingControls({ state, updateState }: QrBrandingControlsPro
     }
   };
 
+  const handleAiBackgroundGen = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsGenerating(true);
+    try {
+      const dataUri = await generateQrBackground(aiPrompt);
+      updateState({ backgroundImage: dataUri, backgroundMode: 'auto' });
+      toast({ title: "AI Background Ready", description: "Artistic imagery generated and optimized." });
+    } catch (e) {
+      toast({ variant: "destructive", title: "Generation Failed", description: "Imagen 4 engine temporarily busy." });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <Card className="glass-card shadow-2xl border-white/10 relative overflow-hidden">
       <CardHeader className="border-b border-white/[0.05] bg-white/[0.02] py-8">
@@ -53,37 +73,28 @@ export function QrBrandingControls({ state, updateState }: QrBrandingControlsPro
          </CardTitle>
       </CardHeader>
       <CardContent className="pt-10 space-y-8">
-          {/* Studio Guidance Hub */}
-          <div className="p-6 rounded-[2rem] bg-white/[0.02] border border-white/10 space-y-6">
+          {/* AI Background Generator */}
+          <div className="p-6 rounded-[2rem] bg-primary/5 border border-primary/20 space-y-4">
              <div className="flex items-center gap-3">
-               <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                 <Info className="w-4 h-4" />
-               </div>
-               <h4 className="text-[11px] font-black uppercase tracking-widest text-white">Studio Guidance Hub</h4>
+               <Sparkles className="w-4 h-4 text-primary" />
+               <h4 className="text-[11px] font-black uppercase tracking-widest text-white">AI Background Studio</h4>
              </div>
-             
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
-                   <p className="text-[10px] font-black uppercase text-primary tracking-wider">Brand Icon</p>
-                   <p className="text-[9px] text-white/40 leading-relaxed">Integrated at the center of the pattern. Hidden bits are compensated for via Level H error correction.</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
-                   <p className="text-[10px] font-black uppercase text-primary tracking-wider">Background</p>
-                   <p className="text-[9px] text-white/40 leading-relaxed">Artistic visuals integrated beneath the pattern. Density control ensures peak reliability.</p>
-                </div>
+             <div className="flex gap-2">
+                <Input 
+                  placeholder="Cyberpunk city, neon forest, abstract gold..."
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  className="h-12 bg-black/40 border-white/10 text-xs rounded-xl text-white"
+                />
+                <Button 
+                  onClick={handleAiBackgroundGen}
+                  disabled={isGenerating || !aiPrompt.trim()}
+                  className="h-12 w-12 rounded-xl bg-primary text-primary-foreground shrink-0 shadow-xl shadow-primary/20"
+                >
+                  {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                </Button>
              </div>
-
-             <div className="flex gap-2 h-10">
-                <div className={cn("flex-1 rounded-xl border border-white/10 flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-tighter transition-all", state.backgroundImage ? "bg-primary/20 text-primary border-primary/30" : "bg-white/5 text-white/20")}>
-                  <ImageIcon className="w-3 h-3" /> Background
-                </div>
-                <div className="flex-1 rounded-xl bg-primary/10 text-primary border border-primary/30 flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-tighter">
-                  <Shapes className="w-3 h-3" /> Matrix
-                </div>
-                <div className={cn("flex-1 rounded-xl border border-white/10 flex items-center justify-center gap-2 text-[8px] font-black uppercase tracking-tighter transition-all", state.logo ? "bg-primary/20 text-primary border-primary/30" : "bg-white/5 text-white/20")}>
-                  <Box className="w-3 h-3" /> Logo
-                </div>
-             </div>
+             <p className="text-[9px] text-white/40 font-medium">Powered by Imagen 4. Generates scannability-safe artistic patterns.</p>
           </div>
 
           {/* Logo Manager */}
@@ -135,7 +146,7 @@ export function QrBrandingControls({ state, updateState }: QrBrandingControlsPro
               </div>
               <div className="flex-1 space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[11px] font-black text-white uppercase tracking-wider">Background Layer</Label>
+                  <Label className="text-[11px] font-black text-white uppercase tracking-wider">Manual Layer</Label>
                   {state.backgroundImage && (
                     <Button 
                       variant="ghost" 
@@ -186,9 +197,6 @@ export function QrBrandingControls({ state, updateState }: QrBrandingControlsPro
                       step={1} 
                       onValueChange={(val) => updateState({ backgroundOpacity: val[0] / 100 })} 
                     />
-                    <p className="text-[9px] text-white/30 font-medium italic text-center">
-                      Manual limit: 50% to maintain enterprise scannability standards.
-                    </p>
                   </div>
                 )}
               </div>

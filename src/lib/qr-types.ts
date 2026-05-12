@@ -22,6 +22,7 @@ export interface QRState {
   type: 'URL' | 'Text' | 'Phone' | 'Email' | 'WiFi' | 'vCard' | 'WhatsApp';
   dotStyle: 'rounded' | 'dots' | 'classy' | 'square' | 'extra-rounded';
   cornerStyle: 'square' | 'dot' | 'rounded';
+  scannabilityScore: number;
   // Complex type fields
   wifi: {
     ssid: string;

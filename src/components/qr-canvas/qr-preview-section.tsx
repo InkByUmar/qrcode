@@ -1,10 +1,10 @@
-
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
 import { QRState, QRHistoryItem } from '@/lib/qr-types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { 
   FileCode, 
   Loader2, 
@@ -21,9 +21,13 @@ import {
   Trash2,
   MessageSquare,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  BarChart3,
+  TrendingUp,
+  Target
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface QrPreviewSectionProps {
   state: QRState;
@@ -45,7 +49,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const { toast } = useToast();
 
   const dataLength = state.data?.length || 0;
-  // Strictly enforce Level H for any artistic styling or complexity
   const isStylized = state.dotStyle !== 'square' || state.cornerStyle !== 'square';
   const isHighDensity = dataLength > 150 || !!state.backgroundImage || !!state.logo || isStylized;
 
@@ -58,42 +61,14 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       type: 'canvas' as const,
       data: state.data || ' ',
       image: state.logo || '',
-      margin: 40, // Increased margin for better focus and segmentation
-      dotsOptions: { 
-        color: state.fgColor, 
-        type: state.dotStyle 
-      },
-      cornersSquareOptions: { 
-        type: state.cornerStyle === 'rounded' ? 'extra-rounded' : state.cornerStyle, 
-        color: state.fgColor 
-      },
-      cornersDotOptions: { 
-        type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, 
-        color: state.fgColor 
-      },
-      backgroundOptions: { 
-        color: forceTransparent ? 'rgba(0,0,0,0)' : state.bgColor 
-      },
-      imageOptions: { 
-        crossOrigin: 'anonymous', 
-        margin: 15,
-        imageSize: state.logoSize,
-        hideBackgroundDots: true 
-      },
-      qrOptions: { 
-        errorCorrectionLevel: errorCorrection 
-      }
+      margin: 40,
+      dotsOptions: { color: state.fgColor, type: state.dotStyle },
+      cornersSquareOptions: { type: state.cornerStyle === 'rounded' ? 'extra-rounded' : state.cornerStyle, color: state.fgColor },
+      cornersDotOptions: { type: state.cornerStyle === 'rounded' ? 'dot' : state.cornerStyle, color: state.fgColor },
+      backgroundOptions: { color: forceTransparent ? 'rgba(0,0,0,0)' : state.bgColor },
+      imageOptions: { crossOrigin: 'anonymous', margin: 15, imageSize: state.logoSize, hideBackgroundDots: true },
+      qrOptions: { errorCorrectionLevel: errorCorrection }
     };
-  };
-
-  const loadImage = (src: string): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = (e) => reject(e);
-      img.src = src;
-    });
   };
 
   const compositeCanvas = async (resolution: number): Promise<HTMLCanvasElement> => {
@@ -103,16 +78,19 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Layer 1: Foundation
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, resolution, resolution);
 
-    // 2. Layer 2: Visual Brand (Contrast Guard)
     if (state.backgroundImage) {
       try {
-        const bgImg = await loadImage(state.backgroundImage);
+        const bgImg = new Image();
+        bgImg.crossOrigin = 'anonymous';
+        await new Promise((resolve, reject) => {
+          bgImg.onload = resolve;
+          bgImg.onerror = reject;
+          bgImg.src = state.backgroundImage!;
+        });
         ctx.save();
-        // Ensure background doesn't drown out stylized bits
         ctx.globalAlpha = Math.min(state.backgroundOpacity, 0.4); 
         const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
         const x = (resolution - bgImg.width * scale) / 2;
@@ -124,11 +102,14 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       }
     }
 
-    // 3. Layer 3: Pattern (Finder Pattern Integrity Guard)
     const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');
-    const qrImg = await loadImage(URL.createObjectURL(qrBlob));
+    const qrImg = new Image();
+    await new Promise((resolve) => {
+      qrImg.onload = resolve;
+      qrImg.src = URL.createObjectURL(qrBlob);
+    });
     ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
     return finalCanvas;
@@ -137,7 +118,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   useEffect(() => {
     if (typeof window !== 'undefined' && window.QRCodeStyling && qrRef.current) {
       setIsGenerating(true);
-      
       const renderPreview = async () => {
         try {
           const finalCanvas = await compositeCanvas(800);
@@ -155,7 +135,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           setIsGenerating(false);
         }
       };
-
       renderPreview();
     }
   }, [state]);
@@ -174,23 +153,13 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         link.href = finalCanvas.toDataURL('image/png', 1.0);
         link.click();
       }
-      
       onDownload();
-      toast({ title: "Premium Export Ready", description: "Your branded asset has been saved to your device." });
+      toast({ title: "Premium Export Ready", description: "Your branded asset has been saved." });
     } catch (err) {
-      console.error(err);
-      toast({ variant: "destructive", title: "Export Pipeline Failed", description: "An error occurred during high-res rendering." });
+      toast({ variant: "destructive", title: "Export Failed", description: "An error occurred during high-res rendering." });
     } finally {
       setIsGenerating(false);
     }
-  };
-
-  const handleCopyData = () => {
-    if (!state.data) return;
-    navigator.clipboard.writeText(state.data);
-    setCopied(true);
-    toast({ title: "Data Copied", description: "QR payload copied to system clipboard." });
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -213,16 +182,22 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
             <div ref={qrRef} className="relative z-10 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] flex items-center justify-center overflow-hidden rounded-xl bg-transparent" />
           </div>
 
-          <div className="w-full space-y-4">
-            {isHighDensity && (
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 mb-2">
-                <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-                <div className="space-y-0.5">
-                  <p className="text-[10px] text-primary font-black uppercase tracking-wider">Reliability Guard Active</p>
-                  <p className="text-[9px] text-white/50 font-bold uppercase">Level H Error Correction Optimized</p>
-                </div>
-              </div>
-            )}
+          <div className="w-full space-y-6">
+            {/* SCANNABILITY SCORE */}
+            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
+               <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/60">
+                    <Target className="w-3.5 h-3.5 text-primary" /> Scannability Score
+                  </div>
+                  <span className={cn("text-[11px] font-black uppercase tracking-widest", state.scannabilityScore > 80 ? "text-primary" : "text-yellow-500")}>
+                    {state.scannabilityScore}% Optimal
+                  </span>
+               </div>
+               <Progress value={state.scannabilityScore} className="h-1.5 bg-white/5" />
+               <p className="text-[9px] text-white/30 font-medium leading-relaxed">
+                 Score based on pattern density, module stylization, and background contrast. 80%+ recommended for marketing.
+               </p>
+            </div>
 
             <Button 
               onClick={() => handleDownload('png', 1024)} 
@@ -234,32 +209,51 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
             </Button>
             
             <div className="grid grid-cols-2 gap-4">
-              <Button 
-                variant="outline" 
-                disabled={isGenerating}
-                onClick={() => handleDownload('svg', 1024)} 
-                className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase"
-              >
+              <Button variant="outline" onClick={() => handleDownload('svg', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
                 <FileCode className="w-4 h-4 mr-2 text-primary" />
                 SVG Vector
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={handleCopyData}
-                className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase"
-              >
-                {copied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
+              <Button variant="outline" onClick={() => { navigator.clipboard.writeText(state.data); toast({ title: "Data Copied" }); }} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                <Copy className="w-4 h-4 mr-2" />
                 Copy Data
               </Button>
             </div>
           </div>
         </CardContent>
-        <div className="bg-white/[0.03] border-t border-white/[0.1] p-5">
-           <div className="flex items-center justify-center gap-3 text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">
-             <MonitorSmartphone className="w-4 h-4" />
-             Scannability Verified
+      </Card>
+
+      {/* PRO ANALYTICS PREVIEW (Mock) */}
+      <Card className="glass-card shadow-2xl border-white/10 overflow-hidden relative group">
+        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+        <CardHeader className="py-6 px-8 border-b border-white/[0.05] bg-white/[0.02]">
+           <div className="flex items-center justify-between">
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
+                <BarChart3 className="w-4 h-4 text-primary" /> Campaign Intelligence
+              </CardTitle>
+              <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
            </div>
-        </div>
+        </CardHeader>
+        <CardContent className="p-8 space-y-6">
+           <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                 <p className="text-[8px] font-black text-white/40 uppercase tracking-widest">Est. Reach</p>
+                 <div className="flex items-center gap-2">
+                    <p className="text-xl font-headline font-bold text-white">4.2k</p>
+                    <TrendingUp className="w-3 h-3 text-primary" />
+                 </div>
+              </div>
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                 <p className="text-[8px] font-black text-white/40 uppercase tracking-widest">Confidence</p>
+                 <div className="flex items-center gap-2">
+                    <p className="text-xl font-headline font-bold text-white">98%</p>
+                    <ShieldCheck className="w-3 h-3 text-primary" />
+                 </div>
+              </div>
+           </div>
+           <Button variant="ghost" className="w-full h-12 border border-primary/20 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-primary/10">
+             Unlock Full Dashboard
+           </Button>
+        </CardContent>
       </Card>
       
       {history.length > 0 && (
@@ -268,12 +262,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
             <CardTitle className="text-[9px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
               <History className="w-4 h-4 text-primary" /> Studio History
             </CardTitle>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onClearHistory}
-              className="h-7 text-[8px] font-black uppercase tracking-widest text-white/40 hover:text-destructive transition-all border border-white/10 rounded-lg"
-            >
+            <Button variant="ghost" size="sm" onClick={onClearHistory} className="h-7 text-[8px] font-black uppercase tracking-widest text-white/40 hover:text-destructive transition-all border border-white/10 rounded-lg">
               <Trash2 className="w-3 h-3 mr-1" />
               Clear
             </Button>
