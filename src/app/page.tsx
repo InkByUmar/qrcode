@@ -67,7 +67,7 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
       <rect x="25" y="45" width="10" height="10" />
     </svg>
     <span className="font-headline font-black text-2xl tracking-tighter text-white uppercase">
-      QR
+      QR CANVAS
     </span>
   </div>
 );
@@ -141,9 +141,6 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
             <CustomScannerLogo className="h-10" />
-            <div className="hidden xs:flex flex-col">
-              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/30 leading-none">Premium Studio</span>
-            </div>
           </div>
           
           <nav className="hidden lg:flex items-center gap-8">
@@ -190,7 +187,7 @@ export default function Home() {
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-6 border-b border-white/5 text-left">
                       <CustomScannerLogo className="h-8" />
-                      <SheetTitle className="text-white font-headline font-bold text-xl uppercase mt-2">QR Canvas</SheetTitle>
+                      <SheetTitle className="text-white font-headline font-bold text-xl uppercase mt-2">QR CANVAS</SheetTitle>
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
                       {navItems.map((item) => (
@@ -224,11 +221,11 @@ export default function Home() {
             <span>ENTERPRISE-GRADE QR GENERATION SUITE</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-headline font-black mb-10 leading-[1.1] md:leading-[1] tracking-tight text-white">
-            Branded Artistic <br />
-            <span className="text-primary italic">QR Studio & Bulk Engine</span>
+            Professional artistic <br />
+            <span className="text-primary italic">QR CANVAS Studio</span>
           </h1>
           <p className="text-lg md:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            Professional high-resolution QR codes for marketing. Support for <span className="text-white font-medium">logos</span>, custom backgrounds, and <span className="text-white font-medium">bulk processing</span>.
+            Create high-resolution QR codes for your brand. Support for <span className="text-white font-medium">logos</span>, custom backgrounds, and <span className="text-white font-medium">bulk processing</span>.
           </p>
         </div>
 
@@ -413,7 +410,7 @@ export default function Home() {
               <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">PWA READY</span>
             </div>
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/10">
-              &copy; <CopyrightYear /> QR CANVAS STUDIO. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
+              &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
             </p>
           </div>
         </div>

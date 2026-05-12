@@ -3,8 +3,8 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'QR Canvas Studio',
-    short_name: 'QRCanvas',
+    name: 'QR CANVAS',
+    short_name: 'QR CANVAS',
     description: 'Premium AI-Powered Branded QR Code Generator',
     start_url: '/',
     display: 'standalone',
