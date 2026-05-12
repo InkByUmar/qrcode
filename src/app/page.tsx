@@ -239,9 +239,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Adsterra Header Banner */}
-        <AdsterraBanner className="mb-10" />
-        
         {/* Top Native Banner Integrated Here */}
         <AdsterraNativeBanner className="mb-20" />
 
