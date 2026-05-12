@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -52,7 +53,17 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const isStylized = state.dotStyle !== 'square' || state.cornerStyle !== 'square';
   const isHighDensity = dataLength > 150 || !!state.backgroundImage || !!state.logo || isStylized;
 
-  const getQrConfig = (size: number, forceTransparent: boolean = false) => {
+  const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = (e) => reject(e);
+      img.src = src;
+    });
+  };
+
+  const getQrConfig = (size: number, forceTransparent: boolean = false, preloadedLogo?: string) => {
     const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
     
     return {
@@ -60,7 +71,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       height: size,
       type: 'canvas' as const,
       data: state.data || ' ',
-      image: state.logo || '',
+      image: preloadedLogo || state.logo || '',
       margin: 40,
       dotsOptions: { color: state.fgColor, type: state.dotStyle },
       cornersSquareOptions: { type: state.cornerStyle === 'rounded' ? 'extra-rounded' : state.cornerStyle, color: state.fgColor },
@@ -78,18 +89,14 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
+    // Clear and set background
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, resolution, resolution);
 
+    // 1. Layer 1: Background Image (Manual Layer)
     if (state.backgroundImage) {
       try {
-        const bgImg = new Image();
-        bgImg.crossOrigin = 'anonymous';
-        await new Promise((resolve, reject) => {
-          bgImg.onload = resolve;
-          bgImg.onerror = reject;
-          bgImg.src = state.backgroundImage!;
-        });
+        const bgImg = await loadImage(state.backgroundImage);
         ctx.save();
         ctx.globalAlpha = Math.min(state.backgroundOpacity, 0.4); 
         const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
@@ -102,14 +109,15 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       }
     }
 
+    // 2. Layer 2: QR Code Matrix + Logo (Integrated)
+    // We create the styling instance with pre-validated data to ensure sync
     const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
+    
+    // Explicitly wait for internal asset processing
     const qrBlob = await styling.getRawData('png');
-    const qrImg = new Image();
-    await new Promise((resolve) => {
-      qrImg.onload = resolve;
-      qrImg.src = URL.createObjectURL(qrBlob);
-    });
+    const qrImg = await loadImage(URL.createObjectURL(qrBlob));
+    
     ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
     return finalCanvas;
@@ -183,7 +191,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           </div>
 
           <div className="w-full space-y-6">
-            {/* SCANNABILITY SCORE */}
             <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/60">
@@ -222,7 +229,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </CardContent>
       </Card>
 
-      {/* PRO ANALYTICS PREVIEW (Mock) */}
       <Card className="glass-card shadow-2xl border-white/10 overflow-hidden relative group">
         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
         <CardHeader className="py-6 px-8 border-b border-white/[0.05] bg-white/[0.02]">
