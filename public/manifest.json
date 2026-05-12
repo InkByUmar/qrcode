@@ -1,8 +1,8 @@
 
 {
-  "name": "QR Canvas Studio",
-  "short_name": "QR Canvas",
-  "description": "Professional high-resolution QR code generator for brands and marketing.",
+  "name": "QR Canvas",
+  "short_name": "QRCanvas",
+  "description": "Premium Artistic QR Studio & Bulk Engine. Create professional branded QR codes for marketing.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#060907",
