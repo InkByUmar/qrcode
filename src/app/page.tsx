@@ -53,7 +53,8 @@ import { cn } from '@/lib/utils';
 
 /**
  * Premium 'QR' Logo
- * Features a QR code marker structure with "QR" text in the bottom right corner.
+ * Features a detailed QR code marker structure with "QR" text in the bottom right corner.
+ * Optimized for high-end studio branding.
  */
 const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg 
@@ -62,21 +63,32 @@ const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) =>
     aria-hidden="true"
     fill="currentColor"
   >
-    {/* QR Corner Squares - Top Left */}
-    <path d="M10 10h32v32H10V10zm24 24V18H18v14h16z" />
-    {/* QR Corner Squares - Top Right */}
-    <path d="M58 10h32v32H58V10zm24 24V18H66v14h16z" />
-    {/* QR Corner Squares - Bottom Left */}
-    <path d="M10 58h32v32H10V58zm24 24V66H18v14h16z" />
-    {/* Bottom Right stylized QR text */}
+    {/* Finder Pattern: Top Left */}
+    <path d="M0 0h35v35H0V0zm28 28V7H7v21h21zM11 11h13v13h-13z" />
+    {/* Finder Pattern: Top Right */}
+    <path d="M65 0h35v35H65V0zm28 28V7h-21v21h21zM76 11h13v13H76z" />
+    {/* Finder Pattern: Bottom Left */}
+    <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
+    
+    {/* Stylized Data Bits for 'Structure' feel */}
+    <rect x="44" y="0" width="9" height="9" />
+    <rect x="44" y="15" width="9" height="9" />
+    <rect x="44" y="30" width="9" height="9" />
+    <rect x="0" y="44" width="9" height="9" />
+    <rect x="15" y="44" width="9" height="9" />
+    <rect x="30" y="44" width="9" height="9" />
+    <rect x="44" y="44" width="9" height="9" />
+
+    {/* Integrated "QR" Typography in Bottom Right */}
     <text 
-      x="74" 
-      y="85" 
-      textAnchor="middle" 
-      fontSize="44" 
-      fontWeight="900" 
-      letterSpacing="-2"
-      fontFamily="Inter, system-ui, sans-serif"
+      x="100" 
+      y="98" 
+      textAnchor="end" 
+      fontSize="52" 
+      fontWeight="950" 
+      letterSpacing="-4"
+      className="font-headline"
+      style={{ fontFamily: 'inherit' }}
     >
       QR
     </text>
