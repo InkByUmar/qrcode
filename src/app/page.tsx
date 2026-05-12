@@ -75,23 +75,6 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
 );
 
 /**
- * Standard Adsterra Banner Slot
- */
-const AdsterraBanner = ({ className }: { className?: string }) => (
-  <div className={cn("container mx-auto px-6 py-12 flex flex-col items-center animate-reveal", className)}>
-    <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3">Advertisement</div>
-    <div 
-      className="w-full max-w-5xl min-h-[100px] md:min-h-[250px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden hover:bg-white/[0.05] transition-all relative"
-    >
-      <div className="flex flex-col items-center gap-4 text-white/10 animate-fade-pulse">
-        <Zap className="w-8 h-8" />
-        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Adsterra Studio Slot</span>
-      </div>
-    </div>
-  </div>
-);
-
-/**
  * Adsterra Vertical Banner 160x300
  */
 const AdsterraVerticalBanner = ({ className }: { className?: string }) => {
@@ -128,6 +111,49 @@ const AdsterraVerticalBanner = ({ className }: { className?: string }) => {
         <div className="flex flex-col items-center gap-2 text-white/10">
           <Zap className="w-5 h-5" />
           <span className="text-[8px] font-black uppercase tracking-[0.2em]">Vertical Slot</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Adsterra Skyscraper Banner 160x600
+ */
+const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current && !containerRef.current.querySelector('iframe')) {
+      const scriptConfig = document.createElement('script');
+      scriptConfig.innerHTML = `
+        atOptions = {
+          'key' : 'ae8d80b67ecd20f2553ebdb46506c737',
+          'format' : 'iframe',
+          'height' : 600,
+          'width' : 160,
+          'params' : {}
+        };
+      `;
+      containerRef.current.appendChild(scriptConfig);
+
+      const scriptInvoke = document.createElement('script');
+      scriptInvoke.src = "https://archaicmsflip.com/ae8d80b67ecd20f2553ebdb46506c737/invoke.js";
+      scriptInvoke.async = true;
+      containerRef.current.appendChild(scriptInvoke);
+    }
+  }, []);
+
+  return (
+    <div className={cn("flex flex-col items-center animate-reveal", className)}>
+      <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 text-center">Sponsored</div>
+      <div 
+        ref={containerRef}
+        className="w-[160px] h-[600px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
+      >
+        <div className="flex flex-col items-center gap-2 text-white/10">
+          <Zap className="w-5 h-5" />
+          <span className="text-[8px] font-black uppercase tracking-[0.2em]">Skyscraper Slot</span>
         </div>
       </div>
     </div>
@@ -389,9 +415,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Adsterra Middle Banner */}
-      <AdsterraBanner />
-
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="max-w-3xl mx-auto animate-reveal">
@@ -434,8 +457,11 @@ export default function Home() {
               </div>
             ))}
           </div>
-          {/* Adsterra Vertical Banner Slot */}
-          <AdsterraVerticalBanner className="shrink-0 sticky top-24" />
+          {/* Adsterra Vertical Banners Column */}
+          <div className="shrink-0 flex flex-col gap-8 sticky top-24">
+            <AdsterraVerticalBanner />
+            <AdsterraSkyscraperBanner />
+          </div>
         </div>
       </section>
 
