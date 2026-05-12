@@ -488,11 +488,11 @@ export default function Home() {
           </div>
           <div className="pt-8 border-t border-white/5 text-center space-y-4">
             <div className="flex justify-center gap-6">
-              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">SSL SECURE</span>
-              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">GDPR COMPLIANT</span>
-              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">PWA READY</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/40">SSL SECURE</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/40">GDPR COMPLIANT</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/40">PWA READY</span>
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/10">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30">
               &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
             </p>
           </div>
