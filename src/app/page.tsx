@@ -126,14 +126,16 @@ const AdsterraNativeBanner = ({ className, id }: { className?: string, id: strin
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Specifically target the container that the invoke.js script expects
-    const adContainer = document.getElementById('container-8a0d2340102217c81755459d2df8b6d0');
-    if (adContainer && !adContainer.querySelector('script')) {
-      const script = document.createElement('script');
-      script.async = true;
-      script.setAttribute('data-cfasync', 'false');
-      script.src = "https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js";
-      adContainer.appendChild(script);
+    if (containerRef.current) {
+      // Specifically target the container that the invoke.js script expects within this instance
+      const adContainer = containerRef.current.querySelector('#container-8a0d2340102217c81755459d2df8b6d0');
+      if (adContainer && !adContainer.querySelector('script')) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.setAttribute('data-cfasync', 'false');
+        script.src = "https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js";
+        adContainer.appendChild(script);
+      }
     }
   }, []);
 
@@ -141,6 +143,7 @@ const AdsterraNativeBanner = ({ className, id }: { className?: string, id: strin
     <div className={cn("container mx-auto px-6 animate-reveal", className)}>
       <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 text-center">Recommended For You</div>
       <div 
+        ref={containerRef}
         id={id}
         className="min-h-[160px] md:aspect-[4/1] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
       >
