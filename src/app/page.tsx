@@ -40,6 +40,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from '@/lib/utils';
+import Script from 'next/script';
 
 /**
  * Advanced Professional Logo: Green Box with Black QR
@@ -53,15 +54,12 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         aria-hidden="true"
       >
         <rect x="0" y="0" width="100" height="100" rx="20" fill="#26EA56" />
-        <path d="M20 20h25v25h-25zM25 25v15h15v-15z" fill="black" />
-        <path d="M55 20h25v25h-25zM60 25v15h15v-15z" fill="black" />
-        <path d="M20 55h25v25h-25zM25 60v15h15v-15z" fill="black" />
         <text 
-          x="70%" 
-          y="72%" 
+          x="50%" 
+          y="52%" 
           dominantBaseline="central" 
           textAnchor="middle" 
-          fontSize="24" 
+          fontSize="48" 
           fontWeight="900" 
           fill="black" 
           style={{ fontFamily: 'Inter, sans-serif' }}
@@ -76,15 +74,40 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
   </div>
 );
 
-const NativeAdBanner = () => (
-  <div className="container mx-auto px-6 py-12 flex justify-center animate-reveal stagger-2">
+/**
+ * Adsterra Ad Container
+ * Replace the script content below with your actual Adsterra script tags.
+ */
+const AdsterraBanner = ({ className }: { className?: string }) => (
+  <div className={cn("container mx-auto px-6 py-12 flex flex-col items-center animate-reveal", className)}>
+    <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3">Advertisement</div>
     <div 
-      className="w-full max-w-5xl min-h-[100px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden hover:bg-white/[0.05] transition-all"
+      className="w-full max-w-5xl min-h-[100px] md:min-h-[250px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden hover:bg-white/[0.05] transition-all relative"
     >
-      <div className="flex items-center gap-4 text-white/30 animate-fade-pulse">
-        <Globe className="w-5 h-5" />
-        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Official Studio Production Environment</span>
+      {/* 
+          ADSTERRA INTEGRATION POINT 
+          Instructions: Replace the children below with your Adsterra 728x90 or 160x600 script code.
+      */}
+      <div className="flex flex-col items-center gap-4 text-white/10 animate-fade-pulse">
+        <Zap className="w-8 h-8" />
+        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Adsterra High Performance Slot</span>
       </div>
+      
+      {/* Example script integration (Uncomment and replace with your keys) */}
+      {/* 
+      <Script id="adsterra-banner-script" strategy="afterInteractive">
+        {`
+          atOptions = {
+            'key' : 'YOUR_ADSTERRA_KEY_HERE',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+          };
+        `}
+      </Script>
+      <Script src="//www.highperformanceformat.com/YOUR_ADSTERRA_ID/invoke.js" strategy="afterInteractive" /> 
+      */}
     </div>
   </div>
 );
@@ -219,7 +242,8 @@ export default function Home() {
           </p>
         </div>
 
-        <NativeAdBanner />
+        {/* Adsterra Header Banner */}
+        <AdsterraBanner className="mb-20" />
 
         <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
@@ -294,20 +318,6 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="pt-4">
-                <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 flex items-center justify-between group cursor-pointer hover:bg-white/[0.06] transition-all hover:scale-[1.02] active:scale-95">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
-                      <Scan className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Add to Home Screen</p>
-                      <p className="text-white font-bold">Studio Shortcut</p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-primary transition-all group-hover:translate-x-1" />
-                </div>
-              </div>
             </div>
             <div className="relative flex justify-center lg:justify-end animate-reveal stagger-2">
               <div className="absolute inset-0 bg-primary/20 rounded-[3rem] blur-[80px] -z-10 opacity-30 animate-pulse" />
@@ -336,6 +346,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Adsterra Middle Banner */}
+      <AdsterraBanner />
+
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="max-w-3xl mx-auto animate-reveal">
@@ -357,6 +370,9 @@ export default function Home() {
           </Accordion>
         </div>
       </section>
+
+      {/* Adsterra Bottom Banner */}
+      <AdsterraBanner className="py-20" />
 
       {/* SECURITY & PRIVACY SECTION */}
       <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
