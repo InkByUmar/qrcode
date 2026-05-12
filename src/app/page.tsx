@@ -117,6 +117,38 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
   );
 };
 
+/**
+ * Adsterra Native Banner Component
+ */
+const AdsterraNativeBanner = ({ className }: { className?: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current && !containerRef.current.querySelector('script')) {
+      const script = document.createElement('script');
+      script.async = true;
+      script.setAttribute('data-cfasync', 'false');
+      script.src = "https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js";
+      containerRef.current.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div className={cn("container mx-auto px-6 py-12 animate-reveal", className)}>
+      <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 text-center">Recommendations</div>
+      <div 
+        id="container-8a0d2340102217c81755459d2df8b6d0" 
+        className="min-h-[200px] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
+      >
+        <div className="flex flex-col items-center gap-3 text-white/10">
+          <Layers className="w-8 h-8" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Content Stream</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
   const [generatorMode, setGeneratorMode] = useState<'single' | 'bulk'>('single');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -247,10 +279,16 @@ export default function Home() {
           </p>
         </div>
 
+        {/* NATIVE AD SLOT 1 */}
+        <AdsterraNativeBanner className="mb-20" />
+
         <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
         </div>
       </section>
+
+      {/* NATIVE AD SLOT 2 */}
+      <AdsterraNativeBanner />
 
       {/* HOW TO USE SECTION */}
       <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
@@ -347,6 +385,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* NATIVE AD SLOT 3 */}
+      <AdsterraNativeBanner />
 
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
