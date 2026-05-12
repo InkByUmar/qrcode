@@ -145,7 +145,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
 
     // Stop current camera before file analysis to prevent hardware lock
     await stopScanner();
-    await new Promise(r => setTimeout(r, 300)); 
+    await new Promise(r => setTimeout(r, 400)); 
 
     const tempId = "qr-file-scan-temp";
     let tempDiv = document.getElementById(tempId);
@@ -164,14 +164,17 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         verbose: false
       });
       
+      // Use trial mode (true) for better detection of stylized QR codes
       const decodedText = await fileScanner.scanFile(file, true);
       
       if (decodedText) {
         setScanResult(decodedText);
-        toast({ title: "Import Successful", description: "Matrix decoded successfully." });
+        toast({ title: "Import Successful", description: "QR matrix identified and decoded." });
       }
+      
+      fileScanner.clear();
     } catch (err: any) {
-      setError("Analysis failed: Pattern not detected. Ensure high contrast and sharp focus.");
+      setError("Matrix detection failed. Stylized codes require high resolution and sharp focus. Try a different angle or lighting.");
     } finally {
       setIsProcessingFile(false);
       if (event.target) event.target.value = '';
@@ -182,7 +185,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     if (scanResult) {
       navigator.clipboard.writeText(scanResult);
       setIsCopied(true);
-      toast({ title: "Copied!", description: "Message copied to clipboard." });
+      toast({ title: "Copied!", description: "Content copied to clipboard." });
       setTimeout(() => setIsCopied(false), 2000);
     }
   };
@@ -289,7 +292,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                  <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   PRO TIP: For stylized artistic codes, ensure the image is well-lit and the QR pattern occupies at least 70% of the frame.
+                   PRO TIP: Artistic QR codes with custom logos or backgrounds require high resolution. Ensure the QR pattern occupies at least 60% of the image frame for successful analysis.
                  </p>
               </div>
 
