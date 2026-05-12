@@ -42,9 +42,7 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Advanced Professional Logo: Technical QR Geometry + Dual-tone Text
- * Icon: Green patterns with integrated white "QR" mark.
- * Text: QR (White), CANVAS (Neon Green).
+ * Advanced Professional Logo: Green Box with Black QR + QR Bar Style
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-2", className)}>
@@ -54,14 +52,38 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         className="w-full h-full"
         aria-hidden="true"
       >
-        {/* Finder Pattern: Top Left (Green) */}
-        <path fill="#26EA56" d="M0 5C0 2.23858 2.23858 0 5 0H30C32.7614 0 35 2.23858 35 5V30C35 32.7614 32.7614 35 30 35H5C2.23858 35 0 32.7614 0 30V5ZM28 28V7H7v21h21ZM11 11h13v13h-13z" />
-        {/* Finder Pattern: Top Right (Green) */}
-        <path fill="#26EA56" d="M65 5C65 2.23858 67.2386 0 70 0H95C97.7614 0 100 5V30C100 32.7614 97.7614 35 95 35H70C67.2386 35 65 32.7614 65 30V5ZM93 28V7H72v21h21ZM76 11h13v13H76z" />
-        {/* Finder Pattern: Bottom Left (Green) */}
-        <path fill="#26EA56" d="M0 70C0 67.2386 2.23858 65 5 65H30C32.7614 65 35 67.2386 35 70V95C35 97.7614 32.7614 100 30 100H5C2.23858 100 0 95V70ZM28 93V72H7v21h21ZM11 76h13v13h-13z" />
-        {/* Integrated Branding: QR (White) */}
-        <text x="64" y="94" fontSize="32" fontWeight="900" fill="white" style={{ fontFamily: 'sans-serif' }}>QR</text>
+        {/* Main Green Box */}
+        <rect x="0" y="0" width="100" height="100" rx="20" fill="#26EA56" />
+        
+        {/* QR Bar Style Elements (Black) */}
+        <rect x="15" y="15" width="25" height="25" rx="4" fill="black" />
+        <rect x="22" y="22" width="11" height="11" rx="2" fill="#26EA56" />
+        
+        <rect x="60" y="15" width="25" height="25" rx="4" fill="black" />
+        <rect x="67" y="22" width="11" height="11" rx="2" fill="#26EA56" />
+        
+        <rect x="15" y="60" width="25" height="25" rx="4" fill="black" />
+        <rect x="22" y="67" width="11" height="11" rx="2" fill="#26EA56" />
+
+        {/* Branding text "QR" (Black) */}
+        <text 
+          x="50%" 
+          y="50%" 
+          dominantBaseline="central" 
+          textAnchor="middle" 
+          fontSize="36" 
+          fontWeight="900" 
+          fill="black" 
+          style={{ fontFamily: 'sans-serif' }}
+        >
+          QR
+        </text>
+
+        {/* Small Bar matrix elements */}
+        <rect x="60" y="60" width="10" height="10" rx="2" fill="black" />
+        <rect x="75" y="60" width="10" height="10" rx="2" fill="black" />
+        <rect x="60" y="75" width="10" height="10" rx="2" fill="black" />
+        <rect x="75" y="75" width="10" height="10" rx="2" fill="black" opacity="0.5" />
       </svg>
     </div>
     <div className="font-headline font-black text-xl md:text-2xl tracking-tighter uppercase leading-none">

@@ -20,41 +20,47 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
           borderRadius: '128px',
-          border: '20px solid rgba(38, 234, 86, 0.2)',
           position: 'relative',
-          fontWeight: 900,
-          fontFamily: 'sans-serif',
         }}
       >
-        {/* Finder Pattern: Top Left (Green) */}
-        <div style={{ position: 'absolute', top: 60, left: 60, width: 130, height: 130, border: '20px solid #26EA56', borderRadius: '18px' }}>
-          <div style={{ position: 'absolute', top: 25, left: 25, width: 40, height: 40, background: '#26EA56', borderRadius: '4px' }} />
-        </div>
-        
-        {/* Finder Pattern: Top Right (Green) */}
-        <div style={{ position: 'absolute', top: 60, right: 60, width: 130, height: 130, border: '20px solid #26EA56', borderRadius: '18px' }}>
-          <div style={{ position: 'absolute', top: 25, left: 25, width: 40, height: 40, background: '#26EA56', borderRadius: '4px' }} />
-        </div>
+        <div
+          style={{
+            background: '#26EA56',
+            width: '400px',
+            height: '400px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '80px',
+            position: 'relative',
+          }}
+        >
+          {/* Finder Patterns (Black) */}
+          <div style={{ position: 'absolute', top: 50, left: 50, width: 100, height: 100, border: '25px solid black', borderRadius: '15px' }}>
+            <div style={{ position: 'absolute', top: 15, left: 15, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
+          </div>
+          <div style={{ position: 'absolute', top: 50, right: 50, width: 100, height: 100, border: '25px solid black', borderRadius: '15px' }}>
+            <div style={{ position: 'absolute', top: 15, left: 15, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
+          </div>
+          <div style={{ position: 'absolute', bottom: 50, left: 50, width: 100, height: 100, border: '25px solid black', borderRadius: '15px' }}>
+            <div style={{ position: 'absolute', top: 15, left: 15, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
+          </div>
 
-        {/* Finder Pattern: Bottom Left (Green) */}
-        <div style={{ position: 'absolute', bottom: 60, left: 60, width: 130, height: 130, border: '20px solid #26EA56', borderRadius: '18px' }}>
-          <div style={{ position: 'absolute', top: 25, left: 25, width: 40, height: 40, background: '#26EA56', borderRadius: '4px' }} />
-        </div>
-
-        {/* Integrated Branding: QR (White) */}
-        <div style={{ 
-          position: 'absolute', 
-          bottom: 75, 
-          right: 75, 
-          display: 'flex', 
-          fontSize: 120, 
-          color: 'white',
-          fontWeight: 900,
-          letterSpacing: '-2px'
-        }}>
-          QR
+          {/* QR Text (Black) */}
+          <div style={{ 
+            fontSize: 140, 
+            color: 'black',
+            fontWeight: 900,
+            fontFamily: 'sans-serif'
+          }}>
+            QR
+          </div>
+          
+          {/* Bar style dots */}
+          <div style={{ position: 'absolute', bottom: 60, right: 60, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
+          <div style={{ position: 'absolute', bottom: 110, right: 60, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
+          <div style={{ position: 'absolute', bottom: 60, right: 110, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
         </div>
       </div>
     ),
