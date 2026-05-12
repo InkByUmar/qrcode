@@ -43,30 +43,32 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Official Brand Logo: QR Structure (Green) + Dual-tone Text (White QR + Green CANVAS)
+ * Premium Brand Logo: Technical QR Geometry + Dual-tone Text
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-2", className)}>
-    <svg 
-      viewBox="0 0 100 100" 
-      className="w-8 h-8 text-primary"
-      aria-hidden="true"
-      fill="currentColor"
-    >
-      {/* Finder Pattern: Top Left */}
-      <path d="M0 0h35v35H0V0zm28 28V7H7v21h21zM11 11h13v13h-13z" />
-      {/* Finder Pattern: Top Right */}
-      <path d="M65 0h35v35H65V0zm28 28V7h-21v21h21zM76 11h13v13H76z" />
-      {/* Finder Pattern: Bottom Left */}
-      <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
-      {/* Stylized Data Bits */}
-      <rect x="45" y="0" width="10" height="10" />
-      <rect x="45" y="25" width="10" height="10" />
-      <rect x="65" y="45" width="10" height="10" />
-      <rect x="0" y="45" width="10" height="10" />
-      <rect x="25" y="45" width="10" height="10" />
-    </svg>
-    <div className="font-headline font-black text-2xl tracking-tighter uppercase leading-none">
+    <div className="relative w-9 h-9 flex items-center justify-center">
+      <svg 
+        viewBox="0 0 100 100" 
+        className="w-full h-full text-primary"
+        aria-hidden="true"
+        fill="currentColor"
+      >
+        {/* Finder Pattern: Top Left */}
+        <path d="M0 5C0 2.23858 2.23858 0 5 0H30C32.7614 0 35 2.23858 35 5V30C35 32.7614 32.7614 35 30 35H5C2.23858 35 0 32.7614 0 30V5ZM28 28V7H7v21h21ZM11 11h13v13h-13z" />
+        {/* Finder Pattern: Top Right */}
+        <path d="M65 5C65 2.23858 67.2386 0 70 0H95C97.7614 0 100 2.23858 100 5V30C100 32.7614 97.7614 35 95 35H70C67.2386 35 65 32.7614 65 30V5ZM93 28V7H72v21h21ZM76 11h13v13H76z" />
+        {/* Finder Pattern: Bottom Left */}
+        <path d="M0 70C0 67.2386 2.23858 65 5 65H30C32.7614 65 35 67.2386 35 70V95C35 97.7614 32.7614 100 30 100H5C2.23858 100 0 97.7614 0 95V70ZM28 93V72H7v21h21ZM11 76h13v13h-13z" />
+        {/* Stylized Data Bit */}
+        <rect x="45" y="45" width="10" height="10" rx="2" />
+      </svg>
+      {/* Integrated White QR Branding in the empty right-side space */}
+      <span className="absolute bottom-1 right-0 text-[14px] font-black text-white leading-none tracking-tighter select-none">
+        QR
+      </span>
+    </div>
+    <div className="font-headline font-black text-2xl tracking-tighter uppercase leading-none ml-1">
       <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
     </div>
   </div>
@@ -187,9 +189,6 @@ export default function Home() {
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-6 border-b border-white/5 text-left">
                       <CustomScannerLogo className="h-8" />
-                      <SheetTitle className="text-white font-headline font-bold text-xl uppercase mt-2">
-                        QR <span className="text-primary">CANVAS</span>
-                      </SheetTitle>
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
                       {navItems.map((item) => (
