@@ -42,48 +42,42 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Advanced Professional Logo: Green Box with Black QR + QR Bar Style
+ * Advanced Professional Logo: Green Box with Black QR + Architectural QR Bars
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
-  <div className={cn("flex items-center gap-2", className)}>
-    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+  <div className={cn("flex items-center gap-3", className)}>
+    <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
       <svg 
         viewBox="0 0 100 100" 
-        className="w-full h-full"
+        className="w-full h-full drop-shadow-[0_0_8px_rgba(38,234,86,0.3)]"
         aria-hidden="true"
       >
-        {/* Main Green Box */}
-        <rect x="0" y="0" width="100" height="100" rx="20" fill="#26EA56" />
+        {/* Main Neon Green Container */}
+        <rect x="0" y="0" width="100" height="100" rx="22" fill="#26EA56" />
         
-        {/* QR Bar Style Elements (Black) */}
-        <rect x="15" y="15" width="25" height="25" rx="4" fill="black" />
-        <rect x="22" y="22" width="11" height="11" rx="2" fill="#26EA56" />
-        
-        <rect x="60" y="15" width="25" height="25" rx="4" fill="black" />
-        <rect x="67" y="22" width="11" height="11" rx="2" fill="#26EA56" />
-        
-        <rect x="15" y="60" width="25" height="25" rx="4" fill="black" />
-        <rect x="22" y="67" width="11" height="11" rx="2" fill="#26EA56" />
+        {/* Architectural Finder Patterns (Black) */}
+        <path d="M18 18h28v28h-28zM24 24v16h16v-16z" fill="black" />
+        <path d="M54 18h28v28h-28zM60 24v16h16v-16z" fill="black" />
+        <path d="M18 54h28v28h-28zM24 60v16h16v-16z" fill="black" />
 
-        {/* Branding text "QR" (Black) */}
+        {/* Central Branding Text (Black) */}
         <text 
-          x="50%" 
-          y="50%" 
+          x="71%" 
+          y="71%" 
           dominantBaseline="central" 
           textAnchor="middle" 
-          fontSize="36" 
+          fontSize="32" 
           fontWeight="900" 
           fill="black" 
-          style={{ fontFamily: 'sans-serif' }}
+          style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-1px' }}
         >
           QR
         </text>
 
-        {/* Small Bar matrix elements */}
-        <rect x="60" y="60" width="10" height="10" rx="2" fill="black" />
-        <rect x="75" y="60" width="10" height="10" rx="2" fill="black" />
-        <rect x="60" y="75" width="10" height="10" rx="2" fill="black" />
-        <rect x="75" y="75" width="10" height="10" rx="2" fill="black" opacity="0.5" />
+        {/* Technical Data Dots (Black) */}
+        <rect x="54" y="54" width="8" height="8" rx="1.5" fill="black" />
+        <rect x="66" y="54" width="8" height="8" rx="1.5" fill="black" opacity="0.6" />
+        <rect x="54" y="66" width="8" height="8" rx="1.5" fill="black" opacity="0.4" />
       </svg>
     </div>
     <div className="font-headline font-black text-xl md:text-2xl tracking-tighter uppercase leading-none">
@@ -95,11 +89,11 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
 const NativeAdBanner = () => (
   <div className="container mx-auto px-6 py-12 flex justify-center">
     <div 
-      className="w-full max-w-5xl min-h-[100px] bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
+      className="w-full max-w-5xl min-h-[100px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
     >
-      <div className="flex items-center gap-4 text-white/20">
+      <div className="flex items-center gap-4 text-white/30">
         <Globe className="w-5 h-5" />
-        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Official Studio Production Space</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Official Studio Production Environment</span>
       </div>
     </div>
   </div>
@@ -151,10 +145,10 @@ export default function Home() {
   return (
     <main className="min-h-screen premium-gradient selection:bg-primary/30 selection:text-white">
       {/* NAVIGATION */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/80 backdrop-blur-2xl">
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => { setGeneratorMode('single'); scrollTo('generator'); }}>
-            <CustomScannerLogo className="h-8" />
+            <CustomScannerLogo />
           </div>
           
           <nav className="hidden lg:flex items-center gap-8">
@@ -168,7 +162,7 @@ export default function Home() {
                     item.action();
                   }
                 }}
-                className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-primary transition-all duration-300"
+                className="text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-primary transition-all duration-300"
               >
                 {item.label}
               </a>
@@ -193,7 +187,7 @@ export default function Home() {
                 <SheetContent side="right" className="w-[300px] bg-black/95 border-white/10 p-0 overflow-hidden text-white">
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-6 border-b border-white/5 text-left">
-                      <CustomScannerLogo className="h-8" />
+                      <CustomScannerLogo />
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
                       {navItems.map((item) => (
@@ -206,7 +200,7 @@ export default function Home() {
                               item.action();
                             }
                           }}
-                          className="text-xs font-black uppercase tracking-[0.2em] text-white/60 hover:text-primary"
+                          className="text-xs font-black uppercase tracking-[0.2em] text-white/50 hover:text-primary"
                         >
                           {item.label}
                         </a>
@@ -324,16 +318,16 @@ export default function Home() {
               <div className="glass-card p-3 rounded-[3rem] border-white/10 shadow-2xl relative overflow-hidden w-full max-w-[280px]">
                 <div className="bg-black/80 rounded-[2.25rem] p-1 aspect-[9/16] relative overflow-hidden flex flex-col items-center justify-center border border-white/5">
                    <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full" />
-                   <CustomScannerLogo className="h-10 animate-float" />
+                   <CustomScannerLogo className="animate-float" />
                    <div className="mt-10 text-center space-y-3 px-8">
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Installed App</p>
                       <h4 className="text-xl font-headline font-black text-white uppercase tracking-tighter leading-none">
                         <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
                       </h4>
                       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                      <p className="text-[9px] text-white/30 font-medium leading-relaxed">
-                        OFFLINE ACCESS ENABLED<br />
-                        NATIVE STUDIO RENDERING
+                      <p className="text-[9px] text-white/30 font-medium leading-relaxed uppercase tracking-widest">
+                        Offline Access Enabled<br />
+                        Native Studio Render
                       </p>
                    </div>
                    <div className="absolute bottom-8 w-40 h-10 bg-primary rounded-xl flex items-center justify-center font-black text-[9px] uppercase tracking-widest text-primary-foreground shadow-xl shadow-primary/30">
@@ -405,21 +399,21 @@ export default function Home() {
       <footer className="border-t border-white/[0.05] bg-black/50 py-20">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-            <CustomScannerLogo className="h-10" />
+            <CustomScannerLogo />
             <div className="flex flex-wrap justify-center items-center gap-8">
                <a href="#how-to-use" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">How it Works</a>
                <a href="#faq" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">FAQ</a>
                <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Privacy & Terms</a>
             </div>
           </div>
-          <div className="pt-8 border-t border-white/5 text-center space-y-4">
-            <div className="flex justify-center gap-6">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">SSL SECURE</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">GDPR COMPLIANT</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">PWA READY</span>
+          <div className="pt-8 border-t border-white/5 text-center space-y-5">
+            <div className="flex justify-center gap-10">
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/90">SSL SECURE</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/90">GDPR COMPLIANT</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/90">PWA READY</span>
             </div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70">
-              &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
+            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-white/80">
+              &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. PROFESSIONAL STUDIO EDITION.
             </p>
           </div>
         </div>

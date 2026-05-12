@@ -2,7 +2,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'QR CANVAS Apple Touch Icon';
+export const alt = 'QR CANVAS Apple Studio Icon';
 export const size = {
   width: 180,
   height: 180,
@@ -31,21 +31,24 @@ export default function AppleIcon() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '28px',
+            borderRadius: '32px',
             position: 'relative',
           }}
         >
-          {/* Simplified Finder Patterns for Small Sizes */}
-          <div style={{ position: 'absolute', top: 18, left: 18, width: 35, height: 35, border: '8px solid black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', top: 18, right: 18, width: 35, height: 35, border: '8px solid black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', bottom: 18, left: 18, width: 35, height: 35, border: '8px solid black', borderRadius: '6px' }} />
+          {/* Finder Patterns */}
+          <div style={{ position: 'absolute', top: 22, left: 22, width: 38, height: 38, border: '10px solid black', borderRadius: '6px' }} />
+          <div style={{ position: 'absolute', top: 22, right: 22, width: 38, height: 38, border: '10px solid black', borderRadius: '6px' }} />
+          <div style={{ position: 'absolute', bottom: 22, left: 22, width: 38, height: 38, border: '10px solid black', borderRadius: '6px' }} />
           
-          {/* QR Text (Black) */}
+          {/* Black QR Text */}
           <div style={{ 
             fontSize: 48, 
             color: 'black',
             fontWeight: 900,
-            fontFamily: 'sans-serif'
+            fontFamily: 'sans-serif',
+            position: 'absolute',
+            bottom: 25,
+            right: 25
           }}>
             QR
           </div>

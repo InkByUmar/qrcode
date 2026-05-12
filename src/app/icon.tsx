@@ -2,7 +2,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'QR CANVAS Official Logo';
+export const alt = 'QR CANVAS Official Technical Logo';
 export const size = {
   width: 512,
   height: 512,
@@ -32,35 +32,39 @@ export default function Icon() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '80px',
+            borderRadius: '88px',
             position: 'relative',
           }}
         >
           {/* Finder Patterns (Black) */}
-          <div style={{ position: 'absolute', top: 50, left: 50, width: 100, height: 100, border: '25px solid black', borderRadius: '15px' }}>
-            <div style={{ position: 'absolute', top: 15, left: 15, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
+          <div style={{ position: 'absolute', top: 60, left: 60, width: 110, height: 110, border: '28px solid black', borderRadius: '15px' }}>
+            <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
           </div>
-          <div style={{ position: 'absolute', top: 50, right: 50, width: 100, height: 100, border: '25px solid black', borderRadius: '15px' }}>
-            <div style={{ position: 'absolute', top: 15, left: 15, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
+          <div style={{ position: 'absolute', top: 60, right: 60, width: 110, height: 110, border: '28px solid black', borderRadius: '15px' }}>
+            <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
           </div>
-          <div style={{ position: 'absolute', bottom: 50, left: 50, width: 100, height: 100, border: '25px solid black', borderRadius: '15px' }}>
-            <div style={{ position: 'absolute', top: 15, left: 15, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
+          <div style={{ position: 'absolute', bottom: 60, left: 60, width: 110, height: 110, border: '28px solid black', borderRadius: '15px' }}>
+            <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
           </div>
 
-          {/* QR Text (Black) */}
+          {/* Central QR Typography (Black) */}
           <div style={{ 
             fontSize: 140, 
             color: 'black',
             fontWeight: 900,
-            fontFamily: 'sans-serif'
+            fontFamily: 'sans-serif',
+            letterSpacing: '-6px',
+            position: 'absolute',
+            bottom: 70,
+            right: 70
           }}>
             QR
           </div>
           
-          {/* Bar style dots */}
-          <div style={{ position: 'absolute', bottom: 60, right: 60, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', bottom: 110, right: 60, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', bottom: 60, right: 110, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
+          {/* Matrix data dots */}
+          <div style={{ position: 'absolute', bottom: 180, right: 180, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
+          <div style={{ position: 'absolute', bottom: 180, right: 130, width: 35, height: 35, background: 'black', borderRadius: '6px', opacity: 0.5 }} />
+          <div style={{ position: 'absolute', bottom: 130, right: 180, width: 35, height: 35, background: 'black', borderRadius: '6px', opacity: 0.3 }} />
         </div>
       </div>
     ),
