@@ -45,8 +45,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
   const { toast } = useToast();
 
   const dataLength = state.data?.length || 0;
-  // High density logic extended to any stylization to ensure scannability
-  const isHighDensity = dataLength > 200 || !!state.backgroundImage || !!state.logo || state.dotStyle !== 'square';
+  // Strictly enforce Level H for any artistic styling or complexity
+  const isStylized = state.dotStyle !== 'square' || state.cornerStyle !== 'square';
+  const isHighDensity = dataLength > 150 || !!state.backgroundImage || !!state.logo || isStylized;
 
   const getQrConfig = (size: number, forceTransparent: boolean = false) => {
     const errorCorrection = isHighDensity ? 'H' : state.errorLevel;
@@ -57,13 +58,13 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       type: 'canvas' as const,
       data: state.data || ' ',
       image: state.logo || '',
-      margin: 20,
+      margin: 40, // Increased margin for better focus and segmentation
       dotsOptions: { 
         color: state.fgColor, 
         type: state.dotStyle 
       },
       cornersSquareOptions: { 
-        type: state.cornerStyle, 
+        type: state.cornerStyle === 'rounded' ? 'extra-rounded' : state.cornerStyle, 
         color: state.fgColor 
       },
       cornersDotOptions: { 
@@ -102,27 +103,28 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Layer 1: Foundation (Solid Background Color)
+    // 1. Layer 1: Foundation
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, resolution, resolution);
 
-    // 2. Layer 2: Visual Brand (Background Image)
+    // 2. Layer 2: Visual Brand (Contrast Guard)
     if (state.backgroundImage) {
       try {
         const bgImg = await loadImage(state.backgroundImage);
         ctx.save();
-        ctx.globalAlpha = state.backgroundOpacity;
+        // Ensure background doesn't drown out stylized bits
+        ctx.globalAlpha = Math.min(state.backgroundOpacity, 0.4); 
         const scale = Math.max(resolution / bgImg.width, resolution / bgImg.height);
         const x = (resolution - bgImg.width * scale) / 2;
         const y = (resolution - bgImg.height * scale) / 2;
         ctx.drawImage(bgImg, x, y, bgImg.width * scale, bgImg.height * scale);
         ctx.restore();
       } catch (e) {
-        console.warn("Background image layer failed to render", e);
+        console.warn("Background render failed", e);
       }
     }
 
-    // 3. Layer 3: Pattern & Identity (QR Matrix + Logo)
+    // 3. Layer 3: Pattern (Finder Pattern Integrity Guard)
     const qrConfig = getQrConfig(resolution, true);
     const styling = new window.QRCodeStyling(qrConfig);
     const qrBlob = await styling.getRawData('png');

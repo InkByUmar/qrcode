@@ -96,7 +96,7 @@ export function QrGeneratorContainer({
       
       // Automatic Density Logic
       if (newState.backgroundMode === 'auto' && newState.backgroundImage) {
-        newState.backgroundOpacity = 0.25; // 25% is the scannability sweet spot
+        newState.backgroundOpacity = 0.25; 
       }
 
       // Clamp background opacity to 50% max for manual mode
@@ -118,13 +118,13 @@ export function QrGeneratorContainer({
         newState.data = `BEGIN:VCARD\nVERSION:3.0\nN:${newState.vCard.lastName};${newState.vCard.firstName}\nFN:${newState.vCard.firstName} ${newState.vCard.lastName}\nORG:${newState.vCard.organization}\nTITLE:${newState.vCard.jobTitle}\nTEL;TYPE=CELL:${newState.vCard.mobile}\nEMAIL:${newState.vCard.email}\nURL:${newState.vCard.website}\nEND:VCARD`;
       }
 
-      // Reliability logic: Force Level H for any stylization or complexity
+      // PATTERN INTEGRITY GUARD: Force Level H for any stylization or complexity
       const dataLen = newState.data?.length || 0;
       const isStylized = newState.dotStyle !== 'square' || newState.cornerStyle !== 'square';
-      const needsHighDensity = newState.logo || newState.backgroundImage || dataLen > 200 || isStylized;
+      const needsHighDensity = newState.logo || newState.backgroundImage || dataLen > 150 || isStylized;
 
-      if (needsHighDensity && newState.errorLevel !== 'H') {
-        newState.errorLevel = 'H';
+      if (needsHighDensity) {
+        newState.errorLevel = 'H'; // Force max redundancy for stylized modules
       }
       
       return newState;
