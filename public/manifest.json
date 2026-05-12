@@ -2,21 +2,20 @@
 {
   "name": "QR Canvas",
   "short_name": "QRCanvas",
-  "description": "Premium Artistic QR Studio & Bulk Engine. Create professional branded QR codes for marketing.",
+  "description": "Professional QR Code Generator with Logo & Background",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#060907",
-  "theme_color": "#26EA56",
-  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
   "icons": [
     {
-      "src": "https://picsum.photos/seed/qr-brand-logo/192/192",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://picsum.photos/seed/qr-brand-logo/512/512",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
