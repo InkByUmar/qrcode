@@ -65,6 +65,11 @@ export default function RootLayout({
           src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js" 
           strategy="afterInteractive"
         />
+        {/* Adsterra Social Bar */}
+        <Script 
+          src="https://archaicmsflip.com/f8/d2/33/f8d2333ae12f97dc648dbb943b8bf90d.js" 
+          strategy="afterInteractive"
+        />
         <Script id="schema-organization" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
             "@context": "https://schema.org",
