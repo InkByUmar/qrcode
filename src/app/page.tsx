@@ -52,24 +52,31 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Premium Text-Based 'QR' Logo
- * Simply displays "QR" text. Intended to be used within a colored container.
+ * Premium 'QR' Logo
+ * Features a QR code marker structure with "QR" text in the bottom right corner.
  */
 const CustomScannerLogo = ({ className = "w-6 h-6" }: { className?: string }) => (
   <svg 
     viewBox="0 0 100 100" 
     className={className}
     aria-hidden="true"
+    fill="currentColor"
   >
+    {/* QR Corner Squares - Top Left */}
+    <path d="M10 10h32v32H10V10zm24 24V18H18v14h16z" />
+    {/* QR Corner Squares - Top Right */}
+    <path d="M58 10h32v32H58V10zm24 24V18H66v14h16z" />
+    {/* QR Corner Squares - Bottom Left */}
+    <path d="M10 58h32v32H10V58zm24 24V66H18v14h16z" />
+    {/* Bottom Right stylized QR text */}
     <text 
-      x="50%" 
-      y="54%" 
-      dominantBaseline="middle" 
+      x="74" 
+      y="85" 
       textAnchor="middle" 
-      fill="currentColor" 
-      fontSize="70" 
+      fontSize="44" 
       fontWeight="900" 
-      fontFamily="system-ui, sans-serif"
+      letterSpacing="-2"
+      fontFamily="Inter, system-ui, sans-serif"
     >
       QR
     </text>
@@ -82,7 +89,7 @@ const NativeAdBanner = () => (
       id="container-8a0d2340102217c81755459d2df8b6d0" 
       className="w-full max-w-5xl min-h-[100px] bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
     >
-      {/* Adsterra Native Banner Container */}
+      {/* Adsterra Native Banner Placeholder */}
     </div>
   </div>
 );
@@ -166,7 +173,7 @@ export default function Home() {
                 }}
                 className="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-primary transition-all duration-300 relative group"
               >
-                {navItems.find(n => n.label === item.label)?.label}
+                {item.label}
               </a>
             ))}
           </nav>
