@@ -29,27 +29,27 @@ export default function Icon() {
         }}
       >
         {/* Finder Pattern: Top Left (Green) */}
-        <div style={{ position: 'absolute', top: 60, left: 60, width: 110, height: 110, border: '16px solid #26EA56', borderRadius: '18px' }}>
-          <div style={{ position: 'absolute', top: 20, left: 20, width: 38, height: 38, background: '#26EA56', borderRadius: '4px' }} />
+        <div style={{ position: 'absolute', top: 60, left: 60, width: 130, height: 130, border: '20px solid #26EA56', borderRadius: '18px' }}>
+          <div style={{ position: 'absolute', top: 25, left: 25, width: 40, height: 40, background: '#26EA56', borderRadius: '4px' }} />
         </div>
         
         {/* Finder Pattern: Top Right (Green) */}
-        <div style={{ position: 'absolute', top: 60, right: 60, width: 110, height: 110, border: '16px solid #26EA56', borderRadius: '18px' }}>
-          <div style={{ position: 'absolute', top: 20, left: 20, width: 38, height: 38, background: '#26EA56', borderRadius: '4px' }} />
+        <div style={{ position: 'absolute', top: 60, right: 60, width: 130, height: 130, border: '20px solid #26EA56', borderRadius: '18px' }}>
+          <div style={{ position: 'absolute', top: 25, left: 25, width: 40, height: 40, background: '#26EA56', borderRadius: '4px' }} />
         </div>
 
         {/* Finder Pattern: Bottom Left (Green) */}
-        <div style={{ position: 'absolute', bottom: 60, left: 60, width: 110, height: 110, border: '16px solid #26EA56', borderRadius: '18px' }}>
-          <div style={{ position: 'absolute', top: 20, left: 20, width: 38, height: 38, background: '#26EA56', borderRadius: '4px' }} />
+        <div style={{ position: 'absolute', bottom: 60, left: 60, width: 130, height: 130, border: '20px solid #26EA56', borderRadius: '18px' }}>
+          <div style={{ position: 'absolute', top: 25, left: 25, width: 40, height: 40, background: '#26EA56', borderRadius: '4px' }} />
         </div>
 
-        {/* Integrated QR Text Branding (White) - Positioned in the "jagha khali" area */}
+        {/* Integrated Branding: QR (White) */}
         <div style={{ 
           position: 'absolute', 
           bottom: 75, 
           right: 75, 
           display: 'flex', 
-          fontSize: 100, 
+          fontSize: 120, 
           color: 'white',
           fontWeight: 900,
           letterSpacing: '-2px'

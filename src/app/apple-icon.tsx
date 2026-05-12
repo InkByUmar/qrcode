@@ -28,16 +28,26 @@ export default function AppleIcon() {
           fontFamily: 'sans-serif',
         }}
       >
-        <div style={{ position: 'absolute', top: 20, left: 20, width: 40, height: 40, border: '6px solid #26EA56', borderRadius: '6px' }}>
-          <div style={{ position: 'absolute', top: 7, left: 7, width: 14, height: 14, background: '#26EA56', borderRadius: '2px' }} />
+        {/* Simplified Finder Patterns for Small Sizes */}
+        <div style={{ position: 'absolute', top: 20, left: 20, width: 45, height: 45, border: '7px solid #26EA56', borderRadius: '6px' }}>
+          <div style={{ position: 'absolute', top: 10, left: 10, width: 11, height: 11, background: '#26EA56', borderRadius: '2px' }} />
         </div>
-        <div style={{ position: 'absolute', top: 20, right: 20, width: 40, height: 40, border: '6px solid #26EA56', borderRadius: '6px' }}>
-          <div style={{ position: 'absolute', top: 7, left: 7, width: 14, height: 14, background: '#26EA56', borderRadius: '2px' }} />
+        <div style={{ position: 'absolute', top: 20, right: 20, width: 45, height: 45, border: '7px solid #26EA56', borderRadius: '6px' }}>
+          <div style={{ position: 'absolute', top: 10, left: 10, width: 11, height: 11, background: '#26EA56', borderRadius: '2px' }} />
         </div>
-        <div style={{ position: 'absolute', bottom: 20, left: 20, width: 40, height: 40, border: '6px solid #26EA56', borderRadius: '6px' }}>
-          <div style={{ position: 'absolute', top: 7, left: 7, width: 14, height: 14, background: '#26EA56', borderRadius: '2px' }} />
+        <div style={{ position: 'absolute', bottom: 20, left: 20, width: 45, height: 45, border: '7px solid #26EA56', borderRadius: '6px' }}>
+          <div style={{ position: 'absolute', top: 10, left: 10, width: 11, height: 11, background: '#26EA56', borderRadius: '2px' }} />
         </div>
-        <div style={{ position: 'absolute', bottom: 12, right: 18, fontSize: 80, color: 'white' }}>
+        
+        {/* Integrated Branding: QR (White) */}
+        <div style={{ 
+          position: 'absolute', 
+          bottom: 25, 
+          right: 25, 
+          fontSize: 42, 
+          color: 'white', 
+          fontWeight: 900 
+        }}>
           QR
         </div>
       </div>
