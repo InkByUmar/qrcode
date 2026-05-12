@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { QrScannerModal } from '@/components/qr-canvas/qr-scanner-modal';
 import { Toaster } from '@/components/ui/toaster';
+import { Button } from '@/components/ui/button';
 import { 
   Shield, 
   Zap, 
@@ -28,7 +29,11 @@ import {
   Maximize,
   Smartphone,
   AppWindow,
-  Share
+  Share,
+  FileCode,
+  ShieldAlert,
+  Gavel,
+  History
 } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 import {
@@ -98,11 +103,34 @@ export default function Home() {
   };
 
   const navItems = [
-    { label: 'QR Studio', href: '#generator', action: () => scrollToGenerator('single') },
-    { label: 'Bulk Export', href: '#bulk-mode-info', action: () => scrollToGenerator('bulk') },
-    { label: 'Download App', href: '#pwa-info', action: () => scrollTo('pwa-info') },
+    { label: 'Studio', href: '#generator', action: () => scrollToGenerator('single') },
+    { label: 'How it Works', href: '#how-to-use', action: () => scrollTo('how-to-use') },
+    { label: 'Bulk Export', href: '#bulk-info', action: () => scrollToGenerator('bulk') },
+    { label: 'FAQ', href: '#faq', action: () => scrollTo('faq') },
     { label: 'Pro Suite', href: '#pricing', action: () => scrollTo('pricing') },
-    { label: 'Support FAQ', href: '#faq' },
+  ];
+
+  const faqs = [
+    {
+      q: "Are the QR codes generated here permanent?",
+      a: "Yes, our QR codes are static, meaning they encode data directly into the pattern and will never expire. They will work as long as the content (like a URL) is active."
+    },
+    {
+      q: "Can I add my business logo for free?",
+      a: "Absolutely. You can upload any logo in PNG or JPG format. Our engine automatically adjusts scannability settings to ensure your code works perfectly with branding."
+    },
+    {
+      q: "How many QR codes can I generate in Bulk Mode?",
+      a: "Our free tier allows up to 50 QR codes per batch. Agency Pro users have unlimited batch processing and higher resolution master exports."
+    },
+    {
+      q: "What file formats do you support for export?",
+      a: "We provide high-resolution PNG as standard. SVG Vector format is available for professionals who need infinitely scalable assets for large-scale print."
+    },
+    {
+      q: "Is my data stored on your servers?",
+      a: "No. We prioritize privacy. All QR generation happens locally in your browser, and we do not store the data you input into your QR codes."
+    }
   ];
 
   return (
@@ -162,14 +190,14 @@ export default function Home() {
                     <Menu className="w-5 h-5" />
                   </button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-black/95 border-white/10 p-0 overflow-hidden">
+                <SheetContent side="right" className="w-[300px] bg-black/95 border-white/10 p-0 overflow-hidden text-white">
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-6 border-b border-white/5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                           <CustomScannerLogo className="text-primary-foreground w-5 h-5" />
                         </div>
-                        <SheetTitle className="text-white font-headline font-bold text-xl">QR Canvas Studio</SheetTitle>
+                        <SheetTitle className="text-white font-headline font-bold text-xl text-left">QR Canvas Studio</SheetTitle>
                       </div>
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
@@ -201,14 +229,14 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center mb-12 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 border-primary/20">
             <Sparkles className="w-3.5 h-3.5 fill-primary/30" />
-            <span>DOWNLOAD THE MOBILE APP SUITE</span>
+            <span>ENTERPRISE-GRADE QR GENERATION SUITE</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-headline font-black mb-10 leading-[1.1] md:leading-[1] tracking-tight text-white">
-            Professional Branded <br />
-            <span className="text-primary italic">QR App & Bulk Studio</span>
+            Branded Artistic <br />
+            <span className="text-primary italic">QR Studio & Bulk Engine</span>
           </h1>
           <p className="text-lg md:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            Install QR Canvas as a <span className="text-white font-medium">Native Mobile App</span>. Zero download from stores—simply add to your home screen for instant professional generation.
+            Professional high-resolution QR codes for marketing. Support for <span className="text-white font-medium">logos</span>, custom backgrounds, and <span className="text-white font-medium">bulk processing</span>.
           </p>
         </div>
 
@@ -216,6 +244,33 @@ export default function Home() {
 
         <div id="generator" className="relative z-10 scroll-mt-24">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
+        </div>
+      </section>
+
+      {/* HOW TO USE SECTION */}
+      <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+        <div className="text-center mb-24">
+          <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">How to Use QR Canvas</h2>
+          <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg">
+            Create professional, branded QR assets in four simple steps.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          {[
+            { step: '01', icon: LayoutGrid, title: 'Choose Content', desc: 'Select from URL, WiFi, vCard, or WhatsApp templates.' },
+            { step: '02', icon: Palette, title: 'Style Pattern', desc: 'Customize dot shapes and corner styles for a unique look.' },
+            { step: '03', icon: ImageIcon, title: 'Add Branding', desc: 'Upload your brand logo and set a custom background image.' },
+            { step: '04', icon: Download, title: 'Export Asset', desc: 'Download high-res PNG or professional SVG vector files.' },
+          ].map((item, i) => (
+            <div key={i} className="glass-card p-8 rounded-[2.5rem] border-white/5 relative group hover:border-primary/20 transition-all">
+              <div className="absolute top-6 right-6 text-2xl font-black text-white/10 group-hover:text-primary/20 transition-all">{item.step}</div>
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8 border border-primary/20">
+                <item.icon className="w-6 h-6" />
+              </div>
+              <h4 className="text-xl font-headline font-bold text-white mb-4">{item.title}</h4>
+              <p className="text-sm text-white/50 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -268,25 +323,29 @@ export default function Home() {
                 <p className="text-xs text-white/40 leading-relaxed">Open in Safari or Chrome, tap Share, and select "Add to Home Screen" to download.</p>
               </div>
             </div>
-
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-               <p className="text-[10px] font-black uppercase text-primary tracking-[0.2em] mb-4">How to Download</p>
-               <div className="space-y-3">
-                 <div className="flex items-center gap-3 text-xs text-white/70">
-                   <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">1</span>
-                   Open this site in your mobile browser
-                 </div>
-                 <div className="flex items-center gap-3 text-xs text-white/70">
-                   <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">2</span>
-                   Tap <span className="text-primary font-bold">"Share"</span> (iOS) or <span className="text-primary font-bold">"Menu"</span> (Android)
-                 </div>
-                 <div className="flex items-center gap-3 text-xs text-white/70">
-                   <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold">3</span>
-                   Select <span className="text-primary font-bold">"Add to Home Screen"</span>
-                 </div>
-               </div>
-            </div>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6">Common Questions</h2>
+            <p className="text-white/50 text-base md:text-lg">Everything you need to know about professional QR generation.</p>
+          </div>
+          <Accordion type="single" collapsible className="space-y-4">
+            {faqs.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`} className="border-white/5 bg-white/[0.02] rounded-2xl px-6 border overflow-hidden">
+                <AccordionTrigger className="text-white hover:text-primary font-bold text-left py-6 hover:no-underline">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-white/50 pb-6 leading-relaxed">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 
@@ -301,20 +360,56 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
           <div className="glass-card p-10 rounded-[3rem] border-white/5">
             <h3 className="text-2xl font-headline font-bold text-white mb-2">Basic Creator</h3>
-            <div className="flex items-end gap-2 mb-10"><span className="text-5xl font-headline font-black text-white">$0</span></div>
+            <div className="flex items-end gap-2 mb-10"><span className="text-5xl font-headline font-black text-white">$0</span><span className="text-white/40 font-bold mb-2">/FREE</span></div>
             <ul className="space-y-6 mb-12">
-              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Static Branded QR</li>
-              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Bulk Mode (10 assets)</li>
+              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Unlimited Static Branded QR</li>
+              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Batch Processing (50 items)</li>
+              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> Custom Logos & Backgrounds</li>
+              <li className="flex items-center gap-3 text-white/70"><CheckCircle2 className="w-4 h-4 text-primary" /> High-Res PNG Exports</li>
             </ul>
+            <Button variant="outline" className="w-full h-14 rounded-2xl border-white/10 text-white font-bold" onClick={() => scrollTo('generator')}>Get Started Free</Button>
           </div>
           <div className="p-[2px] rounded-[3rem] bg-primary/50 shadow-2xl">
             <div className="bg-[#060907] p-10 rounded-[3rem] h-full flex flex-col">
-              <h3 className="text-2xl font-headline font-bold text-white mb-2">Agency Pro</h3>
-              <div className="flex items-end gap-2 mb-10"><span className="text-5xl font-headline font-black text-white">$19</span></div>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-2xl font-headline font-bold text-white">Agency Pro</h3>
+                <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/30">Most Popular</span>
+              </div>
+              <div className="flex items-end gap-2 mb-10"><span className="text-5xl font-headline font-black text-white">$19</span><span className="text-white/40 font-bold mb-2">/ONE-TIME</span></div>
               <ul className="space-y-6 mb-12 flex-1">
                 <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Unlimited Bulk Processing</li>
                 <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Master SVG Vector Exports</li>
+                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Priority Processing Engine</li>
+                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> Full Commercial Rights</li>
+                <li className="flex items-center gap-3 text-white"><CheckCircle2 className="w-4 h-4 text-primary" /> White-label Bulk ZIP Naming</li>
               </ul>
+              <Button className="w-full h-14 rounded-2xl bg-primary text-primary-foreground font-black shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Upgrade to Pro</Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* POLICIES SECTION */}
+      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 max-w-6xl mx-auto">
+          <div className="space-y-8">
+            <div className="flex items-center gap-3 text-primary">
+              <ShieldAlert className="w-6 h-6" />
+              <h3 className="text-2xl font-headline font-bold text-white">Privacy Policy</h3>
+            </div>
+            <div className="text-white/50 text-sm leading-relaxed space-y-4">
+              <p>At QR Canvas Studio, we prioritize your data privacy. All QR code generation processing occurs locally within your browser. We do not store, track, or share the information you input into your QR codes.</p>
+              <p>We use local storage only to maintain your session history and preferences locally on your device. No personal data is transmitted to our servers during the generation process.</p>
+            </div>
+          </div>
+          <div className="space-y-8">
+            <div className="flex items-center gap-3 text-primary">
+              <Gavel className="w-6 h-6" />
+              <h3 className="text-2xl font-headline font-bold text-white">Terms of Service</h3>
+            </div>
+            <div className="text-white/50 text-sm leading-relaxed space-y-4">
+              <p>By using QR Canvas Studio, you agree to generate QR codes that comply with local and international laws. We prohibit the use of our services to create malicious links or deceptive content.</p>
+              <p>Free tier users are permitted for personal and non-commercial use. Commercial use and mass-marketing campaigns require an Agency Pro license.</p>
             </div>
           </div>
         </div>
@@ -323,12 +418,20 @@ export default function Home() {
       {/* FOOTER */}
       <footer className="border-t border-white/[0.05] bg-black/50 py-20">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
             <div className="flex items-center gap-3">
                <CustomScannerLogo className="text-primary w-6 h-6" />
                <span className="font-headline font-bold text-xl text-white">QRCanvas Studio</span>
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
+            <div className="flex items-center gap-8">
+               <a href="#how-to-use" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">How it Works</a>
+               <a href="#faq" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">FAQ</a>
+               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Privacy</a>
+               <a href="#policies" className="text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all">Terms</a>
+            </div>
+          </div>
+          <div className="pt-8 border-t border-white/5 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">
               &copy; <CopyrightYear /> QR CANVAS STUDIO. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
             </p>
           </div>
