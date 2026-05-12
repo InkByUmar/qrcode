@@ -52,7 +52,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           setError("No cameras found on this device.");
         }
       }).catch(err => {
-        console.error("Camera access error", err);
         setError("Please allow camera permissions to use the scanner.");
       });
     }
@@ -82,6 +81,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           try {
             await html5QrCodeRef.current.stop();
           } catch (e) {}
+          html5QrCodeRef.current = null;
         }
 
         const scanner = new Html5Qrcode(scannerContainerId);
@@ -96,15 +96,17 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           },
           (decodedText) => {
             if (isMounted) {
-              setTimeout(async () => {
-                if (html5QrCodeRef.current) {
-                  try {
-                    await html5QrCodeRef.current.stop();
-                    html5QrCodeRef.current = null;
-                  } catch (e) {}
-                }
+              // Stop camera immediately on success
+              if (html5QrCodeRef.current) {
+                html5QrCodeRef.current.stop().then(() => {
+                  html5QrCodeRef.current = null;
+                  setScanResult(decodedText);
+                }).catch(() => {
+                  setScanResult(decodedText);
+                });
+              } else {
                 setScanResult(decodedText);
-              }, 100);
+              }
             }
           },
           () => {}
@@ -112,7 +114,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         
         if (isMounted) setIsInitializing(false);
       } catch (err) {
-        console.error("Scanner failed to start", err);
         if (isMounted) {
           setError("Failed to start camera. It may be used by another app.");
           setIsInitializing(false);
@@ -140,23 +141,29 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     setIsInitializing(true);
     setError(null);
 
-    // Stop camera if running
-    if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
+    // Stop active camera session before file scanning to prevent conflicts
+    if (html5QrCodeRef.current) {
       try {
         await html5QrCodeRef.current.stop();
+        html5QrCodeRef.current = null;
       } catch (e) {}
     }
 
+    // Give hardware a brief moment to release
+    await new Promise(r => setTimeout(r, 300));
+
     try {
-      const scanner = new Html5Qrcode(scannerContainerId);
-      const decodedText = await scanner.scanFile(file, true);
+      const fileScanner = new Html5Qrcode(scannerContainerId);
+      const decodedText = await fileScanner.scanFile(file, true);
       setScanResult(decodedText);
       setIsInitializing(false);
       toast({ title: "Import Successful", description: "QR code decoded from image." });
     } catch (err) {
-      console.error("File scan error", err);
-      setError("No valid QR code detected in this image. Please ensure the code is clear and well-lit.");
+      setError("No valid QR code detected. Please ensure the 'bits' are clear and the image is well-lit.");
       setIsInitializing(false);
+    } finally {
+      // Clear input so same file can be selected again
+      if (event.target) event.target.value = '';
     }
   };
 
@@ -271,7 +278,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                        <p className="text-[10px] text-white/40 uppercase font-medium">Try another image or ensure camera access.</p>
                     </div>
                     <div className="flex gap-3">
-                      <Button variant="outline" onClick={() => window.location.reload()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
+                      <Button variant="outline" onClick={() => handleReset()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
                         Retry
                       </Button>
                       <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
