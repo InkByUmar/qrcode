@@ -75,8 +75,7 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
 );
 
 /**
- * Adsterra Ad Container
- * Replace the script content below with your actual Adsterra script tags.
+ * Standard Adsterra Banner Slot
  */
 const AdsterraBanner = ({ className }: { className?: string }) => (
   <div className={cn("container mx-auto px-6 py-12 flex flex-col items-center animate-reveal", className)}>
@@ -84,30 +83,28 @@ const AdsterraBanner = ({ className }: { className?: string }) => (
     <div 
       className="w-full max-w-5xl min-h-[100px] md:min-h-[250px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden hover:bg-white/[0.05] transition-all relative"
     >
-      {/* 
-          ADSTERRA INTEGRATION POINT 
-          Instructions: Replace the children below with your Adsterra 728x90 or 160x600 script code.
-      */}
       <div className="flex flex-col items-center gap-4 text-white/10 animate-fade-pulse">
         <Zap className="w-8 h-8" />
-        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Adsterra High Performance Slot</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.4em]">Adsterra Studio Slot</span>
       </div>
-      
-      {/* Example script integration (Uncomment and replace with your keys) */}
-      {/* 
-      <Script id="adsterra-banner-script" strategy="afterInteractive">
-        {`
-          atOptions = {
-            'key' : 'YOUR_ADSTERRA_KEY_HERE',
-            'format' : 'iframe',
-            'height' : 90,
-            'width' : 728,
-            'params' : {}
-          };
-        `}
-      </Script>
-      <Script src="//www.highperformanceformat.com/YOUR_ADSTERRA_ID/invoke.js" strategy="afterInteractive" /> 
-      */}
+    </div>
+  </div>
+);
+
+/**
+ * Adsterra Native Banner Integration
+ */
+const AdsterraNativeBanner = ({ className }: { className?: string }) => (
+  <div className={cn("container mx-auto px-6 py-12 flex flex-col items-center animate-reveal", className)}>
+    <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3">Recommendations</div>
+    <div className="w-full max-w-5xl bg-white/[0.03] border border-white/5 rounded-3xl p-4 md:p-8">
+      <div id="container-8a0d2340102217c81755459d2df8b6d0"></div>
+      <Script 
+        async 
+        data-cfasync="false" 
+        src="https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js" 
+        strategy="afterInteractive"
+      />
     </div>
   </div>
 );
@@ -282,6 +279,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Adsterra Native Banner Integration */}
+      <AdsterraNativeBanner />
 
       {/* PWA INSTALLATION SECTION */}
       <section id="pwa-features" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24 bg-primary/[0.01]">
