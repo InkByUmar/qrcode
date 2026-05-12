@@ -439,9 +439,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Adsterra Bottom Banner */}
-      <AdsterraBanner className="py-20" />
-
       {/* FOOTER */}
       <footer className="border-t border-white/[0.05] bg-black/50 py-20">
         <div className="container mx-auto px-6">
