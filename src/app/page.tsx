@@ -271,7 +271,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto text-center mb-12 relative z-10 animate-reveal">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 border-primary/20 animate-float-subtle">
             <CloudLightning className="w-3.5 h-3.5 fill-primary/30" />
-            <span>PREMIUM PWA-READY STUDIO EDITION</span>
+            <span><span>PREMIUM PWA-READY STUDIO EDITION</span></span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-headline font-black mb-10 leading-[1.1] md:leading-[1] tracking-tight text-white">
             Professional artistic <br />
@@ -281,9 +281,6 @@ export default function Home() {
             Create high-resolution QR codes with integrated branding. Optimized for <span className="text-white font-medium">mobile installation</span> and <span className="text-white font-medium">bulk production</span>.
           </p>
         </div>
-
-        {/* NATIVE AD SLOT 1 */}
-        <AdsterraNativeBanner className="mb-20" id="container-hero-native" />
 
         <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
