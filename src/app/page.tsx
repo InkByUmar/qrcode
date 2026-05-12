@@ -24,7 +24,10 @@ import {
   Lock,
   Globe,
   Star,
-  ArrowRight
+  ArrowRight,
+  Smartphone,
+  CloudLightning,
+  Monitor
 } from 'lucide-react';
 import { CopyrightYear } from '@/components/qr-canvas/copyright-year';
 import {
@@ -44,11 +47,12 @@ import { cn } from '@/lib/utils';
 
 /**
  * Premium Brand Logo: Technical QR Geometry + Dual-tone Text
- * Refined size and placement for a more professional studio look.
+ * QR is White, CANVAS is Neon Green.
+ * Integrated small white "QR" identifier in the icon space.
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-1.5", className)}>
-    <div className="relative w-8 h-8 flex items-center justify-center">
+    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
       <svg 
         viewBox="0 0 100 100" 
         className="w-full h-full text-primary"
@@ -64,13 +68,13 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         {/* Stylized Data Bit */}
         <rect x="45" y="45" width="10" height="10" rx="2" />
       </svg>
-      {/* Integrated White QR Branding in the empty right-side space */}
-      <span className="absolute bottom-0.5 right-0 text-[12px] font-black text-white leading-none tracking-tighter select-none">
+      {/* Integrated White QR Branding in the icon */}
+      <span className="absolute bottom-0.5 right-0 text-[10px] font-black text-white leading-none tracking-tighter select-none">
         QR
       </span>
     </div>
     <div className="font-headline font-black text-xl md:text-2xl tracking-tighter uppercase leading-none ml-0.5">
-      <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
+      <span className="text-white">QR</span> <span className="text-primary ml-0.5">CANVAS</span>
     </div>
   </div>
 );
@@ -82,7 +86,7 @@ const NativeAdBanner = () => (
     >
       <div className="flex items-center gap-4 text-white/20">
         <Globe className="w-5 h-5" />
-        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Official Ad Placement Area</span>
+        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Official Studio Ad Space</span>
       </div>
     </div>
   </div>
@@ -109,7 +113,7 @@ export default function Home() {
   const navItems = [
     { label: 'Studio', href: '#generator', action: () => scrollToGenerator('single') },
     { label: 'How it Works', href: '#how-to-use', action: () => scrollTo('how-to-use') },
-    { label: 'Bulk Mode', href: '#bulk-info', action: () => scrollToGenerator('bulk') },
+    { label: 'PWA Features', href: '#pwa-features', action: () => scrollTo('pwa-features') },
     { label: 'Pricing', href: '#pricing', action: () => scrollTo('pricing') },
     { label: 'FAQ', href: '#faq', action: () => scrollTo('faq') },
   ];
@@ -128,12 +132,12 @@ export default function Home() {
       a: "The free tier allows up to 50 QR codes per batch. Agency Pro users have unlimited batch processing and higher resolution master exports."
     },
     {
-      q: "What file formats do you support for export?",
-      a: "We provide high-resolution PNG as standard. SVG Vector format is available for professionals who need infinitely scalable assets for large-scale print."
+      q: "Is this app safe to add to my home screen?",
+      a: "Yes. QR CANVAS is a Progressive Web App (PWA). Adding it to your home screen provides a native experience without needing a large app store download. It's fast, lightweight, and secure."
     },
     {
-      q: "Is my data stored on your servers?",
-      a: "No. We prioritize privacy. All QR generation happens locally in your browser (Client-Side), and we do not store the data you input."
+      q: "What file formats do you support for export?",
+      a: "We provide high-resolution PNG as standard. SVG Vector format is available for professionals who need infinitely scalable assets for large-scale print."
     }
   ];
 
@@ -143,7 +147,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/70 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
-            <CustomScannerLogo className="h-9" />
+            <CustomScannerLogo className="h-8" />
           </div>
           
           <nav className="hidden lg:flex items-center gap-8">
@@ -219,15 +223,15 @@ export default function Home() {
       <section className="container mx-auto px-6 py-20 md:py-32 relative">
         <div className="max-w-5xl mx-auto text-center mb-12 relative z-10">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 border-primary/20">
-            <Sparkles className="w-3.5 h-3.5 fill-primary/30" />
-            <span>ENTERPRISE-GRADE QR GENERATION SUITE</span>
+            <CloudLightning className="w-3.5 h-3.5 fill-primary/30" />
+            <span>PREMIUM PWA-READY STUDIO EDITION</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-headline font-black mb-10 leading-[1.1] md:leading-[1] tracking-tight text-white">
             Professional artistic <br />
             <span className="text-primary italic">QR CANVAS Studio</span>
           </h1>
           <p className="text-lg md:text-2xl text-white/80 max-w-4xl mx-auto leading-relaxed font-light mb-12">
-            Create high-resolution QR codes for your brand. Support for <span className="text-white font-medium">logos</span>, custom backgrounds, and <span className="text-white font-medium">bulk processing</span>.
+            Create high-resolution QR codes with integrated branding. Optimized for <span className="text-white font-medium">mobile installation</span> and <span className="text-white font-medium">bulk production</span>.
           </p>
         </div>
 
@@ -262,6 +266,83 @@ export default function Home() {
               <p className="text-sm text-white/50 leading-relaxed font-medium">{item.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* PWA INSTALLATION SECTION */}
+      <section id="pwa-features" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24 bg-primary/[0.01]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-[9px] font-black tracking-widest text-primary uppercase">
+                <Smartphone className="w-3.5 h-3.5" /> Native Experience
+              </div>
+              <h2 className="text-3xl md:text-5xl font-headline font-bold text-white leading-tight">
+                No App Store Needed. <br />
+                <span className="text-primary">Install in 2 Seconds.</span>
+              </h2>
+              <p className="text-white/60 text-lg leading-relaxed">
+                QR CANVAS is built with Progressive Web App technology. Add it to your home screen for instant access, even offline. No large downloads, just a professional studio in your pocket.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                    <Monitor className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h5 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">Desktop Ready</h5>
+                    <p className="text-white/40 text-xs">Run as a standalone app on Mac, PC, or Linux.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
+                    <Zap className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h5 className="text-white font-bold text-sm mb-1 uppercase tracking-tight">Ultra Fast</h5>
+                    <p className="text-white/40 text-xs">Instant loading with cached studio assets.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="pt-4">
+                <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 flex items-center justify-between group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                      <Scan className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Add to Home Screen</p>
+                      <p className="text-white font-bold">Studio Shortcut</p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-primary transition-all group-hover:translate-x-1" />
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 rounded-[3rem] blur-[80px] -z-10 opacity-30" />
+              <div className="glass-card p-4 rounded-[3.5rem] border-white/10 shadow-2xl relative overflow-hidden">
+                <div className="bg-black/80 rounded-[2.5rem] p-1 aspect-[9/16] relative overflow-hidden flex flex-col items-center justify-center border border-white/5">
+                   <div className="absolute top-8 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-white/10 rounded-full" />
+                   <CustomScannerLogo className="h-12 animate-float" />
+                   <div className="mt-12 text-center space-y-4 px-10">
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Installed App</p>
+                      <h4 className="text-2xl font-headline font-black text-white uppercase tracking-tighter leading-none">
+                        QR CANVAS <br /> Studio
+                      </h4>
+                      <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                      <p className="text-[10px] text-white/30 font-medium leading-relaxed">
+                        OFFLINE ACCESS ENABLED<br />
+                        NATIVE STUDIO RENDERING
+                      </p>
+                   </div>
+                   <div className="absolute bottom-10 w-48 h-12 bg-primary rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-widest text-primary-foreground shadow-xl shadow-primary/30">
+                     Launch Studio
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

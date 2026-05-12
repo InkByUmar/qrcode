@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: 'QR CANVAS | Free Premium QR Code Generator with Logo & Bulk Support',
   description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, backgrounds, and bulk processing. 100% free, no sign-up required.',
   keywords: 'qr canvas, free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker',
-  authors: [{ name: 'QR CANVAS Team' }],
+  authors: [{ name: 'QR CANVAS Studio Team' }],
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

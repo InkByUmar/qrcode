@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'QR CANVAS',
     short_name: 'QR CANVAS',
-    description: 'Premium AI-Powered Branded QR Code Generator',
+    description: 'Premium AI-Powered Branded QR Code Generator Studio',
     start_url: '/',
     display: 'standalone',
     background_color: '#060907',
