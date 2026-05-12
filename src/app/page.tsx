@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QrGeneratorContainer } from '@/components/qr-canvas/qr-generator-container';
 import { QrScannerModal } from '@/components/qr-canvas/qr-scanner-modal';
 import { Toaster } from '@/components/ui/toaster';
@@ -90,6 +90,49 @@ const AdsterraBanner = ({ className }: { className?: string }) => (
     </div>
   </div>
 );
+
+/**
+ * Adsterra Vertical Banner 160x300
+ */
+const AdsterraVerticalBanner = ({ className }: { className?: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current && !containerRef.current.querySelector('iframe')) {
+      const scriptConfig = document.createElement('script');
+      scriptConfig.innerHTML = `
+        atOptions = {
+          'key' : '17f93d85425d7946b948d2a346d50b02',
+          'format' : 'iframe',
+          'height' : 300,
+          'width' : 160,
+          'params' : {}
+        };
+      `;
+      containerRef.current.appendChild(scriptConfig);
+
+      const scriptInvoke = document.createElement('script');
+      scriptInvoke.src = "https://archaicmsflip.com/17f93d85425d7946b948d2a346d50b02/invoke.js";
+      scriptInvoke.async = true;
+      containerRef.current.appendChild(scriptInvoke);
+    }
+  }, []);
+
+  return (
+    <div className={cn("flex flex-col items-center animate-reveal", className)}>
+      <div className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 text-center">Sponsored</div>
+      <div 
+        ref={containerRef}
+        className="w-[160px] h-[300px] bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden"
+      >
+        <div className="flex flex-col items-center gap-2 text-white/10">
+          <Zap className="w-5 h-5" />
+          <span className="text-[8px] font-black uppercase tracking-[0.2em]">Vertical Slot</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 /**
  * Adsterra Native Banner Integration
@@ -371,29 +414,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Adsterra Bottom Banner */}
-      <AdsterraBanner className="py-20" />
-
       {/* SECURITY & PRIVACY SECTION */}
       <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {[
-            { icon: Lock, title: 'Zero-Data Policy', desc: "We never store your input data. All QR processing happens in your browser's local memory and is cleared when you close the tab." },
-            { icon: ShieldCheck, title: 'Permanent Ownership', desc: "Codes generated here are 100% static. They belong to you forever and do not rely on our platform to stay active." },
-            { icon: TrendingUp, title: 'Campaign Intelligence', desc: "Track engagement via high-resolution asset integration, providing deep campaign intelligence without compromising privacy." },
-          ].map((policy, i) => (
-            <div key={i} className="space-y-6 animate-reveal stagger-1 group">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <policy.icon className="w-6 h-6" />
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-16 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-10 flex-1">
+            {[
+              { icon: Lock, title: 'Zero-Data Policy', desc: "We never store your input data. All QR processing happens in your browser's local memory and is cleared when you close the tab." },
+              { icon: ShieldCheck, title: 'Permanent Ownership', desc: "Codes generated here are 100% static. They belong to you forever and do not rely on our platform to stay active." },
+              { icon: TrendingUp, title: 'Campaign Intelligence', desc: "Track engagement via high-resolution asset integration, providing deep campaign intelligence without compromising privacy." },
+            ].map((policy, i) => (
+              <div key={i} className="space-y-6 animate-reveal stagger-1 group">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <policy.icon className="w-6 h-6" />
+                </div>
+                <h4 className="text-xl font-headline font-bold text-white">{policy.title}</h4>
+                <p className="text-sm text-white/50 leading-relaxed font-medium">
+                  {policy.desc}
+                </p>
               </div>
-              <h4 className="text-xl font-headline font-bold text-white">{policy.title}</h4>
-              <p className="text-sm text-white/50 leading-relaxed font-medium">
-                {policy.desc}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
+          {/* Adsterra Vertical Banner Slot */}
+          <AdsterraVerticalBanner className="shrink-0 sticky top-24" />
         </div>
       </section>
+
+      {/* Adsterra Bottom Banner */}
+      <AdsterraBanner className="py-20" />
 
       {/* FOOTER */}
       <footer className="border-t border-white/[0.05] bg-black/50 py-20">
