@@ -2,22 +2,36 @@
 {
   "name": "QR Canvas Studio Pro",
   "short_name": "QR Canvas",
-  "description": "Professional Branded QR Code Generator & Bulk Tool with Logo Support.",
+  "description": "Professional AI-Powered Bulk QR Generation Studio",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#060907",
   "theme_color": "#26EA56",
   "icons": [
     {
-      "src": "https://picsum.photos/seed/qr-app-icon-192/192/192",
+      "src": "https://picsum.photos/seed/qrc-logo/192/192",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "https://picsum.photos/seed/qr-app-icon-512/512/512",
+      "src": "https://picsum.photos/seed/qrc-logo/192/192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://picsum.photos/seed/qrc-logo/512/512",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://picsum.photos/seed/qrc-logo/512/512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

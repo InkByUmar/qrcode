@@ -14,6 +14,15 @@ export const metadata: Metadata = {
   description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, backgrounds, and bulk processing. 100% free, no sign-up required. Export SVG and PNG for marketing campaigns.',
   keywords: 'free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, high quality qr code, wifi qr code generator, vcard creator, whatsapp qr code, batch qr code generation, marketing qr tools, branded qr codes, high res qr export, how to generate qr code, scan qr code online, download qr app, best free qr generator 2025, no expiry qr code, secure wifi qr maker',
   authors: [{ name: 'QR Canvas Studio Team' }],
+  icons: {
+    icon: [
+      { url: 'https://picsum.photos/seed/qrc-logo/32/32', sizes: '32x32' },
+      { url: 'https://picsum.photos/seed/qrc-logo/192/192', sizes: '192x192' },
+    ],
+    apple: [
+      { url: 'https://picsum.photos/seed/qrc-logo/180/180', sizes: '180x180' },
+    ],
+  },
   robots: {
     index: true,
     follow: true,
