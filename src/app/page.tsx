@@ -44,10 +44,11 @@ import { cn } from '@/lib/utils';
 
 /**
  * Premium Brand Logo: Technical QR Geometry + Dual-tone Text
+ * Refined size and placement for a more professional studio look.
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
-  <div className={cn("flex items-center gap-2", className)}>
-    <div className="relative w-9 h-9 flex items-center justify-center">
+  <div className={cn("flex items-center gap-1.5", className)}>
+    <div className="relative w-8 h-8 flex items-center justify-center">
       <svg 
         viewBox="0 0 100 100" 
         className="w-full h-full text-primary"
@@ -64,11 +65,11 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         <rect x="45" y="45" width="10" height="10" rx="2" />
       </svg>
       {/* Integrated White QR Branding in the empty right-side space */}
-      <span className="absolute bottom-1 right-0 text-[14px] font-black text-white leading-none tracking-tighter select-none">
+      <span className="absolute bottom-0.5 right-0 text-[12px] font-black text-white leading-none tracking-tighter select-none">
         QR
       </span>
     </div>
-    <div className="font-headline font-black text-2xl tracking-tighter uppercase leading-none ml-1">
+    <div className="font-headline font-black text-xl md:text-2xl tracking-tighter uppercase leading-none ml-0.5">
       <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
     </div>
   </div>
@@ -142,7 +143,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/70 backdrop-blur-xl">
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => scrollToGenerator('single')}>
-            <CustomScannerLogo className="h-10" />
+            <CustomScannerLogo className="h-9" />
           </div>
           
           <nav className="hidden lg:flex items-center gap-8">
