@@ -43,23 +43,23 @@ import {
 import { cn } from '@/lib/utils';
 
 /**
- * Official Brand Logo: QR Structure + Text on Right
+ * Official Brand Logo: QR Structure (Green) + Text on Right (White)
  */
 const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-2", className)}>
     <svg 
       viewBox="0 0 100 100" 
-      className="w-8 h-8"
+      className="w-8 h-8 text-primary"
       aria-hidden="true"
       fill="currentColor"
     >
-      {/* Finder Pattern: Top Left */}
+      {/* Finder Pattern: Top Left (Green) */}
       <path d="M0 0h35v35H0V0zm28 28V7H7v21h21zM11 11h13v13h-13z" />
-      {/* Finder Pattern: Top Right */}
+      {/* Finder Pattern: Top Right (Green) */}
       <path d="M65 0h35v35H65V0zm28 28V7h-21v21h21zM76 11h13v13H76z" />
-      {/* Finder Pattern: Bottom Left */}
+      {/* Finder Pattern: Bottom Left (Green) */}
       <path d="M0 65h35v35H0V65zm28 28V72H7v21h21zM11 76h13v13h-13z" />
-      {/* Stylized Data Bits */}
+      {/* Stylized Data Bits (Green) */}
       <rect x="45" y="0" width="10" height="10" />
       <rect x="45" y="25" width="10" height="10" />
       <rect x="65" y="45" width="10" height="10" />

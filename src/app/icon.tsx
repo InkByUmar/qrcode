@@ -2,7 +2,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'QR Canvas Official Logo';
+export const alt = 'QR CANVAS Official Logo';
 export const size = {
   width: 512,
   height: 512,
@@ -21,7 +21,7 @@ export default function Icon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#26EA56',
+          color: 'white',
           borderRadius: '128px',
           border: '20px solid rgba(38, 234, 86, 0.2)',
           position: 'relative',
@@ -29,23 +29,23 @@ export default function Icon() {
           fontFamily: 'sans-serif',
         }}
       >
-        {/* Finder Pattern: Top Left */}
+        {/* Finder Pattern: Top Left (Green) */}
         <div style={{ position: 'absolute', top: 60, left: 60, width: 100, height: 100, border: '15px solid #26EA56', borderRadius: '15px' }}>
           <div style={{ position: 'absolute', top: 18, left: 18, width: 34, height: 34, background: '#26EA56', borderRadius: '4px' }} />
         </div>
         
-        {/* Finder Pattern: Top Right */}
+        {/* Finder Pattern: Top Right (Green) */}
         <div style={{ position: 'absolute', top: 60, right: 60, width: 100, height: 100, border: '15px solid #26EA56', borderRadius: '15px' }}>
           <div style={{ position: 'absolute', top: 18, left: 18, width: 34, height: 34, background: '#26EA56', borderRadius: '4px' }} />
         </div>
 
-        {/* Finder Pattern: Bottom Left */}
+        {/* Finder Pattern: Bottom Left (Green) */}
         <div style={{ position: 'absolute', bottom: 60, left: 60, width: 100, height: 100, border: '15px solid #26EA56', borderRadius: '15px' }}>
           <div style={{ position: 'absolute', top: 18, left: 18, width: 34, height: 34, background: '#26EA56', borderRadius: '4px' }} />
         </div>
 
-        {/* Integrated QR Text Branding */}
-        <div style={{ position: 'absolute', bottom: 60, right: 65, display: 'flex', letterSpacing: '-12px' }}>
+        {/* Integrated QR Text Branding (White) */}
+        <div style={{ position: 'absolute', bottom: 60, right: 65, display: 'flex', letterSpacing: '-12px', color: 'white' }}>
           QR
         </div>
       </div>

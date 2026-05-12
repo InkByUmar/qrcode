@@ -2,7 +2,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'QR Canvas Apple Touch Icon';
+export const alt = 'QR CANVAS Apple Touch Icon';
 export const size = {
   width: 180,
   height: 180,
@@ -21,7 +21,7 @@ export default function AppleIcon() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#26EA56',
+          color: 'white',
           borderRadius: '40px',
           border: '8px solid rgba(38, 234, 86, 0.2)',
           position: 'relative',
@@ -38,7 +38,7 @@ export default function AppleIcon() {
         <div style={{ position: 'absolute', bottom: 20, left: 20, width: 40, height: 40, border: '6px solid #26EA56', borderRadius: '6px' }}>
           <div style={{ position: 'absolute', top: 7, left: 7, width: 14, height: 14, background: '#26EA56', borderRadius: '2px' }} />
         </div>
-        <div style={{ position: 'absolute', bottom: 12, right: 18 }}>
+        <div style={{ position: 'absolute', bottom: 12, right: 18, color: 'white' }}>
           QR
         </div>
       </div>
