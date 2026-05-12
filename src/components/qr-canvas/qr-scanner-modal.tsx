@@ -70,7 +70,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           try {
             await html5QrCodeRef.current.stop();
           } catch (e) {
-            // Ignore stop errors on non-running scanner
+            // Ignore stop errors
           }
         }
 
@@ -84,17 +84,22 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
             qrbox: { width: 250, height: 250 },
             aspectRatio: 1.0
           },
-          async (decodedText) => {
+          (decodedText) => {
             // SUCCESS CALLBACK
             if (isMounted) {
-              // Stop first, then update state to avoid DOM removal issues
-              try {
-                await scanner.stop();
-                html5QrCodeRef.current = null;
-              } catch (e) {
-                console.error("Stop error during success", e);
-              }
-              setScanResult(decodedText);
+              // We stop the scanner first, then show the result
+              // Use a small timeout to ensure the library's internal state is ready for stop
+              setTimeout(async () => {
+                if (html5QrCodeRef.current) {
+                  try {
+                    await html5QrCodeRef.current.stop();
+                    html5QrCodeRef.current = null;
+                  } catch (e) {
+                    console.error("Error stopping scanner", e);
+                  }
+                }
+                setScanResult(decodedText);
+              }, 100);
             }
           },
           () => {
@@ -106,7 +111,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       } catch (err) {
         console.error("Scanner failed to start", err);
         if (isMounted) {
-          setError("Failed to start camera. It may be used by another app or permissions were denied.");
+          setError("Failed to start camera. It may be used by another app.");
           setIsInitializing(false);
         }
       }
@@ -135,7 +140,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   };
 
   const handleReset = async () => {
-    // Reset scanner first
     if (html5QrCodeRef.current) {
       try {
         await html5QrCodeRef.current.stop();
@@ -193,7 +197,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               )}
 
               <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary/20 bg-black/40 group shadow-2xl">
-                {/* Fixed ID container that remains as long as scanResult is null */}
                 <div id={scannerContainerId} className="w-full h-full"></div>
                 
                 {!isInitializing && !error && (
@@ -247,7 +250,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Decoded Insight</p>
-                    <p className="text-[9px] text-white/30 uppercase font-bold tracking-widest">Enterprise Validated</p>
+                    <p className="text-[9px] text-white/30 uppercase font-bold tracking-widest">Success</p>
                   </div>
                   <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
                     <CheckCircle2 className="w-5 h-5" />
@@ -255,16 +258,16 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 </div>
 
                 <div className="p-6 bg-black/40 rounded-2xl border border-white/5 max-h-[180px] overflow-auto custom-scrollbar relative z-10 shadow-inner">
-                  <p className="text-base font-mono text-white break-all leading-relaxed">{scanResult}</p>
+                  <p className="text-base font-mono text-white break-all">{scanResult}</p>
                 </div>
 
                 <div className="flex flex-col gap-3 pt-2 relative z-10">
                   <Button 
                     onClick={handleCopy} 
-                    className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+                    className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-primary/20"
                   >
                     {isCopied ? <CheckCircle2 className="w-5 h-5 mr-3" /> : <Copy className="w-5 h-5 mr-3" />}
-                    {isCopied ? 'Copied to Clipboard' : 'Copy Result'}
+                    {isCopied ? 'Copied' : 'Copy Result'}
                   </Button>
                   <div className="grid grid-cols-2 gap-3">
                     <Button variant="outline" onClick={handleReset} className="h-14 border-white/10 hover:bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/70">
@@ -280,15 +283,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               </div>
             </div>
           )}
-          
-          <div className="text-center space-y-2 pb-2">
-            <p className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-black">
-              Safe & Secure Scanning
-            </p>
-            <p className="text-[9px] text-white/10 uppercase font-bold max-w-[200px] mx-auto leading-relaxed">
-              No data is stored on our servers. Processing occurs entirely in your browser.
-            </p>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
