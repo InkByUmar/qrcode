@@ -81,7 +81,7 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containerRef.current && !containerRef.current.querySelector('iframe')) {
+    if (containerRef.current && !containerRef.current.querySelector('script')) {
       const scriptConfig = document.createElement('script');
       scriptConfig.type = 'text/javascript';
       scriptConfig.innerHTML = `
@@ -122,16 +122,18 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
 /**
  * Adsterra Native Banner Component (4:1 / 4x1)
  */
-const AdsterraNativeBanner = ({ className, id = "container-8a0d2340102217c81755459d2df8b6d0" }: { className?: string, id?: string }) => {
+const AdsterraNativeBanner = ({ className, id }: { className?: string, id: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (containerRef.current && !containerRef.current.querySelector('script')) {
+    // Specifically target the container that the invoke.js script expects
+    const adContainer = document.getElementById('container-8a0d2340102217c81755459d2df8b6d0');
+    if (adContainer && !adContainer.querySelector('script')) {
       const script = document.createElement('script');
       script.async = true;
       script.setAttribute('data-cfasync', 'false');
       script.src = "https://archaicmsflip.com/8a0d2340102217c81755459d2df8b6d0/invoke.js";
-      containerRef.current.appendChild(script);
+      adContainer.appendChild(script);
     }
   }, []);
 
@@ -139,13 +141,14 @@ const AdsterraNativeBanner = ({ className, id = "container-8a0d2340102217c817554
     <div className={cn("container mx-auto px-6 animate-reveal", className)}>
       <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 text-center">Recommended For You</div>
       <div 
-        ref={containerRef}
         id={id}
         className="min-h-[160px] md:aspect-[4/1] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
       >
-        <div className="flex flex-col items-center gap-3 text-white/10">
-          <Layers className="w-8 h-8" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Production Stream</span>
+        <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3 text-white/10">
+            <Layers className="w-8 h-8" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Production Stream</span>
+          </div>
         </div>
       </div>
     </div>
