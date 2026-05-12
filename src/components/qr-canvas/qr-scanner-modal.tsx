@@ -17,7 +17,8 @@ import {
   Loader2, 
   AlertCircle,
   Image as ImageIcon,
-  Upload
+  Upload,
+  Info
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -168,8 +169,14 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       setScanResult(decodedText);
       toast({ title: "Import Successful", description: "QR code decoded from image." });
     } catch (err) {
-      console.error("File scan failed:", err);
-      setError("No valid QR code detected. Please ensure the 'bits' are clear and the image is well-lit.");
+      const errStr = String(err);
+      // Catch "NotFound" specifically to avoid unhandled rejection screens in NextJS
+      if (errStr.includes("No MultiFormat Readers") || errStr.includes("NotFoundException")) {
+        setError("No valid QR code detected. Please ensure the code is clear and fills the frame.");
+      } else {
+        console.error("Critical scan failure:", err);
+        setError("Technical error during image analysis. Please try another file.");
+      }
     } finally {
       setIsInitializing(false);
       setIsProcessingFile(false);
@@ -290,18 +297,25 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                     <AlertCircle className="w-12 h-12 text-destructive" />
                     <div className="space-y-2">
                        <p className="text-sm font-bold text-white">{error}</p>
-                       <p className="text-[10px] text-white/40 uppercase font-medium">Try another image or ensure camera access.</p>
+                       <p className="text-[10px] text-white/40 uppercase font-medium">Try another image or check contrast levels.</p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-col gap-3 w-full">
                       <Button variant="outline" onClick={() => handleReset()} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        Retry
+                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Retry Scanner
                       </Button>
                       <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        Upload New
+                        <ImageIcon className="w-3.5 h-3.5 mr-2" /> Try New File
                       </Button>
                     </div>
                   </div>
                 )}
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
+                 <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                 <p className="text-[9px] text-white/40 leading-relaxed font-medium">
+                   PRO TIP: For imported images, ensure the QR code is centered and the "bits" are sharp. Avoid extreme angles or heavy shadows.
+                 </p>
               </div>
 
               <div className="flex flex-col gap-3">
