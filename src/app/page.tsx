@@ -60,7 +60,7 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         <path d="M54 18h28v28h-28zM60 24v16h16v-16z" fill="black" />
         <path d="M18 54h28v28h-28zM24 60v16h16v-16z" fill="black" />
 
-        {/* Central Branding Text (Black) */}
+        {/* Central Branding Text (Black) - Clean Background */}
         <text 
           x="71%" 
           y="71%" 
@@ -73,11 +73,6 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         >
           QR
         </text>
-
-        {/* Technical Data Dots (Black) */}
-        <rect x="54" y="54" width="8" height="8" rx="1.5" fill="black" />
-        <rect x="66" y="54" width="8" height="8" rx="1.5" fill="black" opacity="0.6" />
-        <rect x="54" y="66" width="8" height="8" rx="1.5" fill="black" opacity="0.4" />
       </svg>
     </div>
     <div className="font-headline font-black text-xl md:text-2xl tracking-tighter uppercase leading-none">

@@ -47,7 +47,7 @@ export default function Icon() {
             <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
           </div>
 
-          {/* Central QR Typography (Black) */}
+          {/* Central QR Typography (Black) - Clean and Simple */}
           <div style={{ 
             fontSize: 140, 
             color: 'black',
@@ -60,11 +60,6 @@ export default function Icon() {
           }}>
             QR
           </div>
-          
-          {/* Matrix data dots */}
-          <div style={{ position: 'absolute', bottom: 180, right: 180, width: 35, height: 35, background: 'black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', bottom: 180, right: 130, width: 35, height: 35, background: 'black', borderRadius: '6px', opacity: 0.5 }} />
-          <div style={{ position: 'absolute', bottom: 130, right: 180, width: 35, height: 35, background: 'black', borderRadius: '6px', opacity: 0.3 }} />
         </div>
       </div>
     ),
