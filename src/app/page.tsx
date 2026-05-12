@@ -305,7 +305,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="pt-4">
-                <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 flex items-center justify-between group">
+                <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 flex items-center justify-between group cursor-pointer hover:bg-white/[0.06] transition-all">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
                       <Scan className="w-6 h-6" />
@@ -319,24 +319,24 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative flex justify-center lg:justify-end">
               <div className="absolute inset-0 bg-primary/20 rounded-[3rem] blur-[80px] -z-10 opacity-30" />
-              <div className="glass-card p-4 rounded-[3.5rem] border-white/10 shadow-2xl relative overflow-hidden">
-                <div className="bg-black/80 rounded-[2.5rem] p-1 aspect-[9/16] relative overflow-hidden flex flex-col items-center justify-center border border-white/5">
-                   <div className="absolute top-8 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-white/10 rounded-full" />
-                   <CustomScannerLogo className="h-12 animate-float" />
-                   <div className="mt-12 text-center space-y-4 px-10">
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Installed App</p>
-                      <h4 className="text-2xl font-headline font-black text-white uppercase tracking-tighter leading-none">
+              <div className="glass-card p-3 rounded-[3rem] border-white/10 shadow-2xl relative overflow-hidden w-full max-w-[280px]">
+                <div className="bg-black/80 rounded-[2.25rem] p-1 aspect-[9/16] relative overflow-hidden flex flex-col items-center justify-center border border-white/5">
+                   <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/10 rounded-full" />
+                   <CustomScannerLogo className="h-10 animate-float" />
+                   <div className="mt-10 text-center space-y-3 px-8">
+                      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Installed App</p>
+                      <h4 className="text-xl font-headline font-black text-white uppercase tracking-tighter leading-none">
                         QR CANVAS <br /> Studio
                       </h4>
                       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                      <p className="text-[10px] text-white/30 font-medium leading-relaxed">
+                      <p className="text-[9px] text-white/30 font-medium leading-relaxed">
                         OFFLINE ACCESS ENABLED<br />
                         NATIVE STUDIO RENDERING
                       </p>
                    </div>
-                   <div className="absolute bottom-10 w-48 h-12 bg-primary rounded-2xl flex items-center justify-center font-black text-[10px] uppercase tracking-widest text-primary-foreground shadow-xl shadow-primary/30">
+                   <div className="absolute bottom-8 w-40 h-10 bg-primary rounded-xl flex items-center justify-center font-black text-[9px] uppercase tracking-widest text-primary-foreground shadow-xl shadow-primary/30">
                      Launch Studio
                    </div>
                 </div>
