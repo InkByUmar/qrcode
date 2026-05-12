@@ -383,9 +383,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NATIVE AD SLOT 3 */}
-      <AdsterraNativeBanner className="py-12" id="container-pwa-native" />
-
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="max-w-3xl mx-auto animate-reveal">
