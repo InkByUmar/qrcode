@@ -6,6 +6,7 @@ import { QrFormSection } from './qr-form-section';
 import { QrPreviewSection } from './qr-preview-section';
 import { QrBulkSection } from './qr-bulk-section';
 import { QrCode, Layers } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const HISTORY_KEY = 'qr_canvas_history_v5';
 const STATE_KEY = 'qr_canvas_current_state_v5';
@@ -130,16 +131,22 @@ export function QrGeneratorContainer({
   return (
     <div className="space-y-8">
       <div className="flex justify-center mb-8">
-        <div className="w-full max-w-md bg-white/5 border border-white/10 p-1.5 h-16 rounded-3xl flex">
+        <div className="w-full max-w-md bg-white/5 border border-white/10 p-1.5 h-16 rounded-3xl flex animate-reveal">
           <button 
             onClick={() => setActiveMode('single')}
-            className={`flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px] ${activeMode === 'single' ? 'bg-primary text-primary-foreground shadow-xl' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+            className={cn(
+              "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
+              activeMode === 'single' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-white/60 hover:text-white hover:bg-white/5 scale-95 opacity-70"
+            )}
           >
             <QrCode className="w-4 h-4" /> Single QR
           </button>
           <button 
             onClick={() => setActiveMode('bulk')}
-            className={`flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px] ${activeMode === 'bulk' ? 'bg-primary text-primary-foreground shadow-xl' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+            className={cn(
+              "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
+              activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-white/60 hover:text-white hover:bg-white/5 scale-95 opacity-70"
+            )}
           >
             <Layers className="w-4 h-4" /> Bulk Mode
           </button>
@@ -147,15 +154,19 @@ export function QrGeneratorContainer({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-7 xl:col-span-8 space-y-8">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
           {activeMode === 'single' ? (
-            <QrFormSection state={state} updateState={updateState} />
+            <div key="single-form" className="animate-in fade-in slide-in-from-top-4 duration-500">
+              <QrFormSection state={state} updateState={updateState} />
+            </div>
           ) : (
-            <QrBulkSection state={state} updateState={updateState} />
+            <div key="bulk-form" className="animate-in fade-in slide-in-from-top-4 duration-500">
+              <QrBulkSection state={state} updateState={updateState} />
+            </div>
           )}
         </div>
 
-        <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6">
+        <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6 animate-in fade-in slide-in-from-right-4 duration-700 stagger-2">
           <QrPreviewSection 
             state={debouncedState} 
             history={history} 
