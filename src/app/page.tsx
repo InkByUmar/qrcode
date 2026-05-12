@@ -58,10 +58,8 @@ const CustomScannerLogo = ({ className = "h-8" }: { className?: string }) => (
         <path d="M65 5C65 2.23858 67.2386 0 70 0H95C97.7614 0 100 5V30C100 32.7614 97.7614 35 95 35H70C67.2386 35 65 32.7614 65 30V5ZM93 28V7H72v21h21ZM76 11h13v13H76z" />
         <path d="M0 70C0 67.2386 2.23858 65 5 65H30C32.7614 65 35 67.2386 35 70V95C35 97.7614 32.7614 100 30 100H5C2.23858 100 0 95V70ZM28 93V72H7v21h21ZM11 76h13v13h-13z" />
         <rect x="45" y="45" width="10" height="10" rx="2" />
+        <text x="66" y="94" fontSize="28" fontWeight="900" fill="white" style={{ fontFamily: 'sans-serif' }}>QR</text>
       </svg>
-      <span className="absolute bottom-0.5 right-0 text-[10px] font-black text-white leading-none tracking-tighter select-none">
-        QR
-      </span>
     </div>
     <div className="font-headline font-black text-xl md:text-2xl tracking-tighter uppercase leading-none ml-0.5">
       <span className="text-white">QR</span> <span className="text-primary ml-0.5">CANVAS</span>
@@ -305,7 +303,7 @@ export default function Home() {
                    <div className="mt-10 text-center space-y-3 px-8">
                       <p className="text-[9px] font-black uppercase tracking-[0.3em] text-primary">Installed App</p>
                       <h4 className="text-xl font-headline font-black text-white uppercase tracking-tighter leading-none">
-                        QR CANVAS <br /> Studio
+                        <span className="text-white">QR</span> <span className="text-primary">CANVAS</span>
                       </h4>
                       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                       <p className="text-[9px] text-white/30 font-medium leading-relaxed">
@@ -370,7 +368,7 @@ export default function Home() {
             <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
               <TrendingUp className="w-6 h-6" />
             </div>
-            <h4 className="text-xl font-headline font-bold text-white">Marketing Analytics</h4>
+            <h4 className="text-xl font-headline font-bold text-white">Campaign Intelligence</h4>
             <p className="text-sm text-white/50 leading-relaxed font-medium">
               Track engagement via high-resolution asset integration, providing deep campaign intelligence without compromising privacy.
             </p>
@@ -391,11 +389,11 @@ export default function Home() {
           </div>
           <div className="pt-8 border-t border-white/5 text-center space-y-4">
             <div className="flex justify-center gap-6">
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">SSL SECURE</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">GDPR COMPLIANT</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/70">PWA READY</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">SSL SECURE</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">GDPR COMPLIANT</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">PWA READY</span>
             </div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/60">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70">
               &copy; <CopyrightYear /> QR CANVAS. ALL RIGHTS RESERVED. MOBILE PWA EDITION.
             </p>
           </div>
