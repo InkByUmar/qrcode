@@ -120,7 +120,7 @@ const AdsterraSkyscraperBanner = ({ className }: { className?: string }) => {
 };
 
 /**
- * Adsterra Native Banner Component
+ * Adsterra Native Banner Component (4:1 / 4x1)
  */
 const AdsterraNativeBanner = ({ className, id = "container-8a0d2340102217c81755459d2df8b6d0" }: { className?: string, id?: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -136,16 +136,16 @@ const AdsterraNativeBanner = ({ className, id = "container-8a0d2340102217c817554
   }, []);
 
   return (
-    <div className={cn("container mx-auto px-6 py-12 animate-reveal", className)}>
-      <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 text-center">Recommendations</div>
+    <div className={cn("container mx-auto px-6 animate-reveal", className)}>
+      <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-4 text-center">Recommended For You</div>
       <div 
         ref={containerRef}
         id={id}
-        className="min-h-[200px] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
+        className="min-h-[160px] md:aspect-[4/1] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
       >
         <div className="flex flex-col items-center gap-3 text-white/10">
           <Layers className="w-8 h-8" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Content Stream</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Production Stream</span>
         </div>
       </div>
     </div>
@@ -267,11 +267,11 @@ export default function Home() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="container mx-auto px-6 py-20 md:py-32 relative">
-        <div className="max-w-5xl mx-auto text-center mb-12 relative z-10 animate-reveal">
+      <section className="container mx-auto px-6 pt-20 pb-12 md:pt-32 relative text-center">
+        <div className="max-w-5xl mx-auto relative z-10 animate-reveal">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 border-primary/20 animate-float-subtle">
             <CloudLightning className="w-3.5 h-3.5 fill-primary/30" />
-            <span><span>PREMIUM PWA-READY STUDIO EDITION</span></span>
+            <span>PREMIUM PWA-READY STUDIO EDITION</span>
           </div>
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-headline font-black mb-10 leading-[1.1] md:leading-[1] tracking-tight text-white">
             Professional artistic <br />
@@ -281,8 +281,14 @@ export default function Home() {
             Create high-resolution QR codes with integrated branding. Optimized for <span className="text-white font-medium">mobile installation</span> and <span className="text-white font-medium">bulk production</span>.
           </p>
         </div>
+      </section>
 
-        <div id="generator" className="relative z-10 scroll-mt-24 animate-reveal stagger-3">
+      {/* NATIVE AD 1: ABOVE STUDIO */}
+      <AdsterraNativeBanner className="mb-20" id="native-studio-top" />
+
+      {/* GENERATOR STUDIO SECTION */}
+      <section id="generator" className="container mx-auto px-6 pb-32 scroll-mt-24">
+        <div className="relative z-10 animate-reveal stagger-3">
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
         </div>
       </section>
@@ -383,6 +389,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* NATIVE AD 2: BEFORE FAQ */}
+      <AdsterraNativeBanner className="py-24" id="native-faq-pre" />
+
       {/* FAQ SECTION */}
       <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
         <div className="max-w-3xl mx-auto animate-reveal">
@@ -425,7 +434,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          {/* Adsterra Vertical Banners Column */}
+          {/* Adsterra Vertical Skyscraper Column */}
           <div className="shrink-0 flex flex-col gap-8 sticky top-24">
             <AdsterraSkyscraperBanner />
           </div>
