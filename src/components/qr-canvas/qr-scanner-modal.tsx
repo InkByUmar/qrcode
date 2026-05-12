@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -32,6 +33,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const [cameras, setCameras] = useState<{ id: string, label: string }[]>([]);
   const [selectedCameraId, setSelectedCameraId] = useState<string>("");
   const [isInitializing, setIsInitializing] = useState(false);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   const { toast } = useToast();
@@ -62,7 +64,8 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     let isMounted = true;
 
     const startScanner = async () => {
-      if (!isOpen || !selectedCameraId || scanResult || !isMounted) return;
+      // Don't start if we are processing a file, already have a result, or not open
+      if (!isOpen || !selectedCameraId || scanResult || isProcessingFile || !isMounted) return;
       
       setIsInitializing(true);
       setError(null);
@@ -96,7 +99,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           },
           (decodedText) => {
             if (isMounted) {
-              // Stop camera immediately on success
               if (html5QrCodeRef.current) {
                 html5QrCodeRef.current.stop().then(() => {
                   html5QrCodeRef.current = null;
@@ -121,7 +123,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       }
     };
 
-    if (isOpen && !scanResult) {
+    if (isOpen && !scanResult && !isProcessingFile) {
       startScanner();
     }
 
@@ -132,37 +134,45 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         html5QrCodeRef.current = null;
       }
     };
-  }, [isOpen, selectedCameraId, !!scanResult]);
+  }, [isOpen, selectedCameraId, !!scanResult, isProcessingFile]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setIsProcessingFile(true);
     setIsInitializing(true);
     setError(null);
 
-    // Stop active camera session before file scanning to prevent conflicts
+    // 1. Force stop and clear existing scanner completely
     if (html5QrCodeRef.current) {
       try {
         await html5QrCodeRef.current.stop();
-        html5QrCodeRef.current = null;
       } catch (e) {}
+      html5QrCodeRef.current = null;
     }
 
-    // Give hardware a brief moment to release
-    await new Promise(r => setTimeout(r, 300));
+    // 2. Clear the container DOM manually to prevent conflicts
+    const container = document.getElementById(scannerContainerId);
+    if (container) container.innerHTML = "";
+
+    // 3. Small delay to ensure resources are released
+    await new Promise(r => setTimeout(r, 200));
 
     try {
-      const fileScanner = new Html5Qrcode(scannerContainerId);
-      const decodedText = await fileScanner.scanFile(file, true);
+      // Create a fresh instance for the file scan
+      const html5QrCode = new Html5Qrcode(scannerContainerId);
+      // scanFile(file, showImage) - setting showImage to false is often more robust
+      const decodedText = await html5QrCode.scanFile(file, false);
+      
       setScanResult(decodedText);
-      setIsInitializing(false);
       toast({ title: "Import Successful", description: "QR code decoded from image." });
     } catch (err) {
+      console.error("File scan failed:", err);
       setError("No valid QR code detected. Please ensure the 'bits' are clear and the image is well-lit.");
-      setIsInitializing(false);
     } finally {
-      // Clear input so same file can be selected again
+      setIsInitializing(false);
+      setIsProcessingFile(false);
       if (event.target) event.target.value = '';
     }
   };
@@ -185,6 +195,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     }
     setScanResult(null);
     setError(null);
+    setIsProcessingFile(false);
   };
 
   const handleClose = async () => {
@@ -197,6 +208,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     onClose();
     setScanResult(null);
     setError(null);
+    setIsProcessingFile(false);
   };
 
   return (
@@ -234,9 +246,10 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 <Button 
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
+                  disabled={isInitializing || isProcessingFile}
                   className="flex-1 h-12 border-white/10 bg-white/5 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 gap-2"
                 >
-                  <ImageIcon className="w-3.5 h-3.5 text-primary" />
+                  {isProcessingFile ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageIcon className="w-3.5 h-3.5 text-primary" />}
                   Import Image
                 </Button>
                 <input 
@@ -251,7 +264,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
               <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary/20 bg-black/40 group shadow-2xl">
                 <div id={scannerContainerId} className="w-full h-full"></div>
                 
-                {!isInitializing && !error && (
+                {!isInitializing && !error && !isProcessingFile && (
                   <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
                     <div className="w-64 h-64 border-2 border-primary/30 rounded-3xl relative">
                       <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-xl" />
@@ -263,10 +276,12 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                   </div>
                 )}
 
-                {isInitializing && (
+                {(isInitializing || isProcessingFile) && (
                   <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4 z-20">
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Processing...</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                      {isProcessingFile ? "Analyzing Bits..." : "Initializing..."}
+                    </p>
                   </div>
                 )}
 
