@@ -127,7 +127,15 @@ const AdsterraNativeBanner = ({ className, id }: { className?: string, id: strin
 
   useEffect(() => {
     if (containerRef.current) {
-      const adContainer = containerRef.current.querySelector('#container-8a0d2340102217c81755459d2df8b6d0');
+      // Create the container if it doesn't exist
+      let adContainer = containerRef.current.querySelector('#container-8a0d2340102217c81755459d2df8b6d0');
+      if (!adContainer) {
+        adContainer = document.createElement('div');
+        adContainer.id = 'container-8a0d2340102217c81755459d2df8b6d0';
+        adContainer.className = "w-full flex items-center justify-center";
+        containerRef.current.appendChild(adContainer);
+      }
+
       if (adContainer && !adContainer.querySelector('script')) {
         const script = document.createElement('script');
         script.async = true;
@@ -146,11 +154,10 @@ const AdsterraNativeBanner = ({ className, id }: { className?: string, id: strin
         id={id}
         className="min-h-[160px] md:aspect-[4/1] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
       >
-        <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full flex items-center justify-center">
-          <div className="flex flex-col items-center gap-3 text-white/10">
-            <Layers className="w-8 h-8" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Production Stream</span>
-          </div>
+        {/* Ad container will be injected here by useEffect */}
+        <div className="flex flex-col items-center gap-3 text-white/10 absolute pointer-events-none">
+          <Layers className="w-8 h-8" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Content Stream</span>
         </div>
       </div>
     </div>

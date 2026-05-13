@@ -12,9 +12,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'QR CANVAS | Free Premium QR Code Generator with Logo & Bulk Support',
   description: 'The world\'s most advanced professional QR code generator. Create high-resolution custom QR codes with logos, AI backgrounds, and bulk processing. 100% free, no sign-up required, PWA ready.',
-  keywords: 'qr canvas, free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, scan tool, pwa qr code, artistic qr codes, branded qr maker, high res qr export',
+  keywords: 'qr canvas, free qr code generator, bulk qr code generator, qr code with logo, custom qr code background, professional qr maker, scan tool, pwa qr code, artistic qr codes, branded qr maker, high res qr export, svg qr generator, permanent qr code, no expiry qr, marketing qr tools',
   authors: [{ name: 'QR CANVAS Studio Team' }],
-  metadataBase: new URL('https://qrcanvas.app'), // Replace with actual domain
+  metadataBase: new URL('https://qrcanvas.app'), 
   alternates: {
     canonical: '/',
   },
@@ -86,7 +86,8 @@ export default function RootLayout({
       'Artistic AI Backgrounds (Imagen 4)',
       'High-Resolution PNG and SVG Exports',
       'PWA Mobile Installation Support',
-      'Offline-First Live Scanner'
+      'Offline-First Live Scanner',
+      'Permanent QR Codes with No Expiration'
     ],
     'aggregateRating': {
       '@type': 'AggregateRating',
