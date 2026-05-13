@@ -154,7 +154,7 @@ const AdsterraNativeBanner = ({ className, id }: { className?: string, id: strin
         id={id}
         className="min-h-[160px] md:aspect-[4/1] bg-white/[0.02] border border-white/5 rounded-[2.5rem] flex items-center justify-center overflow-hidden relative"
       >
-        {/* Ad container will be injected here by useEffect */}
+        <div id="container-8a0d2340102217c81755459d2df8b6d0" className="w-full flex items-center justify-center"></div>
         <div className="flex flex-col items-center gap-3 text-white/10 absolute pointer-events-none">
           <Layers className="w-8 h-8" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Native Content Stream</span>
@@ -210,8 +210,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen premium-gradient selection:bg-primary/30 selection:text-white overflow-x-hidden">
-      {/* NAVIGATION */}
-      <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-black/80 backdrop-blur-2xl animate-in fade-in slide-in-from-top-4 duration-700">
+      {/* NAVIGATION - CHANGED TO FIXED POSITION */}
+      <header className="fixed top-0 left-0 right-0 z-[100] w-full border-b border-white/[0.05] bg-black/80 backdrop-blur-2xl animate-in fade-in slide-in-from-top-4 duration-700">
         <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer" onClick={() => { setGeneratorMode('single'); scrollTo('generator'); }}>
             <CustomScannerLogo />
@@ -280,8 +280,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO SECTION */}
-      <section className="container mx-auto px-6 pt-20 pb-12 md:pt-32 relative text-center">
+      {/* HERO SECTION - ADDED MARGIN TOP TO COMPENSATE FOR FIXED HEADER */}
+      <section className="container mx-auto px-6 pt-32 pb-12 md:pt-48 relative text-center">
         <div className="max-w-5xl mx-auto relative z-10 animate-reveal">
           <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full glass-card text-[10px] font-black tracking-[0.2em] text-primary mb-10 border-primary/20 animate-float-subtle">
             <CloudLightning className="w-3.5 h-3.5 fill-primary/30" />
@@ -301,7 +301,7 @@ export default function Home() {
       <AdsterraNativeBanner className="mb-20" id="native-studio-top" />
 
       {/* GENERATOR STUDIO SECTION */}
-      <section id="generator" className="container mx-auto px-6 pb-32 scroll-mt-24">
+      <section id="generator" className="container mx-auto px-6 pb-32 scroll-mt-32">
         <div className="relative z-10 animate-reveal stagger-3">
           <h2 className="sr-only">Professional QR Code Generator Tool</h2>
           <QrGeneratorContainer activeMode={generatorMode} onModeChange={setGeneratorMode} />
@@ -309,7 +309,7 @@ export default function Home() {
       </section>
 
       {/* HOW TO USE SECTION */}
-      <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+      <section id="how-to-use" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-32">
         <div className="text-center mb-24 animate-reveal">
           <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6 uppercase tracking-tight">Professional Branding Guide</h2>
           <p className="text-white/70 max-w-2xl mx-auto text-base md:text-lg">
@@ -342,7 +342,7 @@ export default function Home() {
       </section>
 
       {/* PWA INSTALLATION SECTION */}
-      <section id="pwa-features" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24 bg-primary/[0.01]">
+      <section id="pwa-features" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-32 bg-primary/[0.01]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="space-y-8 animate-reveal">
@@ -408,7 +408,7 @@ export default function Home() {
       <AdsterraNativeBanner className="py-24" id="native-faq-pre" />
 
       {/* FAQ SECTION */}
-      <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+      <section id="faq" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-32">
         <div className="max-w-3xl mx-auto animate-reveal">
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-5xl font-headline font-bold text-white mb-6 uppercase tracking-tight">Knowledge Base</h2>
@@ -430,7 +430,7 @@ export default function Home() {
       </section>
 
       {/* SECURITY & PRIVACY SECTION */}
-      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-24">
+      <section id="policies" className="container mx-auto px-6 py-32 border-t border-white/[0.05] scroll-mt-32">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-16 items-start">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-1 gap-10 flex-1">
             {[
