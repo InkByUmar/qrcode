@@ -96,6 +96,9 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       qrOptions: { errorCorrectionLevel: errorLevel }
     };
 
+    if (!(window as any).QRCodeStyling) {
+      throw new Error("QR Styling engine not loaded");
+    }
     const qrCode = new (window as any).QRCodeStyling(config);
     const qrBlob = await qrCode.getRawData('png');
     const qrImg = await loadImage(URL.createObjectURL(qrBlob));

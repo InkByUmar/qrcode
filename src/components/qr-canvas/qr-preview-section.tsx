@@ -111,6 +111,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
 
     // 2. Layer 2: QR Code Matrix + Logo (Integrated)
     const qrConfig = getQrConfig(resolution, true);
+    if (!window.QRCodeStyling) {
+      throw new Error("QR Styling engine not ready");
+    }
     const styling = new window.QRCodeStyling(qrConfig);
     
     const qrBlob = await styling.getRawData('png');
