@@ -16,7 +16,9 @@ import {
   Loader2, 
   AlertCircle,
   ImageIcon,
-  Info
+  Info,
+  Share2,
+  ExternalLink
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -44,6 +46,15 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scannerContainerId = "qr-reader-container";
+
+  const isUrl = (text: string) => {
+    try {
+      new URL(text);
+      return true;
+    } catch (_) {
+      return text.startsWith('http://') || text.startsWith('https://');
+    }
+  };
 
   const stopScanner = async () => {
     if (html5QrCodeRef.current) {
@@ -143,7 +154,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     setError(null);
     setScanResult(null);
 
-    // Stop current camera before file analysis to prevent hardware lock
     await stopScanner();
     await new Promise(r => setTimeout(r, 400)); 
 
@@ -164,7 +174,6 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
         verbose: false
       });
       
-      // Use trial mode (true) for better detection of stylized QR codes
       const decodedText = await fileScanner.scanFile(file, true);
       
       if (decodedText) {
@@ -187,6 +196,30 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       setIsCopied(true);
       toast({ title: "Copied!", description: "Content copied to clipboard." });
       setTimeout(() => setIsCopied(false), 2000);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!scanResult) return;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'QR CANVAS Scan Result',
+          text: scanResult,
+          url: isUrl(scanResult) ? scanResult : undefined,
+        });
+      } else {
+        handleCopy();
+        toast({ title: "Sharing unavailable", description: "Copied to clipboard instead." });
+      }
+    } catch (error) {
+      console.error('Sharing failed', error);
+    }
+  };
+
+  const handleOpenLink = () => {
+    if (scanResult && isUrl(scanResult)) {
+      window.open(scanResult.startsWith('http') ? scanResult : `https://${scanResult}`, '_blank');
     }
   };
 
@@ -323,14 +356,40 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 </div>
 
                 <div className="flex flex-col gap-3 pt-2 relative z-10">
-                  <Button 
-                    onClick={handleCopy} 
-                    className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-primary/20"
-                  >
-                    {isCopied ? <CheckCircle2 className="w-5 h-5 mr-3" /> : <Copy className="w-5 h-5 mr-3" />}
-                    {isCopied ? 'Copied' : 'Copy Message'}
-                  </Button>
+                  {isUrl(scanResult) && (
+                    <Button 
+                      onClick={handleOpenLink}
+                      className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-primary/30"
+                    >
+                      <ExternalLink className="w-5 h-5 mr-3" />
+                      Open Link
+                    </Button>
+                  )}
+                  
                   <div className="grid grid-cols-2 gap-3">
+                    <Button 
+                      onClick={handleShare}
+                      className={cn(
+                        "h-14 bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest",
+                        !isUrl(scanResult) && "col-span-2 h-16 text-sm"
+                      )}
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share
+                    </Button>
+                    <Button 
+                      onClick={handleCopy}
+                      className={cn(
+                        "h-14 bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest",
+                        !isUrl(scanResult) && "hidden"
+                      )}
+                    >
+                      {isCopied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
+                      {isCopied ? 'Copied' : 'Copy'}
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
                     <Button variant="outline" onClick={handleReset} className="h-14 border-white/10 hover:bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/70">
                       <RefreshCcw className="w-4 h-4 mr-2 text-primary" />
                       Scan New
