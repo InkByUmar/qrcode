@@ -48,7 +48,8 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scannerContainerId = "qr-reader-container";
 
-  const isUrl = (text: string) => {
+  const isUrl = (text: string | null) => {
+    if (!text) return false;
     try {
       new URL(text);
       return true;
