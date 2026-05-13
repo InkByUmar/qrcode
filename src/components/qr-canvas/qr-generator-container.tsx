@@ -18,7 +18,7 @@ const DEFAULT_STATE: QRState = {
   backgroundImage: null,
   backgroundOpacity: 0.25,
   backgroundMode: 'auto',
-  fgColor: '#26EA56',
+  fgColor: '#25D366',
   bgColor: '#ffffff',
   size: 1024,
   errorLevel: 'Q',
@@ -76,7 +76,6 @@ export function QrGeneratorContainer({
     setState(prev => {
       const newState = { ...prev, ...updates };
       
-      // Sync derived data based on type
       if (newState.type === 'WiFi') {
         newState.data = `WIFI:T:${newState.wifi.encryption};S:${newState.wifi.ssid};P:${newState.wifi.password};;`;
       } else if (newState.type === 'WhatsApp') {
@@ -86,7 +85,6 @@ export function QrGeneratorContainer({
         newState.data = `mailto:${newState.email.address}?subject=${encodeURIComponent(newState.email.subject)}&body=${encodeURIComponent(newState.email.body)}`;
       }
 
-      // SCANNABILITY CALCULATOR
       let score = 100;
       const dataLen = newState.data?.length || 0;
       if (dataLen > 200) score -= 15;
@@ -97,7 +95,6 @@ export function QrGeneratorContainer({
       if (newState.cornerStyle !== 'square') score -= 5;
       newState.scannabilityScore = Math.max(40, score);
 
-      // Error Level Guard
       if (newState.scannabilityScore < 85 || newState.logo || newState.backgroundImage) {
         newState.errorLevel = 'H';
       } else {
@@ -131,12 +128,12 @@ export function QrGeneratorContainer({
   return (
     <div className="space-y-8">
       <div className="flex justify-center mb-8">
-        <div className="w-full max-w-md bg-white/5 border border-white/10 p-1.5 h-16 rounded-3xl flex animate-reveal">
+        <div className="w-full max-w-md bg-secondary border border-border p-1.5 h-16 rounded-3xl flex animate-reveal">
           <button 
             onClick={() => setActiveMode('single')}
             className={cn(
               "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
-              activeMode === 'single' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-white/60 hover:text-white hover:bg-white/5 scale-95 opacity-70"
+              activeMode === 'single' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
             )}
           >
             <QrCode className="w-4 h-4" /> Single QR
@@ -145,7 +142,7 @@ export function QrGeneratorContainer({
             onClick={() => setActiveMode('bulk')}
             className={cn(
               "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
-              activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-white/60 hover:text-white hover:bg-white/5 scale-95 opacity-70"
+              activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
             )}
           >
             <Layers className="w-4 h-4" /> Bulk Mode

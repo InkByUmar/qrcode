@@ -15,7 +15,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 const TEMPLATES = [
-  { id: 'image-qr', label: 'Artistic Brand', type: 'URL', data: 'https://brand.studio', color: '#26EA56', dotStyle: 'rounded' },
+  { id: 'image-qr', label: 'Artistic Brand', type: 'URL', data: 'https://brand.studio', color: '#25D366', dotStyle: 'rounded' },
   { id: 'whatsapp', label: 'WhatsApp Connect', type: 'WhatsApp', whatsapp: { phone: '+1234567890', message: 'Hi! Let\'s connect.' }, color: '#25D366' },
   { id: 'youtube', label: 'YouTube Channel', type: 'URL', data: 'https://youtube.com/@brand', color: '#FF0000' },
   { id: 'google-review', label: 'Google Review', type: 'URL', data: 'https://g.page/review/brand', color: '#4285F4' },
@@ -48,7 +48,7 @@ export function QrPresetsControls({ state, updateState }: QrPresetsControlsProps
       backgroundImage: null,
       backgroundOpacity: 0.25,
       backgroundMode: 'auto',
-      fgColor: '#26EA56',
+      fgColor: '#25D366',
       bgColor: '#ffffff',
       type: 'URL',
       dotStyle: 'extra-rounded',
@@ -62,12 +62,12 @@ export function QrPresetsControls({ state, updateState }: QrPresetsControlsProps
   };
 
   return (
-    <Card className="glass-card border-white/10 overflow-hidden shadow-2xl relative">
-      <CardHeader className="py-6 border-b border-white/[0.05] bg-white/[0.02]">
+    <Card className="glass-card border-border overflow-hidden shadow-2xl relative">
+      <CardHeader className="py-6 border-b border-border bg-secondary/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Star className="w-4 h-4 text-primary" />
-            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-white">
+            <CardTitle className="text-[11px] font-black uppercase tracking-[0.3em] text-foreground">
               Studio Presets
             </CardTitle>
           </div>
@@ -75,7 +75,7 @@ export function QrPresetsControls({ state, updateState }: QrPresetsControlsProps
             variant="ghost" 
             size="sm" 
             onClick={handleReset}
-            className="h-8 text-[9px] uppercase font-black tracking-[0.2em] text-white/40 hover:text-white transition-all border border-white/10 rounded-lg"
+            className="h-8 text-[9px] uppercase font-black tracking-[0.2em] text-foreground/40 hover:text-foreground transition-all border border-border rounded-lg"
           >
             <RotateCcw className="w-3 h-3 mr-2" />
             Reset Studio
@@ -88,10 +88,10 @@ export function QrPresetsControls({ state, updateState }: QrPresetsControlsProps
             <button
               key={t.id}
               onClick={() => applyTemplate(t)}
-              className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary/40 hover:bg-primary/5 transition-all group"
+              className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-secondary border border-border hover:border-primary/40 hover:bg-primary/5 transition-all group"
             >
               <div 
-                className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center transition-all group-hover:scale-110 border border-white/10"
+                className="w-10 h-10 rounded-xl bg-background flex items-center justify-center transition-all group-hover:scale-110 border border-border shadow-sm"
                 style={{ color: t.color }}
               >
                  {t.id === 'image-qr' ? <ImageIcon className="w-5 h-5" /> : 
@@ -99,7 +99,7 @@ export function QrPresetsControls({ state, updateState }: QrPresetsControlsProps
                  t.id === 'youtube' ? <Youtube className="w-5 h-5" /> :
                  <Search className="w-5 h-5" />}
               </div>
-              <span className="text-[10px] font-bold text-center leading-tight text-white/50 group-hover:text-white">
+              <span className="text-[10px] font-bold text-center leading-tight text-foreground/50 group-hover:text-foreground">
                 {t.label}
               </span>
             </button>

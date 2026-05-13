@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -89,11 +88,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // Clear and set background
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, resolution, resolution);
 
-    // 1. Layer 1: Background Image (Manual Layer)
     if (state.backgroundImage) {
       try {
         const bgImg = await loadImage(state.backgroundImage);
@@ -109,7 +106,6 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       }
     }
 
-    // 2. Layer 2: QR Code Matrix + Logo (Integrated)
     const qrConfig = getQrConfig(resolution, true);
     if (!window.QRCodeStyling) {
       throw new Error("QR Styling engine not ready");
@@ -184,7 +180,7 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
 
   return (
     <div className="space-y-8">
-      <Card className="glass-card relative overflow-hidden group shadow-2xl transition-all border-white/10">
+      <Card className="glass-card relative overflow-hidden group border-border">
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
         <CardHeader className="text-center pb-6 pt-8">
           <CardTitle className="text-[10px] font-black text-primary uppercase tracking-[0.5em] flex items-center justify-center gap-2">
@@ -193,9 +189,9 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-8 px-8 pb-10">
-          <div className="relative p-5 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-white/10 group-hover:scale-[1.01] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
+          <div className="relative p-5 bg-white rounded-[2.5rem] shadow-2xl ring-4 ring-foreground/5 group-hover:scale-[1.01] transition-transform duration-700 ease-out qr-canvas-shadow overflow-hidden">
             {isGenerating && (
-              <div className="absolute inset-0 z-20 bg-black/10 backdrop-blur-[1px] rounded-[2.5rem] flex items-center justify-center">
+              <div className="absolute inset-0 z-20 bg-background/20 backdrop-blur-[1px] rounded-[2.5rem] flex items-center justify-center">
                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
               </div>
             )}
@@ -203,17 +199,17 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
           </div>
 
           <div className="w-full space-y-6">
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-4">
+            <div className="p-5 rounded-2xl bg-secondary border border-border space-y-4">
                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/60">
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground/40">
                     <Target className="w-3.5 h-3.5 text-primary" /> Scannability Score
                   </div>
                   <span className={cn("text-[11px] font-black uppercase tracking-widest", state.scannabilityScore > 80 ? "text-primary" : "text-yellow-500")}>
                     {state.scannabilityScore}% Optimal
                   </span>
                </div>
-               <Progress value={state.scannabilityScore} className="h-1.5 bg-white/5" />
-               <p className="text-[9px] text-white/30 font-medium leading-relaxed">
+               <Progress value={state.scannabilityScore} className="h-1.5" />
+               <p className="text-[9px] text-foreground/30 font-medium leading-relaxed">
                  Score based on pattern density, module stylization, and background contrast. 80%+ recommended for marketing.
                </p>
             </div>
@@ -229,22 +225,22 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
               </Button>
               
               <div className="grid grid-cols-3 gap-3">
-                <Button variant="outline" onClick={() => handleDownload('jpg', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                <Button variant="outline" onClick={() => handleDownload('jpg', 1024)} className="bg-secondary border-border hover:bg-secondary/80 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
                   <FileImage className="w-4 h-4 mr-2 text-primary" />
                   JPG
                 </Button>
-                <Button variant="outline" onClick={() => handleDownload('pdf', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                <Button variant="outline" onClick={() => handleDownload('pdf', 1024)} className="bg-secondary border-border hover:bg-secondary/80 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
                   <FileText className="w-4 h-4 mr-2 text-primary" />
                   PDF
                 </Button>
-                <Button variant="outline" onClick={() => handleDownload('svg', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                <Button variant="outline" onClick={() => handleDownload('svg', 1024)} className="bg-secondary border-border hover:bg-secondary/80 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
                   <FileCode className="w-4 h-4 mr-2 text-primary" />
                   SVG
                 </Button>
               </div>
             </div>
 
-            <Button variant="outline" onClick={() => { navigator.clipboard.writeText(state.data); toast({ title: "Data Copied" }); }} className="w-full bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+            <Button variant="outline" onClick={() => { navigator.clipboard.writeText(state.data); toast({ title: "Data Copied" }); }} className="w-full bg-secondary border-border hover:bg-secondary/80 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
               <Copy className="w-4 h-4 mr-2" />
               Copy Data
             </Button>
@@ -252,11 +248,11 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </CardContent>
       </Card>
 
-      <Card className="glass-card shadow-2xl border-white/10 overflow-hidden relative group">
+      <Card className="glass-card shadow-2xl border-border overflow-hidden relative group">
         <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-        <CardHeader className="py-6 px-8 border-b border-white/[0.05] bg-white/[0.02]">
+        <CardHeader className="py-6 px-8 border-b border-border bg-secondary/30">
            <div className="flex items-center justify-between">
-              <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-foreground">
                 <BarChart3 className="w-4 h-4 text-primary" /> Campaign Analytics
               </CardTitle>
               <Zap className="w-3.5 h-3.5 text-primary animate-pulse" />
@@ -264,17 +260,17 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
         </CardHeader>
         <CardContent className="p-8 space-y-6">
            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                 <p className="text-[8px] font-black text-white/40 uppercase tracking-widest">Est. Reach</p>
+              <div className="p-4 rounded-xl bg-secondary border border-border space-y-1">
+                 <p className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">Est. Reach</p>
                  <div className="flex items-center gap-2">
-                    <p className="text-xl font-headline font-bold text-white">4.2k</p>
+                    <p className="text-xl font-headline font-bold text-foreground">4.2k</p>
                     <TrendingUp className="w-3 h-3 text-primary" />
                  </div>
               </div>
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
-                 <p className="text-[8px] font-black text-white/40 uppercase tracking-widest">Confidence</p>
+              <div className="p-4 rounded-xl bg-secondary border border-border space-y-1">
+                 <p className="text-[8px] font-black text-foreground/40 uppercase tracking-widest">Confidence</p>
                  <div className="flex items-center gap-2">
-                    <p className="text-xl font-headline font-bold text-white">98%</p>
+                    <p className="text-xl font-headline font-bold text-foreground">98%</p>
                     <ShieldCheck className="w-3 h-3 text-primary" />
                  </div>
               </div>
@@ -286,30 +282,30 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
       </Card>
       
       {history.length > 0 && (
-        <Card className="glass-card shadow-2xl border-white/10 overflow-hidden">
-          <CardHeader className="py-4 px-6 border-b border-white/[0.05] flex flex-row items-center justify-between bg-white/[0.02]">
-            <CardTitle className="text-[9px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-white">
+        <Card className="glass-card shadow-2xl border-border overflow-hidden">
+          <CardHeader className="py-4 px-6 border-b border-border flex flex-row items-center justify-between bg-secondary/30">
+            <CardTitle className="text-[9px] font-black uppercase tracking-[0.3em] flex items-center gap-3 text-foreground">
               <History className="w-4 h-4 text-primary" /> Studio History
             </CardTitle>
-            <Button variant="ghost" size="sm" onClick={onClearHistory} className="h-7 text-[8px] font-black uppercase tracking-widest text-white/40 hover:text-destructive transition-all border border-white/10 rounded-lg">
+            <Button variant="ghost" size="sm" onClick={onClearHistory} className="h-7 text-[8px] font-black uppercase tracking-widest text-foreground/40 hover:text-destructive transition-all border border-border rounded-lg">
               <Trash2 className="w-3 h-3 mr-1" />
               Clear
             </Button>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-white/[0.05]">
+            <div className="divide-y divide-border">
               {history.map((item) => (
-                <div key={item.id} className="px-6 py-4 hover:bg-white/[0.05] transition-all group flex items-center justify-between cursor-pointer">
+                <div key={item.id} className="px-6 py-4 hover:bg-secondary transition-all group flex items-center justify-between cursor-pointer">
                   <div className="flex items-center gap-4 overflow-hidden">
-                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-white/5 group-hover:border-primary/40 transition-all">
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-border group-hover:border-primary/40 transition-all">
                        {item.type === 'WiFi' ? <Wifi className="w-4 h-4" /> : item.type === 'vCard' ? <Contact className="w-4 h-4" /> : item.type === 'WhatsApp' ? <MessageSquare className="w-4 h-4" /> : item.type === 'Phone' ? <Phone className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
                     </div>
                     <div className="overflow-hidden">
-                      <p className="text-[11px] font-bold text-white truncate max-w-[140px]">{item.data}</p>
-                      <p className="text-[8px] text-white/30 uppercase font-black tracking-widest mt-0.5">{new Date(item.timestamp).toLocaleTimeString()}</p>
+                      <p className="text-[11px] font-bold text-foreground truncate max-w-[140px]">{item.data}</p>
+                      <p className="text-[8px] text-foreground/30 uppercase font-black tracking-widest mt-0.5">{new Date(item.timestamp).toLocaleTimeString()}</p>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-primary transition-all group-hover:translate-x-1" />
+                  <ChevronRight className="w-4 h-4 text-foreground/10 group-hover:text-primary transition-all group-hover:translate-x-1" />
                 </div>
               ))}
             </div>

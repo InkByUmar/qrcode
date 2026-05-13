@@ -72,10 +72,10 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
     <div className="space-y-10">
       <QrPresetsControls state={state} updateState={updateState} />
 
-      <Card className="glass-card border-white/10 shadow-2xl overflow-hidden">
-        <CardHeader className="pb-8 border-b border-white/[0.05] bg-white/[0.02]">
+      <Card className="glass-card border-border shadow-2xl overflow-hidden">
+        <CardHeader className="pb-8 border-b border-border bg-secondary/30">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl font-headline flex items-center gap-4 text-white">
+            <CardTitle className="text-xl font-headline flex items-center gap-4 text-foreground">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/40">
                 <LayoutGrid className="w-6 h-6" />
               </div>
@@ -110,7 +110,7 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                 <TabsTrigger 
                   key={tab.id}
                   value={tab.id} 
-                  className="flex flex-col gap-2 py-3 bg-white/[0.02] border border-white/[0.1] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all rounded-xl"
+                  className="flex flex-col gap-2 py-3 bg-secondary border border-border data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all rounded-xl"
                 >
                   <tab.icon className="w-3.5 h-3.5" />
                   <span className="text-[8px] font-black uppercase tracking-widest">{tab.label}</span>
@@ -122,29 +122,29 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
               {state.type === 'WhatsApp' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-in fade-in">
                   <div className="space-y-3.5">
-                    <Label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">WhatsApp Number</Label>
-                    <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-white" placeholder="+1234567890" value={state.whatsapp.phone} onChange={e => updateState({ whatsapp: { ...state.whatsapp, phone: e.target.value } })} />
+                    <Label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em]">WhatsApp Number</Label>
+                    <Input className="h-14 bg-secondary border-border rounded-2xl text-foreground" placeholder="+1234567890" value={state.whatsapp.phone} onChange={e => updateState({ whatsapp: { ...state.whatsapp, phone: e.target.value } })} />
                   </div>
                   <div className="space-y-3.5">
-                    <Label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Initial Message</Label>
-                    <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-white" placeholder="Hi! I'm interested..." value={state.whatsapp.message} onChange={e => updateState({ whatsapp: { ...state.whatsapp, message: e.target.value } })} />
+                    <Label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em]">Initial Message</Label>
+                    <Input className="h-14 bg-secondary border-border rounded-2xl text-foreground" placeholder="Hi! I'm interested..." value={state.whatsapp.message} onChange={e => updateState({ whatsapp: { ...state.whatsapp, message: e.target.value } })} />
                   </div>
                 </div>
               ) : state.type === 'WiFi' ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 animate-in fade-in">
                   <div className="space-y-3.5">
-                    <Label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Network SSID</Label>
-                    <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-white" placeholder="Home Network" value={state.wifi.ssid} onChange={e => updateState({ wifi: { ...state.wifi, ssid: e.target.value } })} />
+                    <Label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em]">Network SSID</Label>
+                    <Input className="h-14 bg-secondary border-border rounded-2xl text-foreground" placeholder="Home Network" value={state.wifi.ssid} onChange={e => updateState({ wifi: { ...state.wifi, ssid: e.target.value } })} />
                   </div>
                   <div className="space-y-3.5">
-                    <Label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">WiFi Password</Label>
-                    <Input className="h-14 bg-white/[0.03] border-white/10 rounded-2xl text-white" type="password" placeholder="••••••••" value={state.wifi.password} onChange={e => updateState({ wifi: { ...state.wifi, password: e.target.value } })} />
+                    <Label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em]">WiFi Password</Label>
+                    <Input className="h-14 bg-secondary border-border rounded-2xl text-foreground" type="password" placeholder="••••••••" value={state.wifi.password} onChange={e => updateState({ wifi: { ...state.wifi, password: e.target.value } })} />
                   </div>
                 </div>
               ) : (
                 <div className="space-y-6 animate-in fade-in relative">
                   <div className="flex items-center justify-between">
-                    <Label className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">
+                    <Label className="text-[10px] font-black text-foreground/50 uppercase tracking-[0.2em]">
                       {state.type === 'URL' ? 'Destination Website' : 'Content Payload'}
                     </Label>
                     <div className="flex items-center gap-4">
@@ -153,19 +153,19 @@ export function QrFormSection({ state, updateState }: QrFormSectionProps) {
                         size="sm" 
                         onClick={handleAiRefine}
                         disabled={isRefining || !state.data.trim()}
-                        className="h-8 px-3 rounded-lg bg-white/5 text-primary text-[9px] font-black uppercase tracking-widest hover:bg-white/10 border border-white/10"
+                        className="h-8 px-3 rounded-lg bg-secondary text-primary text-[9px] font-black uppercase tracking-widest hover:bg-secondary/80 border border-border"
                       >
                         {isRefining ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 mr-2 fill-primary/20" />}
                         AI Refine
                       </Button>
-                      <span className="text-[10px] font-mono text-white/30">{dataLength} chars</span>
+                      <span className="text-[10px] font-mono text-foreground/30">{dataLength} chars</span>
                     </div>
                   </div>
                   <Textarea 
                     placeholder="Enter URL or text content here..."
                     value={state.data}
                     onChange={(e) => updateState({ data: e.target.value })}
-                    className="min-h-[140px] bg-white/[0.03] border-white/10 text-lg rounded-3xl focus:ring-primary/40 p-6 text-white leading-relaxed resize-none transition-all focus:bg-white/[0.05]"
+                    className="min-h-[140px] bg-secondary border-border text-lg rounded-3xl focus:ring-primary/40 p-6 text-foreground leading-relaxed resize-none transition-all focus:bg-secondary/80"
                   />
                   <div className="absolute bottom-4 right-4 pointer-events-none opacity-20">
                     <Sparkles className="w-12 h-12 text-primary" />

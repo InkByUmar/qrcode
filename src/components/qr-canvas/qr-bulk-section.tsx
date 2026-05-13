@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from 'react';
@@ -60,11 +59,9 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const ctx = finalCanvas.getContext('2d');
     if (!ctx) throw new Error("Canvas context failed");
 
-    // 1. Layer 1: Foundation (Solid Background)
     ctx.fillStyle = state.bgColor;
     ctx.fillRect(0, 0, resolution, resolution);
 
-    // 2. Layer 2: Visual Brand (Background Image)
     if (state.backgroundImage) {
       try {
         const bgImg = await loadImage(state.backgroundImage);
@@ -80,7 +77,6 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       }
     }
 
-    // 3. Layer 3: Pattern & Identity (QR dots + Logo)
     const isStylized = state.dotStyle !== 'square' || state.cornerStyle !== 'square';
     const errorLevel = (state.logo || state.backgroundImage || isStylized) ? 'H' : 'Q';
     
@@ -148,7 +144,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       link.download = `qrcanvas-bulk-${exportFormat}-${Date.now()}.zip`;
       link.click();
 
-      toast({ title: "Bulk Export Complete", description: `Successfully bundled ${lines.length} high-res ${exportFormat.toUpperCase()} assets.` });
+      toast({ title: "Bulk Export Complete", description: `Successfully bundled ${lines.length} high-res assets.` });
     } catch (err) {
       console.error(err);
       toast({ variant: "destructive", title: "Bulk Render Failed", description: "An error occurred during batch generation." });
@@ -161,29 +157,29 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
   return (
     <div className="space-y-10 animate-in fade-in duration-700">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary border border-white/20">
+        <div className="glass-card p-6 rounded-3xl border-border space-y-3 relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all" />
+          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary border border-border">
             <ClipboardType className="w-5 h-5" />
           </div>
-          <h4 className="text-[11px] font-black uppercase tracking-widest text-white">1. Batch Payload</h4>
-          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Paste your target list, one item per line.</p>
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-foreground">1. Batch Payload</h4>
+          <p className="text-[11px] text-foreground/70 leading-relaxed font-medium">Paste your target list, one item per line.</p>
         </div>
-        <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary border border-white/20">
+        <div className="glass-card p-6 rounded-3xl border-border space-y-3 relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all" />
+          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary border border-border">
             <Palette className="w-5 h-5" />
           </div>
-          <h4 className="text-[11px] font-black uppercase tracking-widest text-white">2. Auto Branding</h4>
-          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Active styles and imagery are injected automatically.</p>
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-foreground">2. Auto Branding</h4>
+          <p className="text-[11px] text-foreground/70 leading-relaxed font-medium">Active styles and imagery are injected automatically.</p>
         </div>
-        <div className="glass-card p-6 rounded-3xl border-white/10 space-y-3 relative overflow-hidden group">
-          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all" />
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-primary border border-white/20">
+        <div className="glass-card p-6 rounded-3xl border-border space-y-3 relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all" />
+          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-primary border border-border">
             <Archive className="w-5 h-5" />
           </div>
-          <h4 className="text-[11px] font-black uppercase tracking-widest text-white">3. Bundle Export</h4>
-          <p className="text-[11px] text-white/70 leading-relaxed font-medium">Download all high-res assets in one organized ZIP.</p>
+          <h4 className="text-[11px] font-black uppercase tracking-widest text-foreground">3. Bundle Export</h4>
+          <p className="text-[11px] text-foreground/70 leading-relaxed font-medium">Download all high-res assets in one organized ZIP.</p>
         </div>
       </div>
 
@@ -194,10 +190,10 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
         <QrBrandingControls state={state} updateState={updateState} />
       </div>
 
-      <Card className="glass-card border-white/20 shadow-2xl overflow-hidden">
-        <CardHeader className="py-8 border-b border-white/[0.05] bg-white/[0.02]">
+      <Card className="glass-card border-border shadow-2xl overflow-hidden">
+        <CardHeader className="py-8 border-b border-border bg-secondary/30">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl font-headline flex items-center gap-4 text-white">
+            <CardTitle className="text-xl font-headline flex items-center gap-4 text-foreground">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/40 shadow-inner">
                 <Layers className="w-6 h-6" />
               </div>
@@ -213,10 +209,10 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Data Strings</Label>
-                <p className="text-[10px] text-white/40 font-bold uppercase">One URL or text string per line</p>
+                <Label className="text-[11px] font-black text-foreground/70 uppercase tracking-[0.2em]">Data Strings</Label>
+                <p className="text-[10px] text-foreground/40 font-bold uppercase">One URL or text string per line</p>
               </div>
-              <div className="px-3 py-1 rounded-lg bg-white/10 border border-white/20">
+              <div className="px-3 py-1 rounded-lg bg-secondary border border-border">
                 <span className="text-[10px] font-mono text-primary font-black">{bulkData.split('\n').filter(l => l.trim()).length} Items</span>
               </div>
             </div>
@@ -224,15 +220,15 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
               placeholder="https://brand-url-1.com&#10;https://brand-url-2.com&#10;https://brand-url-3.com"
               value={bulkData}
               onChange={(e) => setBulkData(e.target.value)}
-              className="min-h-[250px] bg-white/[0.03] border-white/10 text-lg rounded-3xl focus:ring-primary/40 p-8 text-white leading-relaxed resize-none font-mono"
+              className="min-h-[250px] bg-secondary border-border text-lg rounded-3xl focus:ring-primary/40 p-8 text-foreground leading-relaxed resize-none font-mono"
             />
           </div>
 
-          <div className="p-8 rounded-[2rem] bg-white/10 border border-white/20 space-y-8 relative overflow-hidden group shadow-xl">
+          <div className="p-8 rounded-[2rem] bg-secondary border border-border space-y-8 relative overflow-hidden group shadow-xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-1000" />
             
             <div className="space-y-4">
-              <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Export Format</Label>
+              <Label className="text-[11px] font-black text-foreground/70 uppercase tracking-[0.2em]">Export Format</Label>
               <div className="flex gap-3">
                 {(['png', 'jpg', 'pdf'] as const).map((fmt) => (
                   <button
@@ -242,7 +238,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                       "flex-1 h-12 rounded-xl border flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all",
                       exportFormat === fmt 
                         ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20" 
-                        : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
+                        : "bg-background border-border text-foreground/40 hover:text-foreground hover:bg-background/80"
                     )}
                   >
                     {fmt === 'png' || fmt === 'jpg' ? <FileImage className="w-3.5 h-3.5" /> : <FileText className="w-3.5 h-3.5" />}
@@ -257,8 +253,8 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                 <Settings2 className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-sm font-bold text-white uppercase tracking-tight">Studio Asset Sync</h4>
-                <p className="text-xs text-white/70 leading-relaxed font-medium">
+                <h4 className="text-sm font-bold text-foreground uppercase tracking-tight">Studio Asset Sync</h4>
+                <p className="text-xs text-foreground/70 leading-relaxed font-medium">
                   Applying chromatic matrix and active brand imagery to the entire batch in {exportFormat.toUpperCase()} format.
                 </p>
               </div>
@@ -270,7 +266,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                   <span className="flex items-center gap-2"><Loader2 className="w-3 h-3 animate-spin" /> Batch Rendering...</span>
                   <span>{progress}%</span>
                 </div>
-                <Progress value={progress} className="h-2 bg-white/10" />
+                <Progress value={progress} className="h-2" />
               </div>
             )}
 
@@ -294,18 +290,18 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-             <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] group">
+             <div className="flex items-start gap-4 p-5 rounded-2xl bg-secondary border border-border group">
                 <Maximize className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="space-y-1">
-                  <p className="text-[11px] font-black text-white uppercase tracking-widest">Master Production Quality</p>
-                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">1024px assets with active brand backgrounds.</p>
+                  <p className="text-[11px] font-black text-foreground uppercase tracking-widest">Master Production Quality</p>
+                  <p className="text-[11px] text-foreground/60 leading-relaxed font-medium">1024px assets with active brand backgrounds.</p>
                 </div>
              </div>
-             <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] group">
+             <div className="flex items-start gap-4 p-5 rounded-2xl bg-secondary border border-border group">
                 <FileJson className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="space-y-1">
-                  <p className="text-[11px] font-black text-white uppercase tracking-widest">Asset Sanitization</p>
-                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">Automatic file naming for efficient project organization.</p>
+                  <p className="text-[11px] font-black text-foreground uppercase tracking-widest">Asset Sanitization</p>
+                  <p className="text-[11px] text-foreground/60 leading-relaxed font-medium">Automatic file naming for efficient project organization.</p>
                 </div>
              </div>
           </div>
