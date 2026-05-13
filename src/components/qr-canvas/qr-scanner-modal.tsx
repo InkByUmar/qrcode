@@ -373,7 +373,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                       onClick={handleShare}
                       className={cn(
                         "h-14 bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest",
-                        !isUrl(scanResult) && "col-span-2 h-16 text-sm"
+                        !isUrl(scanResult) && "col-span-2 h-16"
                       )}
                     >
                       <Share2 className="w-4 h-4 mr-2" />
@@ -383,7 +383,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                       onClick={handleCopy}
                       className={cn(
                         "h-14 bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest",
-                        !isUrl(scanResult) && "hidden"
+                        !isUrl(scanResult) && "col-span-2 h-16"
                       )}
                     >
                       {isCopied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
