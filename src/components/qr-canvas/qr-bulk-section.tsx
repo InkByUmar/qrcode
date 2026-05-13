@@ -17,24 +17,31 @@ import {
   Archive,
   Palette,
   ClipboardType,
-  Maximize
+  Maximize,
+  FileImage,
+  FileText
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import JSZip from 'jszip';
 import { QrStylingControls } from './qr-styling-controls';
 import { QrBrandingControls } from './qr-branding-controls';
 import { QrPresetsControls } from './qr-presets-controls';
+import { jsPDF } from 'jspdf';
+import { cn } from '@/lib/utils';
 
 interface QrBulkSectionProps {
   state: QRState;
   updateState: (updates: Partial<QRState>) => void;
 }
 
+type ExportFormat = 'png' | 'jpg' | 'pdf';
+
 export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
   const { toast } = useToast();
   const [bulkData, setBulkData] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [exportFormat, setExportFormat] = useState<ExportFormat>('png');
 
   const loadImage = (src: string): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
@@ -46,7 +53,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     });
   };
 
-  const processMergedQr = async (data: string, resolution: number = 1024): Promise<Blob> => {
+  const processMergedQr = async (data: string, format: ExportFormat, resolution: number = 1024): Promise<Blob> => {
     const finalCanvas = document.createElement('canvas');
     finalCanvas.width = resolution;
     finalCanvas.height = resolution;
@@ -94,8 +101,20 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     const qrImg = await loadImage(URL.createObjectURL(qrBlob));
     ctx.drawImage(qrImg, 0, 0, resolution, resolution);
 
+    if (format === 'pdf') {
+      const imgData = finalCanvas.toDataURL('image/jpeg', 1.0);
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [resolution, resolution]
+      });
+      doc.addImage(imgData, 'JPEG', 0, 0, resolution, resolution);
+      return doc.output('blob');
+    }
+
+    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
     return new Promise((resolve) => {
-      finalCanvas.toBlob((blob) => resolve(blob!), 'image/png');
+      finalCanvas.toBlob((blob) => resolve(blob!), mimeType, 1.0);
     });
   };
 
@@ -113,8 +132,9 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
     try {
       for (let i = 0; i < lines.length; i++) {
         const data = lines[i];
-        const blob = await processMergedQr(data);
-        const filename = `${data.substring(0, 20).replace(/[^a-z0-9]/gi, '_') || 'qr'}_${i + 1}.png`;
+        const blob = await processMergedQr(data, exportFormat);
+        const ext = exportFormat === 'pdf' ? 'pdf' : exportFormat === 'jpg' ? 'jpg' : 'png';
+        const filename = `${data.substring(0, 20).replace(/[^a-z0-9]/gi, '_') || 'qr'}_${i + 1}.${ext}`;
         zip.file(filename, blob);
         setProgress(Math.round(((i + 1) / lines.length) * 100));
       }
@@ -122,10 +142,10 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
       const content = await zip.generateAsync({ type: "blob" });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `qrcanvas-bulk-export-${Date.now()}.zip`;
+      link.download = `qrcanvas-bulk-${exportFormat}-${Date.now()}.zip`;
       link.click();
 
-      toast({ title: "Bulk Export Complete", description: `Successfully bundled ${lines.length} high-res assets.` });
+      toast({ title: "Bulk Export Complete", description: `Successfully bundled ${lines.length} high-res ${exportFormat.toUpperCase()} assets.` });
     } catch (err) {
       console.error(err);
       toast({ variant: "destructive", title: "Bulk Render Failed", description: "An error occurred during batch generation." });
@@ -208,6 +228,27 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
           <div className="p-8 rounded-[2rem] bg-white/10 border border-white/20 space-y-8 relative overflow-hidden group shadow-xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-1000" />
             
+            <div className="space-y-4">
+              <Label className="text-[11px] font-black text-white/70 uppercase tracking-[0.2em]">Export Format</Label>
+              <div className="flex gap-3">
+                {(['png', 'jpg', 'pdf'] as const).map((fmt) => (
+                  <button
+                    key={fmt}
+                    onClick={() => setExportFormat(fmt)}
+                    className={cn(
+                      "flex-1 h-12 rounded-xl border flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all",
+                      exportFormat === fmt 
+                        ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20" 
+                        : "bg-white/5 border-white/10 text-white/40 hover:text-white hover:bg-white/10"
+                    )}
+                  >
+                    {fmt === 'png' || fmt === 'jpg' ? <FileImage className="w-3.5 h-3.5" /> : <FileText className="w-3.5 h-3.5" />}
+                    {fmt}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="flex items-start gap-5">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0 ring-1 ring-primary/40">
                 <Settings2 className="w-6 h-6" />
@@ -215,7 +256,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
               <div className="space-y-2">
                 <h4 className="text-sm font-bold text-white uppercase tracking-tight">Studio Asset Sync</h4>
                 <p className="text-xs text-white/70 leading-relaxed font-medium">
-                  Applying chromatic matrix and active brand imagery to the entire batch.
+                  Applying chromatic matrix and active brand imagery to the entire batch in {exportFormat.toUpperCase()} format.
                 </p>
               </div>
             </div>
@@ -243,7 +284,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
               ) : (
                 <>
                   <Download className="w-6 h-6" />
-                  Export Bundle ZIP
+                  Export {exportFormat.toUpperCase()} Bundle ZIP
                 </>
               )}
             </Button>
@@ -254,7 +295,7 @@ export function QrBulkSection({ state, updateState }: QrBulkSectionProps) {
                 <Maximize className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                 <div className="space-y-1">
                   <p className="text-[11px] font-black text-white uppercase tracking-widest">Master Production Quality</p>
-                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">1024px PNG assets with active brand backgrounds.</p>
+                  <p className="text-[11px] text-white/60 leading-relaxed font-medium">1024px assets with active brand backgrounds.</p>
                 </div>
              </div>
              <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/[0.1] group">

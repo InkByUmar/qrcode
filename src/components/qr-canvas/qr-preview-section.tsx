@@ -23,10 +23,13 @@ import {
   ShieldCheck,
   BarChart3,
   TrendingUp,
-  Target
+  Target,
+  FileImage,
+  FileText
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { jsPDF } from 'jspdf';
 
 interface QrPreviewSectionProps {
   state: QRState;
@@ -142,22 +145,33 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
     }
   }, [state]);
 
-  const handleDownload = async (ext: 'png' | 'svg', resolution: number) => {
+  const handleDownload = async (ext: 'png' | 'jpg' | 'pdf' | 'svg', resolution: number) => {
     setIsGenerating(true);
     try {
       if (ext === 'svg') {
         const qrConfig = getQrConfig(resolution, !!state.backgroundImage);
         const styling = new window.QRCodeStyling(qrConfig);
         await styling.download({ name: 'qrcanvas-export', extension: 'svg' });
+      } else if (ext === 'pdf') {
+        const finalCanvas = await compositeCanvas(resolution);
+        const imgData = finalCanvas.toDataURL('image/jpeg', 1.0);
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'px',
+          format: [resolution, resolution]
+        });
+        doc.addImage(imgData, 'JPEG', 0, 0, resolution, resolution);
+        doc.save(`qrcanvas-${Date.now()}.pdf`);
       } else {
         const finalCanvas = await compositeCanvas(resolution);
+        const mimeType = ext === 'jpg' ? 'image/jpeg' : 'image/png';
         const link = document.createElement('a');
-        link.download = `qrcanvas-${Date.now()}.png`;
-        link.href = finalCanvas.toDataURL('image/png', 1.0);
+        link.download = `qrcanvas-${Date.now()}.${ext}`;
+        link.href = finalCanvas.toDataURL(mimeType, 1.0);
         link.click();
       }
       onDownload();
-      toast({ title: "Branded Asset Ready", description: "Your QR asset has been saved." });
+      toast({ title: "Branded Asset Ready", description: `Your QR asset has been saved as ${ext.toUpperCase()}.` });
     } catch (err) {
       toast({ variant: "destructive", title: "Export Failed", description: "An error occurred during rendering." });
     } finally {
@@ -201,25 +215,36 @@ export function QrPreviewSection({ state, history, onDownload, onClearHistory }:
                </p>
             </div>
 
-            <Button 
-              onClick={() => handleDownload('png', 1024)} 
-              disabled={isGenerating}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-16 rounded-2xl flex items-center justify-center gap-4 text-xl shadow-xl transition-all"
-            >
-              <Download className="w-6 h-6" />
-              Download PNG
-            </Button>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" onClick={() => handleDownload('svg', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
-                <FileCode className="w-4 h-4 mr-2 text-primary" />
-                SVG Vector
+            <div className="grid grid-cols-1 gap-3">
+              <Button 
+                onClick={() => handleDownload('png', 1024)} 
+                disabled={isGenerating}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black h-16 rounded-2xl flex items-center justify-center gap-4 text-xl shadow-xl transition-all"
+              >
+                <Download className="w-6 h-6" />
+                Download PNG
               </Button>
-              <Button variant="outline" onClick={() => { navigator.clipboard.writeText(state.data); toast({ title: "Data Copied" }); }} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
-                <Copy className="w-4 h-4 mr-2" />
-                Copy Data
-              </Button>
+              
+              <div className="grid grid-cols-3 gap-3">
+                <Button variant="outline" onClick={() => handleDownload('jpg', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                  <FileImage className="w-4 h-4 mr-2 text-primary" />
+                  JPG
+                </Button>
+                <Button variant="outline" onClick={() => handleDownload('pdf', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                  <FileText className="w-4 h-4 mr-2 text-primary" />
+                  PDF
+                </Button>
+                <Button variant="outline" onClick={() => handleDownload('svg', 1024)} className="bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+                  <FileCode className="w-4 h-4 mr-2 text-primary" />
+                  SVG
+                </Button>
+              </div>
             </div>
+
+            <Button variant="outline" onClick={() => { navigator.clipboard.writeText(state.data); toast({ title: "Data Copied" }); }} className="w-full bg-white/5 border-white/10 hover:bg-white/15 h-14 rounded-xl text-[10px] font-black tracking-widest uppercase">
+              <Copy className="w-4 h-4 mr-2" />
+              Copy Data
+            </Button>
           </div>
         </CardContent>
       </Card>
