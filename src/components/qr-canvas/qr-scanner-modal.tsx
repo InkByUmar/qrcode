@@ -210,12 +210,10 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
           url: isUrl(scanResult) ? scanResult : undefined,
         });
       } else {
-        // Browser doesn't support navigator.share
         handleCopy();
         toast({ title: "Sharing unavailable", description: "Copied to clipboard instead." });
       }
     } catch (error) {
-      // Permission denied or other error
       handleCopy();
       toast({ title: "Sharing unavailable", description: "Content copied to clipboard instead." });
     }
