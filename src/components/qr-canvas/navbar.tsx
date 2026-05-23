@@ -16,27 +16,23 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QrScannerModal } from './qr-scanner-modal';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
 
 const Logo = ({ className = "h-8", iconOnly = false }: { className?: string, iconOnly?: boolean }) => (
   <div className={cn("flex items-center gap-3", className)}>
-    {/* Left Unit: Blue Geometric Icon */}
     <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
       <div className="absolute inset-0 bg-[#2563eb]/20 rounded-xl rotate-3" />
       <div className="absolute inset-0 bg-[#2563eb] rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center overflow-hidden">
-        {/* Geometric QR Grid Icon */}
         <div className="w-5 h-5 grid grid-cols-2 gap-1 relative z-10">
           <div className="border-[2px] border-white/60 rounded-[1px]" />
           <div className="bg-white/30 rounded-[1px]" />
           <div className="bg-white/30 rounded-[1px]" />
           <div className="bg-white rounded-[1px]" />
         </div>
-        {/* Glass Effect */}
         <div className="absolute top-0 left-0 w-full h-1/2 bg-white/10" />
       </div>
     </div>
     
-    {/* Right Unit: Brand Wordmark with split colors */}
     {!iconOnly && (
       <div className="font-headline font-black text-2xl tracking-tighter leading-none flex items-center">
         <span className="text-[#0f172a] dark:text-white">QR</span>
@@ -128,7 +124,10 @@ export function Navbar() {
                     <Menu className="w-4 h-4" />
                   </button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[260px] glass-card p-0 overflow-hidden text-foreground border-l border-white/20">
+                <SheetContent 
+                  side="right" 
+                  className="w-[260px] glass-card p-0 overflow-hidden text-foreground border-l border-white/20 top-16 h-[calc(100vh-64px)] z-[40]"
+                >
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-4 border-b border-white/10 text-left flex flex-row items-center justify-between">
                       <div className="space-y-0.5">
