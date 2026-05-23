@@ -25,12 +25,15 @@ const Logo = ({ className = "h-8", iconOnly = false }: { className?: string, ico
     <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
       <div className="absolute inset-0 bg-[#2563eb]/20 rounded-xl rotate-3" />
       <div className="absolute inset-0 bg-[#2563eb] rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center overflow-hidden">
-        {/* Simplified Stylish QR Symbol */}
-        <div className="relative w-5 h-5 grid grid-cols-2 gap-0.5">
-          <div className="border-[1.5px] border-white rounded-[1px]" />
-          <div className="bg-white/40 rounded-[1px]" />
-          <div className="bg-white/40 rounded-[1px]" />
-          <div className="w-1.5 h-1.5 bg-white absolute bottom-0 left-0 rounded-[1px]" />
+        {/* Stylish QR Label inside icon */}
+        <div className="flex flex-col items-center justify-center relative">
+          <span className="text-[10px] font-black text-white leading-none tracking-tighter mb-0.5">QR</span>
+          <div className="w-3 h-3 grid grid-cols-2 gap-0.5">
+            <div className="border-[1.2px] border-white/60 rounded-[0.5px]" />
+            <div className="bg-white/30 rounded-[0.5px]" />
+            <div className="bg-white/30 rounded-[0.5px]" />
+            <div className="bg-white rounded-[0.5px]" />
+          </div>
         </div>
         {/* Glassmorphism Highlight */}
         <div className="absolute top-0 left-0 w-full h-1/2 bg-white/10" />

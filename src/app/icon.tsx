@@ -37,21 +37,35 @@ export default function Icon() {
             overflow: 'hidden'
           }}
         >
-          {/* Simplified QR Symbol inside the icon */}
+          {/* Stylish QR Label inside icon */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 20,
-            width: '240px',
-            height: '240px',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-            <div style={{ display: 'flex', gap: 20, height: '110px' }}>
-              <div style={{ width: '110px', height: '110px', border: '25px solid white', borderRadius: '15px' }} />
-              <div style={{ width: '110px', height: '110px', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '15px' }} />
-            </div>
-            <div style={{ display: 'flex', gap: 20, height: '110px' }}>
-               <div style={{ width: '110px', height: '110px', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '15px' }} />
-               <div style={{ width: '110px', height: '110px', background: 'white', borderRadius: '15px' }} />
+            <span style={{ 
+              fontSize: '110px', 
+              fontWeight: 900, 
+              color: 'white', 
+              letterSpacing: '-10px',
+              marginBottom: '10px'
+            }}>QR</span>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 15,
+              width: '160px',
+              height: '160px',
+            }}>
+              <div style={{ display: 'flex', gap: 15, height: '70px' }}>
+                <div style={{ width: '70px', height: '70px', border: '18px solid rgba(255, 255, 255, 0.6)', borderRadius: '12px' }} />
+                <div style={{ width: '70px', height: '70px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '12px' }} />
+              </div>
+              <div style={{ display: 'flex', gap: 15, height: '70px' }}>
+                 <div style={{ width: '70px', height: '70px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '12px' }} />
+                 <div style={{ width: '70px', height: '70px', background: 'white', borderRadius: '12px' }} />
+              </div>
             </div>
           </div>
           {/* Glass Effect */}

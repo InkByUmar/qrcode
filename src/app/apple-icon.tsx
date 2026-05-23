@@ -35,20 +35,34 @@ export default function AppleIcon() {
             boxShadow: '0 15px 40px -10px rgba(37, 99, 235, 0.4)'
           }}
         >
-           <div style={{
+          <div style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: 10,
-            width: '80px',
-            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-            <div style={{ display: 'flex', gap: 10, height: '35px' }}>
-              <div style={{ width: '35px', height: '35px', border: '10px solid white', borderRadius: '4px' }} />
-              <div style={{ width: '35px', height: '35px', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '4px' }} />
-            </div>
-            <div style={{ display: 'flex', gap: 10, height: '35px' }}>
-               <div style={{ width: '35px', height: '35px', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '4px' }} />
-               <div style={{ width: '35px', height: '35px', background: 'white', borderRadius: '4px' }} />
+            <span style={{ 
+              fontSize: '38px', 
+              fontWeight: 900, 
+              color: 'white', 
+              letterSpacing: '-3px',
+              marginBottom: '2px'
+            }}>QR</span>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              width: '60px',
+              height: '60px',
+            }}>
+              <div style={{ display: 'flex', gap: 6, height: '27px' }}>
+                <div style={{ width: '27px', height: '27px', border: '6px solid rgba(255, 255, 255, 0.6)', borderRadius: '4px' }} />
+                <div style={{ width: '27px', height: '27px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '4px' }} />
+              </div>
+              <div style={{ display: 'flex', gap: 6, height: '27px' }}>
+                 <div style={{ width: '27px', height: '27px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '4px' }} />
+                 <div style={{ width: '27px', height: '27px', background: 'white', borderRadius: '4px' }} />
+              </div>
             </div>
           </div>
         </div>
