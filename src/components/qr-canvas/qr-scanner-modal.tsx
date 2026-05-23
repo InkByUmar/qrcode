@@ -1,8 +1,7 @@
-
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
@@ -246,6 +245,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
             <Scan className="w-5 h-5 text-primary" />
             Studio Scanner Pro
           </DialogTitle>
+          <DialogDescription className="sr-only">Scan QR codes using your camera or upload an image to decode its data.</DialogDescription>
         </DialogHeader>
         
         <div className="flex flex-col items-center gap-6 p-6">

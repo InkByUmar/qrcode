@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QrScannerModal } from './qr-scanner-modal';
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
 const Logo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-3", className)}>
@@ -130,6 +130,8 @@ export function Navbar() {
                 <SheetContent side="right" className="w-[300px] bg-background border-border p-0 overflow-hidden text-foreground">
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-6 border-b border-border text-left">
+                      <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                      <SheetDescription className="sr-only">Access studio tools and information pages.</SheetDescription>
                       <Logo />
                     </SheetHeader>
                     <nav className="flex-1 p-6 flex flex-col gap-6">
