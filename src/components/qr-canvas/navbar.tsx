@@ -12,11 +12,10 @@ import {
   Layers,
   Info,
   HelpCircle,
-  X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QrScannerModal } from './qr-scanner-modal';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger, SheetOverlay } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
 const Logo = ({ className = "h-8", iconOnly = false }: { className?: string, iconOnly?: boolean }) => (
   <div className={cn("flex items-center gap-3", className)}>
@@ -129,14 +128,11 @@ export function Navbar() {
                   className="w-[260px] glass-card p-0 overflow-hidden text-foreground border-l border-white/20 top-16 h-[calc(100vh-64px)] z-[40]"
                 >
                   <div className="h-full flex flex-col">
-                    <SheetHeader className="p-4 border-b border-white/10 text-left flex flex-row items-center justify-between">
+                    <SheetHeader className="p-4 border-b border-white/10 text-left">
                       <div className="space-y-0.5">
                         <SheetTitle className="text-[9px] font-black uppercase tracking-widest text-[#2563eb]">Studio Menu</SheetTitle>
                         <Logo iconOnly={true} className="mt-2" />
                       </div>
-                      <button onClick={() => setIsMobileMenuOpen(false)} className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors">
-                        <X className="w-3.5 h-3.5" />
-                      </button>
                     </SheetHeader>
                     <SheetDescription className="sr-only">Mobile navigation menu</SheetDescription>
                     <nav className="flex-1 p-4 flex flex-col gap-2">
