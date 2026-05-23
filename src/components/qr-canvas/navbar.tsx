@@ -20,15 +20,17 @@ import { QrScannerModal } from './qr-scanner-modal';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
 const Logo = ({ className = "h-7", iconOnly = false }: { className?: string, iconOnly?: boolean }) => (
-  <div className={cn("flex items-center gap-2", className)}>
-    <div className="relative w-7 h-7 flex items-center justify-center shrink-0">
-      <div className="absolute inset-0 bg-primary rounded-lg rotate-6 opacity-20 animate-pulse" />
-      <div className="absolute inset-0 bg-primary rounded-lg -rotate-3 transition-transform group-hover:rotate-0" />
-      <span className="relative font-headline font-black text-white text-[11px]">QR</span>
+  <div className={cn("flex items-center gap-3", className)}>
+    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+      <div className="absolute inset-0 bg-primary/20 rounded-xl rotate-6 animate-pulse" />
+      <div className="absolute inset-0 bg-primary rounded-xl -rotate-3 shadow-lg shadow-primary/30 transition-transform group-hover:rotate-0 flex items-center justify-center">
+        <span className="font-headline font-black text-white text-[10px] tracking-tighter">QR</span>
+      </div>
     </div>
     {!iconOnly && (
-      <div className="font-headline font-black text-base tracking-tighter uppercase leading-none">
-        <span className="text-foreground">QR</span> <span className="text-primary ml-0.5">CANVAS</span>
+      <div className="font-headline font-black text-lg tracking-tighter uppercase leading-none flex items-center">
+        <span className="text-foreground">QR</span>
+        <span className="text-primary ml-1 italic">CANVAS</span>
       </div>
     )}
   </div>
@@ -72,10 +74,10 @@ export function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[100] w-full border-b border-white/10 bg-background/60 backdrop-blur-2xl">
-        <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-[100] w-full border-b border-white/10 bg-background/60 backdrop-blur-2xl h-16">
+        <div className="container mx-auto px-4 md:px-6 h-full flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <Logo className="h-6" />
+            <Logo />
           </Link>
           
           <nav className="hidden lg:flex items-center gap-6">

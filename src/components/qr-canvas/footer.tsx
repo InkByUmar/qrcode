@@ -4,11 +4,19 @@ import React from 'react';
 import Link from 'next/link';
 import { CopyrightYear } from './copyright-year';
 import { Shield, Lock, Zap } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Logo = ({ className = "h-7" }: { className?: string }) => (
-  <div className={className}>
-    <div className="font-headline font-black text-xl tracking-tighter uppercase leading-none">
-      <span className="text-foreground">QR</span> <span className="text-primary ml-0.5">CANVAS</span>
+  <div className={cn("flex items-center gap-3", className)}>
+    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+      <div className="absolute inset-0 bg-primary/20 rounded-xl rotate-6" />
+      <div className="absolute inset-0 bg-primary rounded-xl -rotate-3 flex items-center justify-center shadow-lg shadow-primary/20">
+        <span className="font-headline font-black text-white text-[10px] tracking-tighter">QR</span>
+      </div>
+    </div>
+    <div className="font-headline font-black text-lg tracking-tighter uppercase leading-none">
+      <span className="text-foreground">QR</span>
+      <span className="text-primary ml-1 italic">CANVAS</span>
     </div>
   </div>
 );
@@ -25,7 +33,7 @@ export function Footer() {
           <div className="lg:col-span-5 space-y-6">
             <Logo />
             <p className="text-sm text-foreground/50 font-medium leading-relaxed max-w-sm">
-              The world's most artistic professional QR studio. Create high-resolution branded assets instantly for personal and business use. 100% free and permanent.
+              Free Online QR Code Generator - Create beautiful QR codes instantly for personal and business use. 100% free and permanent assets.
             </p>
             <div className="flex items-center gap-6 pt-2">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground/30">
