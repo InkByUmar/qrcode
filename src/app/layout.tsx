@@ -7,20 +7,28 @@ import { Toaster } from '@/components/ui/toaster';
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#26EA56',
+  themeColor: '#3b82f6',
 };
 
 export const metadata: Metadata = {
-  title: 'QR CANVAS | Professional Artistic QR Code Studio',
-  description: 'Create high-resolution custom QR codes with logos, AI backgrounds, and bulk processing. 100% free, no sign-up required, PWA ready.',
-  keywords: 'qr canvas, free qr code generator, bulk qr code generator, qr code with logo, custom qr code background',
+  title: 'QR CANVAS | Professional AI-Powered QR Code Studio',
+  description: 'The ultimate free professional QR code generator. Create high-resolution branded QR codes with logos, AI backgrounds, and bulk processing in seconds. 100% private and permanent.',
+  keywords: 'qr code generator, free qr code maker, bulk qr code generator, qr code with logo, qr code scanner, custom qr code background, professional qr studio, qr canvas',
   authors: [{ name: 'QR CANVAS Studio Team' }],
   metadataBase: new URL('https://qrcanvas.app'), 
   openGraph: {
-    title: 'QR CANVAS | Premium AI-Powered Bulk QR Generator',
-    description: 'Create professional, branded QR codes in seconds. Support for logos, full-image backgrounds, and bulk processing.',
+    title: 'QR CANVAS | Premium Branded QR Code Studio',
+    description: 'Design high-resolution, branded QR codes for your marketing campaigns. Support for logos, AI backgrounds, and bulk production.',
     type: 'website',
+    url: 'https://qrcanvas.app',
+    siteName: 'QR CANVAS',
     images: [{ url: 'https://picsum.photos/seed/qr-seo/1200/630' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'QR CANVAS | Free Professional QR Generator',
+    description: 'Create beautiful, branded QR codes with logos and AI backgrounds for free.',
+    images: ['https://picsum.photos/seed/qr-twitter/1200/630'],
   },
 };
 

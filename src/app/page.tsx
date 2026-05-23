@@ -11,7 +11,8 @@ import {
   Download,
   ArrowRight,
   Sparkles,
-  Smartphone
+  Smartphone,
+  HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -71,6 +72,7 @@ export default function Home() {
 
       {/* FEATURES GRID */}
       <section className="container mx-auto px-6 py-24 border-t border-border bg-secondary/10">
+        <h2 className="sr-only">Studio Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
           {[
             { icon: Palette, title: 'Artistic Branding', desc: 'Custom dot patterns, corner geometries, and integrated business logos.' },
@@ -78,7 +80,7 @@ export default function Home() {
             { icon: Smartphone, title: 'PWA Ready', desc: 'Install as a high-performance native app on your mobile device for offline scanning.' },
             { icon: Zap, title: 'Instant Render', desc: 'Real-time studio preview with advanced error correction level adjustment.' },
             { icon: ShieldCheck, title: 'Privacy First', desc: 'Zero data storage. All generation happens locally in your browser session.' },
-            { icon: Layers, title: 'ZIP Batching', desc: 'Export bulk assets in organized ZIP bundles with automatic file naming.' },
+            { icon: HelpCircle, title: 'Expert Support', desc: 'Detailed FAQ and knowledge base to help you create the perfect QR assets.' },
           ].map((item, i) => (
             <div key={i} className="flex gap-6">
               <div className="w-12 h-12 rounded-2xl bg-background border border-border flex items-center justify-center text-primary shrink-0 shadow-sm">

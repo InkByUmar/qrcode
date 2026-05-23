@@ -12,6 +12,7 @@ import {
   QrCode,
   Layers,
   Info,
+  HelpCircle,
   X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -63,6 +64,7 @@ export function Navbar() {
     { label: 'Home', href: '/', icon: Home },
     { label: 'Single QR', href: '/single', icon: QrCode },
     { label: 'Bulk Mode', href: '/bulk', icon: Layers },
+    { label: 'FAQ', href: '/faq', icon: HelpCircle },
     { label: 'About', href: '/about', icon: Info },
   ];
 
@@ -116,8 +118,8 @@ export function Navbar() {
                   <div className="h-full flex flex-col">
                     <SheetHeader className="p-8 border-b border-white/10 text-left flex flex-row items-center justify-between">
                       <div className="space-y-1">
-                        <SheetTitle className="sr-only">Studio Navigation</SheetTitle>
-                        <SheetDescription className="sr-only">Access artistic QR tools and about information.</SheetDescription>
+                        <SheetTitle>Studio Menu</SheetTitle>
+                        <SheetDescription>Access professional QR tools.</SheetDescription>
                         <Logo />
                       </div>
                       <button onClick={() => setIsMobileMenuOpen(false)} className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center">

@@ -21,6 +21,7 @@ export function Footer() {
           <div className="flex flex-wrap justify-center items-center gap-8">
              <Link href="/single" className="text-[10px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground transition-all">Single Studio</Link>
              <Link href="/bulk" className="text-[10px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground transition-all">Bulk Mode</Link>
+             <Link href="/faq" className="text-[10px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground transition-all">FAQ</Link>
              <Link href="/about" className="text-[10px] font-bold uppercase tracking-widest text-foreground/40 hover:text-foreground transition-all">About Studio</Link>
           </div>
         </div>
