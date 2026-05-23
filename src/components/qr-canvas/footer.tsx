@@ -23,8 +23,10 @@ const Logo = ({ className = "h-8" }: { className?: string }) => (
       </div>
     </div>
     
-    <div className="font-headline font-black text-2xl tracking-tighter leading-none flex items-center text-[#0f172a] dark:text-white">
-      QR Canvas
+    {/* Right Unit: Brand Wordmark with split colors */}
+    <div className="font-headline font-black text-2xl tracking-tighter leading-none flex items-center">
+      <span className="text-[#0f172a] dark:text-white">QR</span>
+      <span className="text-[#2563eb] ml-2">Canvas</span>
     </div>
   </div>
 );

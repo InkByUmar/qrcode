@@ -36,10 +36,11 @@ const Logo = ({ className = "h-8", iconOnly = false }: { className?: string, ico
       </div>
     </div>
     
-    {/* Right Unit: Brand Wordmark */}
+    {/* Right Unit: Brand Wordmark with split colors */}
     {!iconOnly && (
-      <div className="font-headline font-black text-2xl tracking-tighter leading-none flex items-center text-[#0f172a] dark:text-white">
-        QR Canvas
+      <div className="font-headline font-black text-2xl tracking-tighter leading-none flex items-center">
+        <span className="text-[#0f172a] dark:text-white">QR</span>
+        <span className="text-[#2563eb] ml-2">Canvas</span>
       </div>
     )}
   </div>
