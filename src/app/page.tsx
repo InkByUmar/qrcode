@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center">
       {/* HERO SECTION */}
-      <section className="container mx-auto px-6 py-20 md:py-32 text-center">
+      <section className="container mx-auto px-6 pt-12 pb-20 md:pt-16 md:pb-32 text-center">
         <div className="max-w-4xl mx-auto animate-reveal">
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black tracking-[0.2em] text-primary mb-10">
             <Sparkles className="w-3.5 h-3.5" />
