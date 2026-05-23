@@ -65,7 +65,7 @@ export function Footer() {
               <nav className="flex flex-col gap-4">
                 <Link href="/privacy" className="text-[11px] font-bold text-foreground/50 hover:text-primary transition-colors uppercase tracking-widest">Privacy Policy</Link>
                 <Link href="/terms" className="text-[11px] font-bold text-foreground/50 hover:text-primary transition-colors uppercase tracking-widest">Terms of Service</Link>
-                <Link href="/faq" className="text-[11px] font-bold text-foreground/50 hover:text-primary transition-colors uppercase tracking-widest">Cookie Policy</Link>
+                <Link href="/cookies" className="text-[11px] font-bold text-foreground/50 hover:text-primary transition-colors uppercase tracking-widest">Cookie Policy</Link>
               </nav>
             </div>
           </div>
