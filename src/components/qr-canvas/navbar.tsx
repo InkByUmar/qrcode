@@ -19,16 +19,18 @@ import { cn } from '@/lib/utils';
 import { QrScannerModal } from './qr-scanner-modal';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 
-const Logo = ({ className = "h-7" }: { className?: string }) => (
+const Logo = ({ className = "h-7", iconOnly = false }: { className?: string, iconOnly?: boolean }) => (
   <div className={cn("flex items-center gap-2", className)}>
-    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
-      <div className="absolute inset-0 bg-primary rounded-xl rotate-6 opacity-20 animate-pulse" />
-      <div className="absolute inset-0 bg-primary rounded-xl -rotate-3 transition-transform group-hover:rotate-0" />
-      <span className="relative font-headline font-black text-white text-sm">QR</span>
+    <div className="relative w-7 h-7 flex items-center justify-center shrink-0">
+      <div className="absolute inset-0 bg-primary rounded-lg rotate-6 opacity-20 animate-pulse" />
+      <div className="absolute inset-0 bg-primary rounded-lg -rotate-3 transition-transform group-hover:rotate-0" />
+      <span className="relative font-headline font-black text-white text-[11px]">QR</span>
     </div>
-    <div className="font-headline font-black text-lg tracking-tighter uppercase leading-none">
-      <span className="text-foreground">QR</span> <span className="text-primary ml-0.5">CANVAS</span>
-    </div>
+    {!iconOnly && (
+      <div className="font-headline font-black text-base tracking-tighter uppercase leading-none">
+        <span className="text-foreground">QR</span> <span className="text-primary ml-0.5">CANVAS</span>
+      </div>
+    )}
   </div>
 );
 
@@ -73,7 +75,7 @@ export function Navbar() {
       <header className="fixed top-0 left-0 right-0 z-[100] w-full border-b border-white/10 bg-background/60 backdrop-blur-2xl">
         <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <Logo />
+            <Logo className="h-6" />
           </Link>
           
           <nav className="hidden lg:flex items-center gap-6">
@@ -94,50 +96,50 @@ export function Navbar() {
           <div className="flex items-center gap-2 md:gap-3">
              <button 
                 onClick={toggleTheme}
-                className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 text-foreground/70 hover:text-primary transition-all hover:scale-105"
+                className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 text-foreground/70 hover:text-primary transition-all hover:scale-105"
                 aria-label="Toggle Theme"
              >
-               {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+               {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
              </button>
 
              <button 
                 onClick={() => setIsScannerOpen(true)}
-                className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/25"
+                className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest px-3.5 py-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/25"
              >
-              <Scan className="w-4 h-4" />
+              <Scan className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Scanner</span>
              </button>
 
              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="lg:hidden w-9 h-9 rounded-xl bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 flex items-center justify-center text-foreground/70">
-                    <Menu className="w-5 h-5" />
+                  <button className="lg:hidden w-8 h-8 rounded-xl bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 flex items-center justify-center text-foreground/70">
+                    <Menu className="w-4 h-4" />
                   </button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] glass-card p-0 overflow-hidden text-foreground border-l border-white/20">
+                <SheetContent side="right" className="w-[260px] glass-card p-0 overflow-hidden text-foreground border-l border-white/20">
                   <div className="h-full flex flex-col">
-                    <SheetHeader className="p-6 border-b border-white/10 text-left flex flex-row items-center justify-between">
-                      <div className="space-y-1">
-                        <SheetTitle className="text-sm font-black uppercase tracking-widest text-primary">Studio Menu</SheetTitle>
-                        <SheetDescription className="text-[10px] font-medium text-foreground/40">Professional Asset Management</SheetDescription>
-                        <Logo />
+                    <SheetHeader className="p-4 border-b border-white/10 text-left flex flex-row items-center justify-between">
+                      <div className="space-y-0.5">
+                        <SheetTitle className="text-[9px] font-black uppercase tracking-widest text-primary">Studio Menu</SheetTitle>
+                        <Logo iconOnly={true} className="h-5 mt-1" />
                       </div>
-                      <button onClick={() => setIsMobileMenuOpen(false)} className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center">
-                        <X className="w-4 h-4" />
+                      <button onClick={() => setIsMobileMenuOpen(false)} className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center hover:bg-secondary/80 transition-colors">
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </SheetHeader>
-                    <nav className="flex-1 p-6 flex flex-col gap-4">
+                    <SheetDescription className="sr-only">Mobile navigation menu</SheetDescription>
+                    <nav className="flex-1 p-4 flex flex-col gap-2">
                       {navItems.map((item) => (
                         <Link 
                           key={item.label} 
                           href={item.href}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={cn(
-                            "flex items-center gap-4 text-xs font-black uppercase tracking-[0.2em] transition-all p-3.5 rounded-xl",
-                            pathname === item.href ? "bg-primary/10 text-primary border border-primary/20" : "text-foreground/50 hover:bg-secondary"
+                            "flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all p-2.5 rounded-xl",
+                            pathname === item.href ? "bg-primary/10 text-primary border border-primary/20" : "text-foreground/50 hover:bg-secondary/50"
                           )}
                         >
-                          <item.icon className="w-4 h-4" />
+                          <item.icon className="w-3.5 h-3.5" />
                           {item.label}
                         </Link>
                       ))}
