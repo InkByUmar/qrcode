@@ -8,8 +8,8 @@ import { QrBulkSection } from './qr-bulk-section';
 import { QrCode, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const HISTORY_KEY = 'qr_canvas_history_v5';
-const STATE_KEY = 'qr_canvas_current_state_v5';
+const HISTORY_KEY = 'qr_canvas_history_v6';
+const STATE_KEY = 'qr_canvas_current_state_v6';
 
 const DEFAULT_STATE: QRState = {
   data: 'https://google.com',
@@ -18,7 +18,7 @@ const DEFAULT_STATE: QRState = {
   backgroundImage: null,
   backgroundOpacity: 0.25,
   backgroundMode: 'auto',
-  fgColor: '#25D366',
+  fgColor: '#3b82f6',
   bgColor: '#ffffff',
   size: 1024,
   errorLevel: 'Q',
@@ -67,7 +67,7 @@ export function QrGeneratorContainer({ forcedMode }: QrGeneratorContainerProps) 
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     debounceTimerRef.current = setTimeout(() => {
       setDebouncedState(state);
-    }, 400);
+    }, 300);
 
     return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
   }, [state, isLoaded]);
@@ -126,46 +126,46 @@ export function QrGeneratorContainer({ forcedMode }: QrGeneratorContainerProps) 
   if (!isLoaded) return null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {!forcedMode && (
-        <div className="flex justify-center mb-8">
-          <div className="w-full max-w-md bg-secondary border border-border p-1.5 h-16 rounded-3xl flex animate-reveal">
+        <div className="flex justify-center mb-12">
+          <div className="w-full max-w-md bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 p-1.5 h-16 rounded-[2rem] flex backdrop-blur-xl animate-reveal">
             <button 
               onClick={() => setInternalMode('single')}
               className={cn(
                 "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
-                activeMode === 'single' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
+                activeMode === 'single' ? "bg-primary text-primary-foreground shadow-2xl scale-100" : "text-foreground/40 hover:text-foreground scale-95 opacity-70"
               )}
             >
-              <QrCode className="w-4 h-4" /> Single QR
+              <QrCode className="w-4.5 h-4.5" /> Single
             </button>
             <button 
               onClick={() => setInternalMode('bulk')}
               className={cn(
                 "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
-                activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
+                activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-2xl scale-100" : "text-foreground/40 hover:text-foreground scale-95 opacity-70"
               )}
             >
-              <Layers className="w-4 h-4" /> Bulk Mode
+              <Layers className="w-4.5 h-4.5" /> Bulk
             </button>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-7 xl:col-span-8 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-10">
           {activeMode === 'single' ? (
-            <div key="single-form" className="animate-in fade-in slide-in-from-top-4 duration-500">
+            <div key="single-form" className="animate-in fade-in slide-in-from-top-6 duration-700">
               <QrFormSection state={state} updateState={updateState} />
             </div>
           ) : (
-            <div key="bulk-form" className="animate-in fade-in slide-in-from-top-4 duration-500">
+            <div key="bulk-form" className="animate-in fade-in slide-in-from-top-6 duration-700">
               <QrBulkSection state={state} updateState={updateState} />
             </div>
           )}
         </div>
 
-        <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-6 animate-in fade-in slide-in-from-right-4 duration-700 stagger-2">
+        <div className="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-8 animate-in fade-in slide-in-from-right-8 duration-1000 stagger-2">
           <QrPreviewSection 
             state={debouncedState} 
             history={history} 

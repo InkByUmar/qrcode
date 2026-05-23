@@ -1,8 +1,7 @@
-
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'QR CANVAS Apple Studio Icon';
+export const alt = 'QR CANVAS Apple Touch Icon';
 export const size = {
   width: 180,
   height: 180,
@@ -14,7 +13,7 @@ export default function AppleIcon() {
     (
       <div
         style={{
-          background: '#060907',
+          background: 'white',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -25,7 +24,7 @@ export default function AppleIcon() {
       >
         <div
           style={{
-            background: '#26EA56',
+            background: '#3b82f6',
             width: '140px',
             height: '140px',
             display: 'flex',
@@ -33,22 +32,15 @@ export default function AppleIcon() {
             justifyContent: 'center',
             borderRadius: '32px',
             position: 'relative',
+            transform: 'rotate(-3deg)'
           }}
         >
-          {/* Finder Patterns */}
-          <div style={{ position: 'absolute', top: 22, left: 22, width: 38, height: 38, border: '10px solid black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', top: 22, right: 22, width: 38, height: 38, border: '10px solid black', borderRadius: '6px' }} />
-          <div style={{ position: 'absolute', bottom: 22, left: 22, width: 38, height: 38, border: '10px solid black', borderRadius: '6px' }} />
-          
-          {/* Black QR Text */}
           <div style={{ 
-            fontSize: 48, 
-            color: 'black',
+            fontSize: 64, 
+            color: 'white',
             fontWeight: 900,
             fontFamily: 'sans-serif',
-            position: 'absolute',
-            bottom: 25,
-            right: 25
+            letterSpacing: '-4px'
           }}>
             QR
           </div>

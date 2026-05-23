@@ -17,7 +17,8 @@ import {
   ImageIcon,
   Info,
   Share2,
-  ExternalLink
+  ExternalLink,
+  X
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -45,7 +46,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
   const { toast } = useToast();
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const scannerContainerId = "qr-reader-container";
+  const scannerContainerId = "qr-reader-container-v2";
 
   const isUrl = (text: string | null) => {
     if (!text) return false;
@@ -158,7 +159,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     await stopScanner();
     await new Promise(r => setTimeout(r, 400)); 
 
-    const tempId = "qr-file-scan-temp";
+    const tempId = "qr-file-scan-temp-v2";
     let tempDiv = document.getElementById(tempId);
     if (!tempDiv) {
       tempDiv = document.createElement('div');
@@ -184,7 +185,7 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
       
       fileScanner.clear();
     } catch (err: any) {
-      setError("Matrix detection failed. Stylized codes require high resolution and sharp focus. Try a different angle or lighting.");
+      setError("Matrix detection failed. High-resolution images with clear contrast recommended.");
     } finally {
       setIsProcessingFile(false);
       if (event.target) event.target.value = '';
@@ -205,17 +206,17 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'QR CANVAS Scan Result',
+          title: 'QR CANVAS Result',
           text: scanResult,
           url: isUrl(scanResult) ? scanResult : undefined,
         });
       } else {
         handleCopy();
-        toast({ title: "Sharing unavailable", description: "Copied to clipboard instead." });
+        toast({ title: "Sharing restricted", description: "Copied to clipboard instead." });
       }
     } catch (error) {
       handleCopy();
-      toast({ title: "Sharing unavailable", description: "Content copied to clipboard instead." });
+      toast({ title: "Sharing failed", description: "Content copied to clipboard instead." });
     }
   };
 
@@ -239,29 +240,34 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="glass-card max-w-md border-white/10 p-0 overflow-hidden outline-none text-white">
-        <DialogHeader className="p-6 border-b border-white/5 flex flex-row items-center justify-between">
-          <DialogTitle className="text-white font-headline flex items-center gap-3 text-lg">
-            <Scan className="w-5 h-5 text-primary" />
-            Studio Scanner Pro
-          </DialogTitle>
-          <DialogDescription className="sr-only">Scan QR codes using your camera or upload an image to decode its data.</DialogDescription>
+      <DialogContent className="glass-card max-w-lg border-white/20 p-0 overflow-hidden outline-none text-foreground">
+        <DialogHeader className="p-8 border-b border-white/10 flex flex-row items-center justify-between bg-white/5">
+          <div className="flex flex-col gap-1">
+            <DialogTitle className="text-foreground font-headline flex items-center gap-3 text-2xl uppercase tracking-tighter">
+              <Scan className="w-6 h-6 text-primary" />
+              Live Studio Scanner
+            </DialogTitle>
+            <DialogDescription className="text-[10px] font-black uppercase tracking-widest text-foreground/40">Technical Matrix Analyzer</DialogDescription>
+          </div>
+          <button onClick={handleClose} className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-foreground/50 hover:text-foreground">
+            <X className="w-5 h-5" />
+          </button>
         </DialogHeader>
         
-        <div className="flex flex-col items-center gap-6 p-6">
+        <div className="flex flex-col items-center gap-8 p-8">
           {!scanResult ? (
-            <div className="w-full space-y-6">
-              <div className="flex items-center gap-3">
+            <div className="w-full space-y-8">
+              <div className="flex items-center gap-4">
                 {cameras.length > 1 && (
                   <div className="flex-1">
                     <Select value={selectedCameraId} onValueChange={setSelectedCameraId}>
-                      <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 rounded-xl text-[10px] uppercase font-black tracking-widest">
-                        <Camera className="w-3.5 h-3.5 mr-2 text-primary" />
+                      <SelectTrigger className="bg-secondary/50 border-white/10 text-foreground h-14 rounded-2xl text-[11px] uppercase font-black tracking-widest px-5">
+                        <Camera className="w-4 h-4 mr-3 text-primary" />
                         <SelectValue placeholder="Camera" />
                       </SelectTrigger>
-                      <SelectContent className="glass-card bg-black border-white/10 text-white">
+                      <SelectContent className="glass-card border-white/20">
                         {cameras.map(cam => (
-                          <SelectItem key={cam.id} value={cam.id} className="text-[10px] uppercase font-black">{cam.label}</SelectItem>
+                          <SelectItem key={cam.id} value={cam.id} className="text-[11px] uppercase font-black">{cam.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -271,9 +277,9 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isInitializing || isProcessingFile}
-                  className="flex-1 h-12 border-white/10 bg-white/5 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-white/10 gap-2"
+                  className="flex-1 h-14 border-white/10 bg-secondary/50 text-foreground text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-secondary gap-3"
                 >
-                  {isProcessingFile ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageIcon className="w-3.5 h-3.5 text-primary" />}
+                  {isProcessingFile ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4 text-primary" />}
                   Import Image
                 </Button>
                 <input 
@@ -285,121 +291,116 @@ export function QrScannerModal({ isOpen, onClose }: QrScannerModalProps) {
                 />
               </div>
 
-              <div className="w-full relative aspect-square rounded-[2.5rem] overflow-hidden border-2 border-primary/20 bg-black/40 group shadow-2xl">
+              <div className="w-full relative aspect-square rounded-[3rem] overflow-hidden border-2 border-primary/20 bg-black/5 dark:bg-white/5 group shadow-2xl">
                 <div id={scannerContainerId} className="w-full h-full"></div>
                 
                 {!isInitializing && !error && !isProcessingFile && (
                   <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
-                    <div className="w-64 h-64 border-2 border-primary/30 rounded-3xl relative">
-                      <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-xl" />
-                      <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-xl" />
-                      <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-xl" />
-                      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-xl" />
-                      <div className="absolute top-0 left-0 w-full h-[2px] bg-primary shadow-[0_0_15px_rgba(16,185,129,0.8)] scanner-line" />
+                    <div className="w-72 h-72 border-2 border-primary/30 rounded-[3rem] relative">
+                      <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-primary rounded-tl-[2rem]" />
+                      <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-primary rounded-tr-[2rem]" />
+                      <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-primary rounded-bl-[2rem]" />
+                      <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-primary rounded-br-[2rem]" />
+                      <div className="absolute top-0 left-0 w-full h-[3px] bg-primary blue-glow scanner-line" />
                     </div>
                   </div>
                 )}
 
                 {(isInitializing || isProcessingFile) && (
-                  <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-4 z-20">
-                    <Loader2 className="w-10 h-10 text-primary animate-spin" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary text-center px-6">
-                      {isProcessingFile ? "Analyzing QR Matrix..." : "Syncing Hardware..."}
+                  <div className="absolute inset-0 bg-background/80 backdrop-blur-xl flex flex-col items-center justify-center gap-6 z-20">
+                    <div className="relative">
+                      <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+                      <Scan className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-primary animate-pulse" />
+                    </div>
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-primary text-center px-8">
+                      {isProcessingFile ? "Analyzing Artistic Matrix..." : "Syncing Optical Hardware..."}
                     </p>
                   </div>
                 )}
 
                 {error && (
-                  <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-6 p-10 text-center z-30">
-                    <AlertCircle className="w-12 h-12 text-destructive" />
-                    <p className="text-sm font-bold text-white leading-relaxed">{error}</p>
-                    <div className="flex flex-col gap-3 w-full">
-                      <Button variant="outline" onClick={handleReset} className="h-10 border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <RefreshCcw className="w-3.5 h-3.5 mr-2" /> Restart
+                  <div className="absolute inset-0 bg-background/90 backdrop-blur-2xl flex flex-col items-center justify-center gap-8 p-12 text-center z-30">
+                    <AlertCircle className="w-16 h-16 text-destructive animate-bounce" />
+                    <p className="text-sm font-bold text-foreground leading-relaxed">{error}</p>
+                    <div className="flex flex-col gap-4 w-full">
+                      <Button variant="outline" onClick={handleReset} className="h-12 border-white/10 text-foreground text-[11px] font-black uppercase tracking-widest rounded-2xl">
+                        <RefreshCcw className="w-4 h-4 mr-3" /> Restart Engine
                       </Button>
-                      <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-10 bg-primary/20 border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
-                        <ImageIcon className="w-3.5 h-3.5 mr-2" /> New Image
+                      <Button variant="outline" onClick={() => fileInputRef.current?.click()} className="h-12 bg-primary/10 border-primary/30 text-primary text-[11px] font-black uppercase tracking-widest rounded-2xl">
+                        <ImageIcon className="w-4 h-4 mr-3" /> Select New File
                       </Button>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex items-start gap-3">
-                 <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                 <p className="text-[9px] text-white/40 leading-relaxed font-medium">
-                   PRO TIP: Artistic QR codes with custom logos or backgrounds require high resolution. Ensure the QR pattern occupies at least 60% of the image frame for successful analysis.
+              <div className="p-6 rounded-3xl bg-primary/5 border border-primary/10 flex items-start gap-4">
+                 <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                 <p className="text-[10px] text-foreground/50 leading-relaxed font-medium">
+                   PRO TIP: Artistic QR codes with integrated logos or AI backgrounds require sharp focus. Ensure the QR occupies most of the viewfinder for rapid matrix identification.
                  </p>
               </div>
-
-              <Button 
-                onClick={handleClose} 
-                className="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black text-xs uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Return to Studio
-              </Button>
             </div>
           ) : (
-            <div className="w-full space-y-6 animate-in fade-in zoom-in duration-500">
-              <div className="p-8 rounded-[2.5rem] bg-primary/5 border border-primary/20 space-y-6 shadow-2xl relative overflow-hidden">
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+            <div className="w-full space-y-8 animate-in fade-in zoom-in duration-700">
+              <div className="p-10 rounded-[3rem] bg-primary/5 border border-primary/20 space-y-8 shadow-2xl relative overflow-hidden">
+                <div className="absolute -top-12 -right-12 w-40 h-40 bg-primary/10 rounded-full blur-3xl" />
                 
                 <div className="flex items-center justify-between relative z-10">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Decoded Message</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">Decoded Matrix Payload</p>
                   </div>
-                  <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/30">
-                    <CheckCircle2 className="w-5 h-5" />
+                  <div className="w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center border border-white/20 shadow-lg shadow-primary/20">
+                    <CheckCircle2 className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="p-6 bg-black/40 rounded-2xl border border-white/5 max-h-[180px] overflow-auto custom-scrollbar relative z-10 shadow-inner">
-                  <p className="text-base font-mono text-white break-all">{scanResult}</p>
+                <div className="p-8 bg-white/40 dark:bg-black/40 backdrop-blur-xl rounded-3xl border border-white/20 max-h-[220px] overflow-auto custom-scrollbar relative z-10 shadow-inner">
+                  <p className="text-lg font-mono text-foreground break-all leading-relaxed">{scanResult}</p>
                 </div>
 
-                <div className="flex flex-col gap-3 pt-2 relative z-10">
+                <div className="flex flex-col gap-4 pt-4 relative z-10">
                   {isUrl(scanResult) && (
                     <Button 
                       onClick={handleOpenLink}
-                      className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.1em] rounded-2xl shadow-xl shadow-primary/30"
+                      className="w-full h-16 bg-primary text-primary-foreground font-black text-sm uppercase tracking-[0.15em] rounded-2xl shadow-2xl shadow-primary/30 active:scale-95 transition-transform"
                     >
                       <ExternalLink className="w-5 h-5 mr-3" />
                       Open Link
                     </Button>
                   )}
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <Button 
                       onClick={handleShare}
                       className={cn(
-                        "h-14 bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest",
+                        "h-14 bg-white/50 dark:bg-black/50 border border-white/20 hover:bg-white dark:hover:bg-black text-foreground rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all",
                         !isUrl(scanResult) && "col-span-2 h-16"
                       )}
                     >
-                      <Share2 className="w-4 h-4 mr-2" />
+                      <Share2 className="w-4 h-4 mr-3 text-primary" />
                       Share
                     </Button>
                     <Button 
                       onClick={handleCopy}
                       className={cn(
-                        "h-14 bg-white/10 border-white/20 hover:bg-white/20 text-white rounded-xl text-[10px] font-black uppercase tracking-widest",
+                        "h-14 bg-white/50 dark:bg-black/50 border border-white/20 hover:bg-white dark:hover:bg-black text-foreground rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all",
                         !isUrl(scanResult) && "col-span-2 h-16"
                       )}
                     >
-                      {isCopied ? <CheckCircle2 className="w-4 h-4 mr-2 text-primary" /> : <Copy className="w-4 h-4 mr-2" />}
+                      {isCopied ? <CheckCircle2 className="w-4 h-4 mr-3 text-primary" /> : <Copy className="w-4 h-4 mr-3 text-primary" />}
                       {isCopied ? 'Copied' : 'Copy'}
                     </Button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
-                    <Button variant="outline" onClick={handleReset} className="h-14 border-white/10 hover:bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/70">
-                      <RefreshCcw className="w-4 h-4 mr-2 text-primary" />
+                  <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/10">
+                    <Button variant="outline" onClick={handleReset} className="h-14 border-white/10 hover:bg-secondary rounded-2xl text-[11px] font-black uppercase tracking-widest text-foreground/60 transition-all">
+                      <RefreshCcw className="w-4 h-4 mr-3" />
                       Scan New
                     </Button>
-                    <Button variant="outline" onClick={handleClose} className="h-14 border-white/10 hover:bg-white/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/70">
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Finish
+                    <Button variant="outline" onClick={handleClose} className="h-14 border-white/10 hover:bg-secondary rounded-2xl text-[11px] font-black uppercase tracking-widest text-foreground/60 transition-all">
+                      <ArrowLeft className="w-4 h-4 mr-3" />
+                      Studio
                     </Button>
                   </div>
                 </div>

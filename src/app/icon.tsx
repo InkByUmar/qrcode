@@ -1,4 +1,3 @@
-
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
@@ -14,7 +13,7 @@ export default function Icon() {
     (
       <div
         style={{
-          background: '#060907',
+          background: 'white',
           width: '100%',
           height: '100%',
           display: 'flex',
@@ -26,40 +25,41 @@ export default function Icon() {
       >
         <div
           style={{
-            background: '#26EA56',
+            background: '#3b82f6',
             width: '400px',
             height: '400px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '88px',
+            borderRadius: '96px',
             position: 'relative',
+            transform: 'rotate(-5deg)',
+            boxShadow: '0 40px 100px -20px rgba(59, 130, 246, 0.4)'
           }}
         >
-          {/* Finder Patterns (Black) */}
-          <div style={{ position: 'absolute', top: 60, left: 60, width: 110, height: 110, border: '28px solid black', borderRadius: '15px' }}>
-            <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
-          </div>
-          <div style={{ position: 'absolute', top: 60, right: 60, width: 110, height: 110, border: '28px solid black', borderRadius: '15px' }}>
-            <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
-          </div>
-          <div style={{ position: 'absolute', bottom: 60, left: 60, width: 110, height: 110, border: '28px solid black', borderRadius: '15px' }}>
-            <div style={{ position: 'absolute', top: 18, left: 18, width: 20, height: 20, background: '#26EA56', borderRadius: '4px' }} />
-          </div>
-
-          {/* Central QR Typography (Black) - Clean and Simple */}
+          {/* Main Logo Text */}
           <div style={{ 
-            fontSize: 140, 
-            color: 'black',
+            fontSize: 180, 
+            color: 'white',
             fontWeight: 900,
             fontFamily: 'sans-serif',
-            letterSpacing: '-6px',
-            position: 'absolute',
-            bottom: 70,
-            right: 70
+            letterSpacing: '-10px',
           }}>
             QR
           </div>
+          
+          {/* Glass Overlay Element */}
+          <div style={{
+            position: 'absolute',
+            top: 40,
+            right: 40,
+            width: 80,
+            height: 80,
+            background: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '24px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)'
+          }} />
         </div>
       </div>
     ),
