@@ -17,54 +17,54 @@ export default function AppleIcon() {
           width: '100%',
           height: '100%',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: '40px',
         }}
       >
-        <div
-          style={{
-            background: '#2563eb',
-            width: '140px',
-            height: '140px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '32px',
-            position: 'relative',
-            boxShadow: '0 15px 40px -10px rgba(37, 99, 235, 0.4)'
-          }}
-        >
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <span style={{ 
-              fontSize: '38px', 
-              fontWeight: 900, 
-              color: 'white', 
-              letterSpacing: '-3px',
-              marginBottom: '2px'
-            }}>QR</span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* Compact Icon Box */}
+          <div
+            style={{
+              background: '#2563eb',
+              width: '110px',
+              height: '110px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '24px',
+              position: 'relative',
+              boxShadow: '0 15px 40px -10px rgba(37, 99, 235, 0.4)'
+            }}
+          >
             <div style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: 6,
+              gap: 8,
               width: '60px',
               height: '60px',
             }}>
-              <div style={{ display: 'flex', gap: 6, height: '27px' }}>
-                <div style={{ width: '27px', height: '27px', border: '6px solid rgba(255, 255, 255, 0.6)', borderRadius: '4px' }} />
-                <div style={{ width: '27px', height: '27px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '4px' }} />
+              <div style={{ display: 'flex', gap: 8, height: '26px' }}>
+                <div style={{ width: '26px', height: '26px', border: '6px solid rgba(255, 255, 255, 0.6)', borderRadius: '4px' }} />
+                <div style={{ width: '26px', height: '26px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '4px' }} />
               </div>
-              <div style={{ display: 'flex', gap: 6, height: '27px' }}>
-                 <div style={{ width: '27px', height: '27px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '4px' }} />
-                 <div style={{ width: '27px', height: '27px', background: 'white', borderRadius: '4px' }} />
+              <div style={{ display: 'flex', gap: 8, height: '26px' }}>
+                 <div style={{ width: '26px', height: '26px', background: 'rgba(255, 255, 255, 0.3)', borderRadius: '4px' }} />
+                 <div style={{ width: '26px', height: '26px', background: 'white', borderRadius: '4px' }} />
               </div>
             </div>
           </div>
+          
+          {/* Label Below */}
+          <span style={{ 
+            fontSize: '32px', 
+            fontWeight: 900, 
+            color: '#2563eb', 
+            letterSpacing: '-2px',
+            marginTop: '8px',
+            textTransform: 'uppercase'
+          }}>QR</span>
         </div>
       </div>
     ),

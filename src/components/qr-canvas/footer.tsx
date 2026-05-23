@@ -7,23 +7,27 @@ import { cn } from '@/lib/utils';
 
 const Logo = ({ className = "h-8" }: { className?: string }) => (
   <div className={cn("flex items-center gap-3", className)}>
-    <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
-      <div className="absolute inset-0 bg-[#2563eb]/20 rounded-xl rotate-3" />
-      <div className="absolute inset-0 bg-[#2563eb] rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center">
-        <div className="flex flex-col items-center justify-center relative">
-          <span className="text-[10px] font-black text-white leading-none tracking-tighter mb-0.5">QR</span>
-          <div className="w-3 h-3 grid grid-cols-2 gap-0.5">
+    {/* Left Unit: Stacked Icon and Label */}
+    <div className="flex flex-col items-center shrink-0">
+      <div className="relative w-9 h-9 flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#2563eb]/20 rounded-xl rotate-3" />
+        <div className="absolute inset-0 bg-[#2563eb] rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center overflow-hidden">
+          {/* Geometric QR Grid Icon */}
+          <div className="w-5 h-5 grid grid-cols-2 gap-1 relative z-10">
             <div className="border-[1.2px] border-white/60 rounded-[0.5px]" />
             <div className="bg-white/30 rounded-[0.5px]" />
             <div className="bg-white/30 rounded-[0.5px]" />
             <div className="bg-white rounded-[0.5px]" />
           </div>
+          {/* Glass Effect */}
+          <div className="absolute top-0 left-0 w-full h-1/2 bg-white/10" />
         </div>
       </div>
+      <span className="text-[9px] font-black text-[#2563eb] leading-none tracking-tighter mt-1 uppercase">QR</span>
     </div>
-    <div className="font-headline font-black text-xl tracking-tight leading-none flex items-center">
-      <span className="text-[#0f172a] dark:text-white uppercase tracking-tighter">QR</span>
-      <span className="text-[#0f172a] dark:text-white/90 ml-1.5 font-bold">Canvas</span>
+    
+    <div className="font-headline font-black text-2xl tracking-tighter leading-none flex items-center text-[#0f172a] dark:text-white">
+      Canvas
     </div>
   </div>
 );
