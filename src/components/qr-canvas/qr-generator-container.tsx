@@ -32,19 +32,19 @@ const DEFAULT_STATE: QRState = {
   vCard: { firstName: '', lastName: '', mobile: '', email: '', organization: '', jobTitle: '', website: '' }
 };
 
-export function QrGeneratorContainer({ 
-  activeMode: controlledMode, 
-  onModeChange 
-}: QrGeneratorContainerProps) {
-  const [uncontrolledMode, setUncontrolledMode] = useState<'single' | 'bulk'>('single');
+interface QrGeneratorContainerProps {
+  forcedMode?: 'single' | 'bulk';
+}
+
+export function QrGeneratorContainer({ forcedMode }: QrGeneratorContainerProps) {
+  const [internalMode, setInternalMode] = useState<'single' | 'bulk'>('single');
   const [state, setState] = useState<QRState>(DEFAULT_STATE);
   const [debouncedState, setDebouncedState] = useState<QRState>(state);
   const [history, setHistory] = useState<QRHistoryItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   
-  const activeMode = controlledMode ?? uncontrolledMode;
-  const setActiveMode = onModeChange ?? setUncontrolledMode;
+  const activeMode = forcedMode || internalMode;
 
   useEffect(() => {
     const savedHistory = localStorage.getItem(HISTORY_KEY);
@@ -127,31 +127,33 @@ export function QrGeneratorContainer({
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-center mb-8">
-        <div className="w-full max-w-md bg-secondary border border-border p-1.5 h-16 rounded-3xl flex animate-reveal">
-          <button 
-            onClick={() => setActiveMode('single')}
-            className={cn(
-              "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
-              activeMode === 'single' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
-            )}
-          >
-            <QrCode className="w-4 h-4" /> Single QR
-          </button>
-          <button 
-            onClick={() => setActiveMode('bulk')}
-            className={cn(
-              "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
-              activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
-            )}
-          >
-            <Layers className="w-4 h-4" /> Bulk Mode
-          </button>
+      {!forcedMode && (
+        <div className="flex justify-center mb-8">
+          <div className="w-full max-w-md bg-secondary border border-border p-1.5 h-16 rounded-3xl flex animate-reveal">
+            <button 
+              onClick={() => setInternalMode('single')}
+              className={cn(
+                "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
+                activeMode === 'single' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
+              )}
+            >
+              <QrCode className="w-4 h-4" /> Single QR
+            </button>
+            <button 
+              onClick={() => setInternalMode('bulk')}
+              className={cn(
+                "flex-1 rounded-2xl flex items-center justify-center gap-3 transition-all font-black uppercase tracking-[0.2em] text-[10px]",
+                activeMode === 'bulk' ? "bg-primary text-primary-foreground shadow-xl scale-100" : "text-foreground/40 hover:text-foreground hover:bg-background/50 scale-95 opacity-70"
+              )}
+            >
+              <Layers className="w-4 h-4" /> Bulk Mode
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <div className="lg:col-span-7 xl:col-span-8 space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
+        <div className="lg:col-span-7 xl:col-span-8 space-y-8">
           {activeMode === 'single' ? (
             <div key="single-form" className="animate-in fade-in slide-in-from-top-4 duration-500">
               <QrFormSection state={state} updateState={updateState} />
@@ -174,9 +176,4 @@ export function QrGeneratorContainer({
       </div>
     </div>
   );
-}
-
-interface QrGeneratorContainerProps {
-  activeMode?: 'single' | 'bulk';
-  onModeChange?: (mode: 'single' | 'bulk') => void;
 }
