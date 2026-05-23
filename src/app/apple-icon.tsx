@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'QR CANVAS Apple Touch Icon';
+export const alt = 'QR Canvas Apple Icon';
 export const size = {
   width: 180,
   height: 180,
@@ -24,7 +24,7 @@ export default function AppleIcon() {
       >
         <div
           style={{
-            background: '#3b82f6',
+            background: '#2563eb',
             width: '140px',
             height: '140px',
             display: 'flex',
@@ -32,17 +32,24 @@ export default function AppleIcon() {
             justifyContent: 'center',
             borderRadius: '32px',
             position: 'relative',
-            transform: 'rotate(-3deg)'
+            boxShadow: '0 15px 40px -10px rgba(37, 99, 235, 0.4)'
           }}
         >
-          <div style={{ 
-            fontSize: 64, 
-            color: 'white',
-            fontWeight: 900,
-            fontFamily: 'sans-serif',
-            letterSpacing: '-4px'
+           <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+            width: '80px',
+            height: '80px',
           }}>
-            QR
+            <div style={{ display: 'flex', gap: 10, height: '35px' }}>
+              <div style={{ width: '35px', height: '35px', border: '10px solid white', borderRadius: '4px' }} />
+              <div style={{ width: '35px', height: '35px', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '4px' }} />
+            </div>
+            <div style={{ display: 'flex', gap: 10, height: '35px' }}>
+               <div style={{ width: '35px', height: '35px', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '4px' }} />
+               <div style={{ width: '35px', height: '35px', background: 'white', borderRadius: '4px' }} />
+            </div>
           </div>
         </div>
       </div>
