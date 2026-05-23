@@ -22,7 +22,7 @@ export default function Home() {
       {/* HERO SECTION */}
       <section className="container mx-auto px-6 pt-12 pb-20 md:pt-16 md:pb-32 text-center">
         <div className="max-w-4xl mx-auto animate-reveal">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black tracking-[0.2em] text-primary mb-10">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/15 border border-primary/30 text-[10px] font-black tracking-[0.2em] text-primary mb-10 shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
             <span>PREMIUM BRANDING STUDIO</span>
           </div>
@@ -36,9 +36,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             <Link href="/single" className="group">
-              <div className="glass-card p-10 rounded-[3rem] border-border hover:border-primary/20 transition-all hover:-translate-y-2 text-left relative overflow-hidden h-full">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-all" />
-                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
+              <div className="glass-card p-10 rounded-[3rem] border-border hover:border-primary/40 transition-all hover:-translate-y-2 text-left relative overflow-hidden h-full shadow-lg hover:shadow-primary/10">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/15 rounded-full -mr-16 -mt-16 group-hover:bg-primary/20 transition-all blur-2xl" />
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/20 flex items-center justify-center text-primary mb-8 border border-primary/30 shadow-inner group-hover:scale-110 transition-transform">
                   <QrCode className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-headline font-bold text-foreground mb-4 uppercase tracking-tight">Single QR Studio</h3>
@@ -52,9 +52,9 @@ export default function Home() {
             </Link>
 
             <Link href="/bulk" className="group">
-              <div className="glass-card p-10 rounded-[3rem] border-border hover:border-primary/20 transition-all hover:-translate-y-2 text-left relative overflow-hidden h-full">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 group-hover:bg-primary/10 transition-all" />
-                <div className="w-16 h-16 rounded-[2rem] bg-primary/10 flex items-center justify-center text-primary mb-8 border border-primary/20">
+              <div className="glass-card p-10 rounded-[3rem] border-border hover:border-primary/40 transition-all hover:-translate-y-2 text-left relative overflow-hidden h-full shadow-lg hover:shadow-primary/10">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/15 rounded-full -mr-16 -mt-16 group-hover:bg-primary/20 transition-all blur-2xl" />
+                <div className="w-16 h-16 rounded-[2rem] bg-primary/20 flex items-center justify-center text-primary mb-8 border border-primary/30 shadow-inner group-hover:scale-110 transition-transform">
                   <Layers className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-headline font-bold text-foreground mb-4 uppercase tracking-tight">Bulk Production</h3>
